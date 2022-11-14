@@ -1,15 +1,13 @@
-import { Signup } from "../lib/components/Signup";
+import { Signup } from "../@propelauth/react";
 
 export const SignupPage = () => {
-  const appearance = {
-    theme: {
-      backgroundColor: "red",
-    },
-  };
-
   return (
     <div>
-      <Signup appearance={appearance} />
+      <Signup
+        appearance={{
+          Container: "foo",
+        }}
+      />
     </div>
   );
 };
