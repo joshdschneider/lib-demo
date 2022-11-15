@@ -1,6 +1,17 @@
 import { useElements } from "../state";
-import { InputProps, Appearance } from "./types";
-import { getPropsFromAppearance } from "../utils";
+import { Appearance, getPropsFromAppearance } from "../utils";
+import { ChangeEventHandler, CSSProperties } from "react";
+
+export type InputProps = {
+  value: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  type?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  placeholder?: string;
+  style?: CSSProperties;
+  className?: string;
+};
 
 export type InputPropsWithAppearance = { appearance?: Appearance } & InputProps;
 

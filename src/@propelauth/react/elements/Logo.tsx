@@ -1,6 +1,13 @@
 import { useElements } from "../state";
-import { LogoProps, Appearance } from "./types";
-import { getPropsFromAppearance } from "../utils";
+import { Appearance, getPropsFromAppearance } from "../utils";
+import { CSSProperties } from "react";
+
+export type LogoProps = {
+  src: string;
+  alt?: string;
+  style?: CSSProperties;
+  className?: string;
+};
 
 export type LogoPropsWithAppearance = { appearance?: Appearance } & LogoProps;
 

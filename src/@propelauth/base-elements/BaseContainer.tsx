@@ -1,9 +1,5 @@
 import { BaseContainerProps } from "./_types";
 
-export const BaseContainer = ({ style, className, children }: BaseContainerProps) => {
-  return (
-    <div style={style} className={className}>
-      {children}
-    </div>
-  );
+export const BaseContainer = ({ children, ...rest }: BaseContainerProps) => {
+  return <div {...rest}>{children}</div>;
 };

@@ -1,9 +1,5 @@
 import { BaseLinkProps } from "./_types";
 
-export const BaseLink = ({ href, style, className, children }: BaseLinkProps) => {
-  return (
-    <a href={href} style={style} className={className}>
-      {children}
-    </a>
-  );
+export const BaseLink = ({ children, ...rest }: BaseLinkProps) => {
+  return <a {...rest}>{children}</a>;
 };

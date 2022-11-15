@@ -1,6 +1,14 @@
+import { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import { useElements } from "../state";
-import { ButtonProps, Appearance } from "./types";
-import { getPropsFromAppearance } from "../utils";
+import { Appearance, getPropsFromAppearance } from "../utils";
+
+export type ButtonProps = {
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  loading?: boolean;
+  style?: CSSProperties;
+  className?: string;
+  children?: ReactNode;
+};
 
 export type ButtonPropsWithAppearance = { appearance?: Appearance } & ButtonProps;
 

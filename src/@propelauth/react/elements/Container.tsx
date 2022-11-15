@@ -1,6 +1,12 @@
 import { useElements } from "../state";
-import { ContainerProps, Appearance } from "./types";
-import { getPropsFromAppearance } from "../utils";
+import { Appearance, getPropsFromAppearance } from "../utils";
+import { CSSProperties, ReactNode } from "react";
+
+export type ContainerProps = {
+  style?: CSSProperties;
+  className?: string;
+  children?: ReactNode;
+};
 
 export type ContainerPropsWithAppearance = { appearance?: Appearance } & ContainerProps;
 

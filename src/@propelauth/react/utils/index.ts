@@ -1,4 +1,6 @@
-import { Appearance } from "../elements";
+import { CSSProperties } from "react";
+
+export type Appearance = string | CSSProperties;
 
 export function getPropsFromAppearance(appearance: Appearance | undefined) {
   const isObject = typeof appearance === "object";

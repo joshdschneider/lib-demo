@@ -1,7 +1,8 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Container, Logo, Input, Button, Link, Appearance } from "../elements";
+import { Container, Logo, Input, Button, Link } from "../elements";
 import { Config, useConfig } from "../state";
+import { Appearance } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
 import { Greeting } from "./shared/Greeting";
 import { SigninOptions } from "./shared/SigninOptions";

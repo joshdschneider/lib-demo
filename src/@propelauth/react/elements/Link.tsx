@@ -1,6 +1,13 @@
 import { useElements } from "../state";
-import { LinkProps, Appearance } from "./types";
-import { getPropsFromAppearance } from "../utils";
+import { Appearance, getPropsFromAppearance } from "../utils";
+import { CSSProperties, ReactNode } from "react";
+
+export type LinkProps = {
+  href: string;
+  style?: CSSProperties;
+  className?: string;
+  children?: ReactNode;
+};
 
 export type LinkPropsWithAppearance = { appearance?: Appearance } & LinkProps;
 
