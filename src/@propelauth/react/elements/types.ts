@@ -16,13 +16,17 @@ export type LogoProps = {
 export type InputProps = {
   value: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
-  type: string;
+  type?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  placeholder?: string;
   style?: CSSProperties;
   className?: string;
 };
 
 export type ButtonProps = {
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  loading?: boolean;
   style?: CSSProperties;
   className?: string;
   children?: ReactNode;

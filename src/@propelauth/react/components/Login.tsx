@@ -1,52 +1,108 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
+import { apiLogin } from "../api/login";
 import { Container, Logo, Input, Button, Link, Appearance } from "../elements";
+import { Config, useConfig } from "../state";
+import { ErrorMessage } from "./shared/ErrorMessage";
+import { Greeting } from "./shared/Greeting";
+import { SigninOptions } from "./shared/SigninOptions";
 
 export type LoginProps = {
   signupUrl?: string;
   redirectUrl?: string;
+  presetEmail?: string; ///
   appearance?: LoginAppearance;
 };
 
 export type LoginAppearance = {
-  Container?: Appearance;
-  Logo?: Appearance;
-  EmailInput?: Appearance;
-  PasswordInput?: Appearance;
-  SubmitButton?: Appearance;
-  SignupLink?: Appearance;
+  layout?: {
+    logoPosition?: "inside" | "outside" | "none";
+    greetingText?: string | null;
+    showDivider?: boolean;
+  };
+  elements?: {
+    Container?: Appearance;
+    Logo?: Appearance;
+    EmailInput?: Appearance;
+    PasswordInput?: Appearance;
+    SubmitButton?: Appearance;
+    SignupLink?: Appearance;
+  };
 };
 
-export const Login = ({ signupUrl, redirectUrl, appearance }: LoginProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  function handleSubmit() {
-    alert("Submit");
-  }
+export const Login = ({ signupUrl, redirectUrl, presetEmail, appearance }: LoginProps) => {
+  const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.Container}>
-      <Logo src={"getFromConfig"} alt={"getFromConfig"} appearance={appearance?.Logo} />
-      <Input
-        type={"email"}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        appearance={appearance?.EmailInput}
-      />
-      <Input
-        type={"password"}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        appearance={appearance?.PasswordInput}
-      />
-      <Button onClick={handleSubmit} appearance={appearance?.SubmitButton}>
-        Submit
-      </Button>
+    <Container appearance={appearance?.elements?.Container}>
+      <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+      <Greeting text={appearance?.layout?.greetingText || "Welcome"} />
+      <SigninOptions config={config} />
+      {config.has_password_login && config.has_any_social_login && <hr />}
+      {config.has_password_login && (
+        <PasswordLoginForm config={config} redirectUrl={redirectUrl} presetEmail={presetEmail} />
+      )}
       {signupUrl && (
-        <Link href={signupUrl} appearance={appearance?.SignupLink}>
+        <Link href={signupUrl} appearance={appearance?.elements?.SignupLink}>
           Sign up
         </Link>
       )}
     </Container>
+  );
+};
+
+export type PasswordLoginFormProps = {
+  config: Config;
+  presetEmail?: string;
+  redirectUrl?: string;
+};
+
+export const PasswordLoginForm = ({ config, presetEmail, redirectUrl }: PasswordLoginFormProps) => {
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState(presetEmail || "");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const login = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const loginResult = await apiLogin({
+      email: email,
+      password: password,
+    });
+
+    if (loginResult.success) {
+      window.location.href = redirectUrl || "/";
+    } else {
+      setError(loginResult.error_message);
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={login}>
+      <div>
+        <Input
+          required
+          type="email"
+          placeholder="Email"
+          value={email}
+          readOnly={!!presetEmail}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div>
+        <Input
+          required
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <Button loading={loading}>Login</Button>
+      <ErrorMessage error={error} />
+    </form>
   );
 };
