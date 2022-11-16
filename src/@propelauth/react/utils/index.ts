@@ -11,3 +11,8 @@ export function getPropsFromAppearance(appearance: Appearance | undefined) {
     classes: isString ? appearance : undefined,
   };
 }
+
+export function getTokenFromURL(): string | null {
+  const url = new URL(window.location.href);
+  return url.searchParams.get("t");
+}

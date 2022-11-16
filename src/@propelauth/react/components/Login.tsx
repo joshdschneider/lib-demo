@@ -10,12 +10,12 @@ import { SigninOptions } from "./shared/SigninOptions";
 export type LoginProps = {
   signupUrl?: string;
   redirectUrl?: string;
-  presetEmail?: string; ///
+  presetEmail?: string;
   appearance?: LoginAppearance;
 };
 
 export type LoginAppearance = {
-  layout?: {
+  options?: {
     logoPosition?: "inside" | "outside" | "none";
     greetingText?: string | null;
     showDivider?: boolean;
@@ -36,12 +36,10 @@ export const Login = ({ signupUrl, redirectUrl, presetEmail, appearance }: Login
   return (
     <Container appearance={appearance?.elements?.Container}>
       <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
-      <Greeting text={appearance?.layout?.greetingText || "Welcome"} />
+      <Greeting text={appearance?.options?.greetingText || "Welcome"} />
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
-      {config.has_password_login && (
-        <PasswordLoginForm config={config} redirectUrl={redirectUrl} presetEmail={presetEmail} />
-      )}
+      {config.has_password_login && <PasswordLoginForm redirectUrl={redirectUrl} presetEmail={presetEmail} />}
       {signupUrl && (
         <Link href={signupUrl} appearance={appearance?.elements?.SignupLink}>
           Sign up
@@ -52,12 +50,11 @@ export const Login = ({ signupUrl, redirectUrl, presetEmail, appearance }: Login
 };
 
 export type PasswordLoginFormProps = {
-  config: Config;
   presetEmail?: string;
   redirectUrl?: string;
 };
 
-export const PasswordLoginForm = ({ config, presetEmail, redirectUrl }: PasswordLoginFormProps) => {
+export const PasswordLoginForm = ({ presetEmail, redirectUrl }: PasswordLoginFormProps) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");

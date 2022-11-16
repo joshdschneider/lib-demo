@@ -2,7 +2,7 @@ import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
 import { Container, Logo, Input, Button, Link } from "../elements";
 import { Config, useConfig } from "../state";
-import { Appearance } from "../utils";
+import { Appearance, getTokenFromURL } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
 import { Greeting } from "./shared/Greeting";
 import { SigninOptions } from "./shared/SigninOptions";
@@ -15,7 +15,7 @@ export type SignupProps = {
 };
 
 export type SignupAppearance = {
-  layout?: {
+  options?: {
     logoPosition?: "inside" | "outside" | "none";
     greetingText?: string | null;
     showDivider?: boolean;
@@ -36,7 +36,7 @@ export const Signup = ({ loginUrl, redirectUrl, presetEmail, appearance }: Signu
   return (
     <Container appearance={appearance?.elements?.Container}>
       <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
-      <Greeting text={appearance?.layout?.greetingText || "Create an account"} />
+      <Greeting text={appearance?.options?.greetingText || "Create an account"} />
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
       {config.has_password_login && (
@@ -82,6 +82,11 @@ export const PasswordSignupForm = ({ config, presetEmail, redirectUrl }: Passwor
 
     if (config.require_username) {
       options.username = username;
+    }
+
+    const inviteToken = getTokenFromURL();
+    if (inviteToken) {
+      options.inviteToken = inviteToken;
     }
 
     const signupResult = await apiSignup(options);
