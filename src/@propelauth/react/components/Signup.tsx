@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Container, Logo, Input, Button, Link } from "../elements";
+import { Container, Logo, Input, Button } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
@@ -8,8 +8,8 @@ import { Greeting } from "./shared/Greeting";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type SignupProps = {
-  loginUrl?: string;
-  redirectUrl?: string;
+  afterSignup?: VoidFunction;
+  onRedirectToLogin?: VoidFunction;
   presetEmail?: string;
   appearance?: SignupAppearance;
 };
@@ -30,7 +30,7 @@ export type SignupAppearance = {
   };
 };
 
-export const Signup = ({ loginUrl, redirectUrl, presetEmail, appearance }: SignupProps) => {
+export const Signup = ({ afterSignup, onRedirectToLogin, presetEmail, appearance }: SignupProps) => {
   const { config } = useConfig();
 
   return (
@@ -39,25 +39,19 @@ export const Signup = ({ loginUrl, redirectUrl, presetEmail, appearance }: Signu
       <Greeting text={appearance?.options?.greetingText || "Create an account"} />
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
-      {config.has_password_login && (
-        <PasswordSignupForm config={config} redirectUrl={redirectUrl} presetEmail={presetEmail} />
-      )}
-      {loginUrl && (
-        <Link href={loginUrl} appearance={appearance?.elements?.LoginLink}>
-          Log in
-        </Link>
-      )}
+      {config.has_password_login && <SignupForm config={config} afterSignup={afterSignup} presetEmail={presetEmail} />}
+      <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
     </Container>
   );
 };
 
-export type PasswordSignupFormProps = {
+type SignupFormProps = {
   config: Config;
   presetEmail?: string;
-  redirectUrl?: string;
+  afterSignup?: VoidFunction;
 };
 
-export const PasswordSignupForm = ({ config, presetEmail, redirectUrl }: PasswordSignupFormProps) => {
+const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
@@ -91,7 +85,13 @@ export const PasswordSignupForm = ({ config, presetEmail, redirectUrl }: Passwor
 
     const signupResult = await apiSignup(options);
     if (signupResult.success) {
-      window.location.href = redirectUrl || "/";
+      if (afterSignup) {
+        afterSignup();
+      } else {
+        // Some default function?
+        // Render account component?
+        // Push window location to home?
+      }
     } else {
       setError(signupResult.error_message);
     }
@@ -152,5 +152,22 @@ export const PasswordSignupForm = ({ config, presetEmail, redirectUrl }: Passwor
       <Button loading={loading}>Sign up</Button>
       <ErrorMessage error={error} />
     </form>
+  );
+};
+
+type BottomLinksProps = {
+  onRedirectToLogin?: VoidFunction;
+  appearance?: SignupAppearance;
+};
+
+const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
+  return (
+    <>
+      {onRedirectToLogin && (
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
+          Log in
+        </Button>
+      )}
+    </>
   );
 };
