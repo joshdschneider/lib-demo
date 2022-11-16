@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { apiLogin } from "../api/login";
-import { Container, Logo, Input, Button, Link } from "../elements";
+import { Container, Logo, Input, Button } from "../elements";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
@@ -11,8 +11,6 @@ export type LoginProps = {
   afterLogin?: VoidFunction;
   onRedirectToSignup?: VoidFunction;
   onRedirectToForgotPassword?: VoidFunction;
-  signupUrl?: string;
-  redirectUrl?: string;
   presetEmail?: string;
   appearance?: LoginAppearance;
 };
