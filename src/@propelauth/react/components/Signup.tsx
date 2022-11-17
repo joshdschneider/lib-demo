@@ -1,10 +1,9 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Container, Logo, Input, Button } from "../elements";
+import { Container, Logo, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
-import { Greeting } from "./shared/Greeting";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type SignupProps = {
@@ -36,7 +35,7 @@ export const Signup = ({ afterSignup, onRedirectToLogin, presetEmail, appearance
   return (
     <Container appearance={appearance?.elements?.Container}>
       <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
-      <Greeting text={appearance?.options?.greetingText || "Create an account"} />
+      <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
       {config.has_password_login && <SignupForm config={config} afterSignup={afterSignup} presetEmail={presetEmail} />}

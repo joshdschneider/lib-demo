@@ -1,6 +1,16 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
-import { ContainerProps, LogoProps, InputProps, ButtonProps, LinkProps } from "../elements";
 import { BaseElements } from "../../../@propelauth/base-elements";
+import {
+  ContainerProps,
+  LogoProps,
+  InputProps,
+  ButtonProps,
+  LinkProps,
+  H1Props,
+  H3Props,
+  H5Props,
+  ParagraphProps,
+} from "../elements";
 
 export type Elements = {
   Container: (props: ContainerProps) => JSX.Element;
@@ -8,6 +18,10 @@ export type Elements = {
   Input: (props: InputProps) => JSX.Element;
   Button: (props: ButtonProps) => JSX.Element;
   Link: (props: LinkProps) => JSX.Element;
+  H1: (props: H1Props) => JSX.Element;
+  H3: (props: H3Props) => JSX.Element;
+  H5: (props: H5Props) => JSX.Element;
+  Paragraph: (props: ParagraphProps) => JSX.Element;
 };
 
 export type ElementsState = {

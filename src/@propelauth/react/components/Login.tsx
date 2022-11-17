@@ -1,10 +1,9 @@
 import { SyntheticEvent, useState } from "react";
 import { apiLogin } from "../api/login";
-import { Container, Logo, Input, Button } from "../elements";
+import { Container, Logo, Input, Button, H3 } from "../elements";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
-import { Greeting } from "./shared/Greeting";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type LoginProps = {
@@ -44,7 +43,7 @@ export const Login = ({
   return (
     <Container appearance={appearance?.elements?.Container}>
       <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
-      <Greeting text={appearance?.options?.greetingText || "Welcome"} />
+      <H3>{appearance?.options?.greetingText || "Welcome"}</H3>
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
       {config.has_password_login && <LoginForm afterLogin={afterLogin} presetEmail={presetEmail} />}
