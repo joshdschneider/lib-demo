@@ -47,19 +47,19 @@ export const SigninOptions = ({ config }: SigninOptionsProps) => {
       )}
       {config.has_microsoft_login && (
         <Button onClick={loginWithSocial(MICROSOFT_LOGIN_PATH)} className={"pa_button pa_button--social"}>
-          <img src={""} alt={"Microsoft logo"} className={"pa_social-icon"} />
+          <MicrosoftLogo />
           <span>Sign in with Microsoft</span>
         </Button>
       )}
       {config.has_linkedin_login && (
         <Button onClick={loginWithSocial(LINKEDIN_LOGIN_PATH)} className={"pa_button pa_button--social"}>
-          <img src={""} alt={"LinkedIn logo"} className={"pa_social-icon"} />
+          <LinkedinLogo />
           <span>Sign in with LinkedIn</span>
         </Button>
       )}
       {config.has_passwordless_login && (
         <Button onClick={loginWithSocial(PASSWORDLESS_LOGIN_PATH)} className={"pa_button pa_button--social"}>
-          <img src={""} alt={"Email icon"} className={"pa_social-icon"} />
+          <PasswordlessLogo />
           <span>Sign in with Email</span>
         </Button>
       )}
