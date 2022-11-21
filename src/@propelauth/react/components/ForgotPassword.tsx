@@ -69,7 +69,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 
   if (successMessage) {
     return (
-      <Container appearance={appearance?.elements?.Container} className={"Container"}>
+      <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
         <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
         <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
         <Paragraph>{successMessage}</Paragraph>
@@ -78,7 +78,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
   }
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
       <Logo
         src={config.logo_url}
         alt={config.site_display_name}
@@ -96,12 +96,13 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             appearance={appearance?.elements?.EmailInput}
+            className={"pa_input"}
           />
         </div>
         <Button
           loading={passwordResetLoading}
           appearance={appearance?.elements?.SubmitButton}
-          className={"ActionButton"}
+          className={"pa_button pa_button--action"}
         >
           Reset Password
         </Button>
@@ -111,7 +112,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
           loading={magicLinkLoading}
           onClick={submitMagicLink}
           appearance={appearance?.elements?.MagicLinkButton}
-          className={"ActionButton"}
+          className={"pa_button pa_button--action"}
         >
           Send Magic Link
         </Button>
@@ -146,7 +147,11 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <>
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink} className={"BottomLink"}>
+        <Button
+          onClick={onRedirectToLogin}
+          appearance={appearance?.elements?.LoginLink}
+          className={"pa_button pa_button--minimal"}
+        >
           Back to login
         </Button>
       )}

@@ -41,16 +41,16 @@ export const Login = ({
   const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
       <Logo
         src={config.logo_url}
         alt={config.site_display_name}
         appearance={appearance?.elements?.Logo}
-        className={"Logo"}
+        className={"pa_logo"}
       />
       <H3>{appearance?.options?.greetingText || "Welcome"}</H3>
       <SigninOptions config={config} />
-      {config.has_password_login && config.has_any_social_login && <hr />}
+      {config.has_password_login && config.has_any_social_login && <hr className="pa_divider" />}
       {config.has_password_login && <LoginForm onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks
         onRedirectToSignup={onRedirectToSignup}
@@ -107,6 +107,7 @@ const LoginForm = ({ presetEmail, appearance, onSuccess }: LoginFormProps) => {
           readOnly={!!presetEmail}
           onChange={(e) => setEmail(e.target.value)}
           appearance={appearance?.elements?.EmailInput}
+          className={"pa_input"}
         />
       </div>
       <div>
@@ -117,9 +118,10 @@ const LoginForm = ({ presetEmail, appearance, onSuccess }: LoginFormProps) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           appearance={appearance?.elements?.PasswordInput}
+          className={"pa_input"}
         />
       </div>
-      <Button loading={loading} className={"ActionButton"}>
+      <Button loading={loading} className={"pa_button pa_button--action"}>
         Login
       </Button>
       <ErrorMessage error={error} />
@@ -135,9 +137,13 @@ type BottomLinksProps = {
 
 const BottomLinks = ({ onRedirectToSignup, onRedirectToForgotPassword, appearance }: BottomLinksProps) => {
   return (
-    <>
+    <div className="pa_bottom-links">
       {onRedirectToSignup && (
-        <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink} className={"BottomLink"}>
+        <Button
+          onClick={onRedirectToSignup}
+          appearance={appearance?.elements?.SignupLink}
+          className={"pa_button pa_button--minimal"}
+        >
           Sign up
         </Button>
       )}
@@ -145,11 +151,11 @@ const BottomLinks = ({ onRedirectToSignup, onRedirectToForgotPassword, appearanc
         <Button
           onClick={onRedirectToForgotPassword}
           appearance={appearance?.elements?.ForgotPasswordLink}
-          className={"BottomLink"}
+          className={"pa_button pa_button--minimal"}
         >
           Forgot password
         </Button>
       )}
-    </>
+    </div>
   );
 };

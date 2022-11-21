@@ -1,0 +1,73 @@
+.pa_container {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 0px auto;
+  padding: 20px;
+}
+
+.pa_logo {
+  width: auto;
+  height: 100px;
+}
+
+.pa_button {
+  appearance: none;
+  cursor: pointer;
+  margin: 0px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: transparent;
+}
+
+.pa_button--social {
+  width: 100%;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.pa_button--social:last-child {
+  margin-bottom: 0px;
+}
+
+.pa_button--social svg {
+  position: absolute;
+  left: 10px;
+  width: 18px;
+  height: auto;
+}
+
+.pa_button--action {
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.pa_button--minimal {
+  border: none;
+  background: none;
+}
+
+.pa_input {
+  width: calc(100% - 25px);
+  margin: 0px 0px 10px 0px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: none;
+}
+
+.pa_bottom-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pa_divider {
+  border: 1px solid #ddd;
+  border-top: none;
+  margin: 20px 0;
+}

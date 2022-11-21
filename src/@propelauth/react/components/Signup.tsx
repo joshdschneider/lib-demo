@@ -33,7 +33,7 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
   const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
       <Logo
         src={config.logo_url}
         alt={config.site_display_name}
@@ -42,7 +42,7 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
       />
       <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
       <SigninOptions config={config} />
-      {config.has_password_login && config.has_any_social_login && <hr />}
+      {config.has_password_login && config.has_any_social_login && <hr className="pa_divider" />}
       {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
     </Container>
@@ -106,24 +106,30 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
   return (
     <form onSubmit={signup}>
       {config.require_name && (
-        <div>
-          <Input
-            required
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstname(e.target.value)}
-            placeholder="First Name"
-            appearance={appearance?.elements?.EmailInput}
-          />
-          <Input
-            required
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            placeholder="Last Name"
-            appearance={appearance?.elements?.PasswordInput}
-          />
-        </div>
+        <>
+          <div>
+            <Input
+              required
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstname(e.target.value)}
+              placeholder="First Name"
+              appearance={appearance?.elements?.EmailInput}
+              className={"pa_input"}
+            />
+          </div>
+          <div>
+            <Input
+              required
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last Name"
+              appearance={appearance?.elements?.PasswordInput}
+              className={"pa_input"}
+            />
+          </div>
+        </>
       )}
       <div>
         <Input
@@ -133,6 +139,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           value={email}
           readOnly={!!presetEmail}
           onChange={(e) => setEmail(e.target.value)}
+          className={"pa_input"}
         />
       </div>
       {config.require_username && (
@@ -143,6 +150,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className={"pa_input"}
           />
         </div>
       )}
@@ -153,9 +161,10 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className={"pa_input"}
         />
       </div>
-      <Button loading={loading} className={"ActionButton"}>
+      <Button loading={loading} className={"pa_button pa_button--action"}>
         Sign up
       </Button>
       <ErrorMessage error={error} />
@@ -172,7 +181,11 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <>
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink} className={"BottomLink"}>
+        <Button
+          onClick={onRedirectToLogin}
+          appearance={appearance?.elements?.LoginLink}
+          className={"pa_button pa_button--minimal"}
+        >
           Log in
         </Button>
       )}

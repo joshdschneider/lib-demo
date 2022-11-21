@@ -9,13 +9,8 @@ import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
-const customElements = {
-  ...BaseElements,
-  Logo: CircularLogo,
-};
-
 root.render(
-  <AuthProvider authUrl={"auth.com"} elements={customElements}>
+  <AuthProvider authUrl={"auth.com"} elements={BaseElements}>
     <App />
   </AuthProvider>
 );

@@ -5,7 +5,7 @@ export type ErrorMessageProps = {
 export const ErrorMessage = ({ error }: ErrorMessageProps) => {
   if (error) {
     return (
-      <div>
+      <div className={"pa_error-message"}>
         <span>error</span>
       </div>
     );

@@ -11,6 +11,7 @@ import {
   H5Props,
   ParagraphProps,
 } from "../elements";
+import "../assets/elements.css";
 
 export type Elements = {
   Container: (props: ContainerProps) => JSX.Element;
