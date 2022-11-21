@@ -1,9 +1,9 @@
 import { BaseLogoProps } from "./_types";
 
-export const BaseLogo = (props: BaseLogoProps) => {
+export const BaseLogo = ({ src, alt, ...rest }: BaseLogoProps) => {
   return (
     <div>
-      <img {...props} />
+      <img src={src} alt={alt} {...rest} />
     </div>
   );
 };

@@ -5,5 +5,5 @@ export type LoginPasswordlessOptions = {
 
 export async function apiLoginPasswordless(options: LoginPasswordlessOptions): Promise<any> {
   console.log(options);
-  return true;
+  return { success: true };
 }

@@ -1,21 +1,22 @@
 import { useElements } from "../state";
-import { Appearance, getPropsFromAppearance } from "../utils";
+import { Appearance, getClasses, getStyles } from "../utils";
 import { CSSProperties, ReactNode } from "react";
 
 export type H1Props = {
-  style?: CSSProperties;
   className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
 };
 
 export type H1PropsWithAppearance = { appearance?: Appearance } & H1Props;
 
-export const H1 = ({ appearance, children }: H1PropsWithAppearance) => {
+export const H1 = ({ appearance, className, style, children }: H1PropsWithAppearance) => {
   const { elements } = useElements();
-  const { styles, classes } = getPropsFromAppearance(appearance);
+  const classes = getClasses(className, appearance);
+  const styles = getStyles(style, appearance);
 
   return (
-    <elements.H1 style={styles} className={classes}>
+    <elements.H1 className={classes} style={styles}>
       {children}
     </elements.H1>
   );

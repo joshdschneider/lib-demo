@@ -7,7 +7,7 @@ import { ErrorMessage } from "./shared/ErrorMessage";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type SignupProps = {
-  afterSignup?: VoidFunction;
+  onSuccess?: VoidFunction;
   onRedirectToLogin?: VoidFunction;
   presetEmail?: string;
   appearance?: SignupAppearance;
@@ -29,16 +29,21 @@ export type SignupAppearance = {
   };
 };
 
-export const Signup = ({ afterSignup, onRedirectToLogin, presetEmail, appearance }: SignupProps) => {
+export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }: SignupProps) => {
   const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.elements?.Container}>
-      <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+      <Logo
+        src={config.logo_url}
+        alt={config.site_display_name}
+        appearance={appearance?.elements?.Logo}
+        className={"Logo"}
+      />
       <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
-      {config.has_password_login && <SignupForm config={config} afterSignup={afterSignup} presetEmail={presetEmail} />}
+      {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
     </Container>
   );
@@ -47,10 +52,11 @@ export const Signup = ({ afterSignup, onRedirectToLogin, presetEmail, appearance
 type SignupFormProps = {
   config: Config;
   presetEmail?: string;
-  afterSignup?: VoidFunction;
+  onSuccess?: VoidFunction;
+  appearance?: SignupAppearance;
 };
 
-const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
+const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormProps) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
@@ -84,12 +90,11 @@ const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
 
     const signupResult = await apiSignup(options);
     if (signupResult.success) {
-      if (afterSignup) {
-        afterSignup();
+      if (onSuccess) {
+        onSuccess();
       } else {
-        // Some default function?
-        // Render account component?
-        // Push window location to home?
+        // TODO: DEFAULT ACTION
+        console.error("No onSuccess prop found 😵");
       }
     } else {
       setError(signupResult.error_message);
@@ -108,6 +113,7 @@ const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
             value={firstName}
             onChange={(e) => setFirstname(e.target.value)}
             placeholder="First Name"
+            appearance={appearance?.elements?.EmailInput}
           />
           <Input
             required
@@ -115,6 +121,7 @@ const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Last Name"
+            appearance={appearance?.elements?.PasswordInput}
           />
         </div>
       )}
@@ -148,7 +155,9 @@ const SignupForm = ({ config, presetEmail, afterSignup }: SignupFormProps) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <Button loading={loading}>Sign up</Button>
+      <Button loading={loading} className={"ActionButton"}>
+        Sign up
+      </Button>
       <ErrorMessage error={error} />
     </form>
   );
@@ -163,7 +172,7 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <>
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink} className={"BottomLink"}>
           Log in
         </Button>
       )}

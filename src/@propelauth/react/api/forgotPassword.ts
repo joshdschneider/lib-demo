@@ -4,5 +4,5 @@ export type ForgotPasswordFields = {
 
 export async function apiForgotPassword({ email }: ForgotPasswordFields): Promise<any> {
   console.log(email);
-  return true;
+  return { success: true };
 }

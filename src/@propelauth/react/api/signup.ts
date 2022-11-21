@@ -9,5 +9,5 @@ export type SignupOptions = {
 
 export async function apiSignup(options: SignupOptions): Promise<any> {
   console.log(options);
-  return true;
+  return { success: true };
 }

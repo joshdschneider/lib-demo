@@ -2,14 +2,45 @@ import { CSSProperties } from "react";
 
 export type Appearance = string | CSSProperties;
 
-export function getPropsFromAppearance(appearance: Appearance | undefined) {
-  const isObject = typeof appearance === "object";
-  const isString = typeof appearance === "string";
+export function getClasses(defaultClassName: string | undefined, appearance: Appearance | undefined) {
+  const hasDefaultClassName = !!defaultClassName;
+  const hasAppearance = !!appearance && typeof appearance === "string";
 
-  return {
-    styles: isObject ? appearance : undefined,
-    classes: isString ? appearance : undefined,
-  };
+  if (hasDefaultClassName && hasAppearance) {
+    return defaultClassName + " " + appearance;
+  }
+
+  if (hasDefaultClassName) {
+    return defaultClassName;
+  }
+
+  if (hasAppearance) {
+    return appearance;
+  }
+
+  return undefined;
+}
+
+export function getStyles(defaultStyle: CSSProperties | undefined, appearance: Appearance | undefined) {
+  const hasDefaultStyle = !!defaultStyle;
+  const hasAppearance = !!appearance && typeof appearance === "object";
+
+  if (hasDefaultStyle && hasAppearance) {
+    return {
+      ...defaultStyle,
+      ...appearance,
+    };
+  }
+
+  if (hasDefaultStyle) {
+    return defaultStyle;
+  }
+
+  if (hasAppearance) {
+    return appearance;
+  }
+
+  return undefined;
 }
 
 export function getTokenFromURL(): string | null {

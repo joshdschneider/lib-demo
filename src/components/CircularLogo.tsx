@@ -2,8 +2,8 @@ import { LogoProps } from "../@propelauth/react";
 
 export const CircularLogo = ({ src, alt }: LogoProps) => {
   return (
-    <div className={"border-radius-50"}>
-      <img src={src} alt={alt} />
+    <div>
+      <img className={"border-radius-50 custom-position"} src={src} alt={alt} />
     </div>
   );
 };

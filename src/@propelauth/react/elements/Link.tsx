@@ -1,22 +1,23 @@
 import { useElements } from "../state";
-import { Appearance, getPropsFromAppearance } from "../utils";
+import { Appearance, getClasses, getStyles } from "../utils";
 import { CSSProperties, ReactNode } from "react";
 
 export type LinkProps = {
   href: string;
-  style?: CSSProperties;
   className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
 };
 
 export type LinkPropsWithAppearance = { appearance?: Appearance } & LinkProps;
 
-export const Link = ({ appearance, href, children }: LinkPropsWithAppearance) => {
+export const Link = ({ appearance, className, style, href, children }: LinkPropsWithAppearance) => {
   const { elements } = useElements();
-  const { styles, classes } = getPropsFromAppearance(appearance);
+  const classes = getClasses(className, appearance);
+  const styles = getStyles(style, appearance);
 
   return (
-    <elements.Link href={href} style={styles} className={classes}>
+    <elements.Link href={href} className={classes} style={styles}>
       {children}
     </elements.Link>
   );

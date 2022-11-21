@@ -1,21 +1,22 @@
 import { useElements } from "../state";
-import { Appearance, getPropsFromAppearance } from "../utils";
+import { Appearance, getClasses, getStyles } from "../utils";
 import { CSSProperties, ReactNode } from "react";
 
 export type ParagraphProps = {
-  style?: CSSProperties;
   className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
 };
 
 export type ParagraphPropsWithAppearance = { appearance?: Appearance } & ParagraphProps;
 
-export const Paragraph = ({ appearance, children }: ParagraphPropsWithAppearance) => {
+export const Paragraph = ({ className, style, appearance, children }: ParagraphPropsWithAppearance) => {
   const { elements } = useElements();
-  const { styles, classes } = getPropsFromAppearance(appearance);
+  const classes = getClasses(className, appearance);
+  const styles = getStyles(style, appearance);
 
   return (
-    <elements.Paragraph style={styles} className={classes}>
+    <elements.Paragraph className={classes} style={styles}>
       {children}
     </elements.Paragraph>
   );

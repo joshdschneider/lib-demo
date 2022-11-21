@@ -20,17 +20,17 @@ export type Config = {
 };
 
 const DEFAULT_CONFIG = {
-  logo_url: "",
-  site_display_name: "",
-  has_google_login: false,
-  has_github_login: false,
+  logo_url: "https://img.propelauth.com/0c22cebe-681f-4725-a8f5-b81963484eb9.png",
+  site_display_name: "Acme, Inc.",
+  has_google_login: true,
+  has_github_login: true,
   has_microsoft_login: false,
   has_slack_login: false,
   has_linkedin_login: false,
   has_passwordless_login: false,
-  has_any_social_login: false,
+  has_any_social_login: true,
   has_sso_login: false,
-  has_password_login: false,
+  has_password_login: true,
   only_extra_login_is_passwordless: false,
   require_username: false,
   require_name: false,
@@ -51,7 +51,7 @@ export const useConfig = () => {
     if (authUrl) {
       getConfigFromUrl();
     }
-  }, []);
+  }, [authUrl]);
 
   return { config };
 };

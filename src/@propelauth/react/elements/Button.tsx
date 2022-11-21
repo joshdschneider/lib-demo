@@ -1,23 +1,24 @@
 import { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import { useElements } from "../state";
-import { Appearance, getPropsFromAppearance } from "../utils";
+import { Appearance, getClasses, getStyles } from "../utils";
 
 export type ButtonProps = {
-  onClick?: MouseEventHandler<HTMLButtonElement>;
   loading?: boolean;
-  style?: CSSProperties;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
 };
 
 export type ButtonPropsWithAppearance = { appearance?: Appearance } & ButtonProps;
 
-export const Button = ({ appearance, onClick, children }: ButtonPropsWithAppearance) => {
+export const Button = ({ appearance, loading, onClick, className, style, children }: ButtonPropsWithAppearance) => {
   const { elements } = useElements();
-  const { styles, classes } = getPropsFromAppearance(appearance);
+  const classes = getClasses(className, appearance);
+  const styles = getStyles(style, appearance);
 
   return (
-    <elements.Button onClick={onClick} style={styles} className={classes}>
+    <elements.Button loading={loading} onClick={onClick} className={classes} style={styles}>
       {children}
     </elements.Button>
   );

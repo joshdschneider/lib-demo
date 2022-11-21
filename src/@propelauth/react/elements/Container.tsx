@@ -1,21 +1,22 @@
 import { useElements } from "../state";
-import { Appearance, getPropsFromAppearance } from "../utils";
+import { Appearance, getClasses, getStyles } from "../utils";
 import { CSSProperties, ReactNode } from "react";
 
 export type ContainerProps = {
-  style?: CSSProperties;
   className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
 };
 
 export type ContainerPropsWithAppearance = { appearance?: Appearance } & ContainerProps;
 
-export const Container = ({ appearance, children }: ContainerPropsWithAppearance) => {
+export const Container = ({ appearance, className, style, children }: ContainerPropsWithAppearance) => {
   const { elements } = useElements();
-  const { styles, classes } = getPropsFromAppearance(appearance);
+  const classes = getClasses(className, appearance);
+  const styles = getStyles(style, appearance);
 
   return (
-    <elements.Container style={styles} className={classes}>
+    <elements.Container className={classes} style={styles}>
       {children}
     </elements.Container>
   );

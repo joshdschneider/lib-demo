@@ -7,7 +7,7 @@ import { ErrorMessage } from "./shared/ErrorMessage";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type LoginProps = {
-  afterLogin?: VoidFunction;
+  onSuccess?: VoidFunction;
   onRedirectToSignup?: VoidFunction;
   onRedirectToForgotPassword?: VoidFunction;
   presetEmail?: string;
@@ -32,7 +32,7 @@ export type LoginAppearance = {
 };
 
 export const Login = ({
-  afterLogin,
+  onSuccess,
   onRedirectToSignup,
   onRedirectToForgotPassword,
   presetEmail,
@@ -41,12 +41,17 @@ export const Login = ({
   const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.elements?.Container}>
-      <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+      <Logo
+        src={config.logo_url}
+        alt={config.site_display_name}
+        appearance={appearance?.elements?.Logo}
+        className={"Logo"}
+      />
       <H3>{appearance?.options?.greetingText || "Welcome"}</H3>
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr />}
-      {config.has_password_login && <LoginForm afterLogin={afterLogin} presetEmail={presetEmail} />}
+      {config.has_password_login && <LoginForm onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks
         onRedirectToSignup={onRedirectToSignup}
         onRedirectToForgotPassword={onRedirectToForgotPassword}
@@ -58,10 +63,11 @@ export const Login = ({
 
 type LoginFormProps = {
   presetEmail?: string;
-  afterLogin?: VoidFunction;
+  onSuccess?: VoidFunction;
+  appearance?: LoginAppearance;
 };
 
-const LoginForm = ({ presetEmail, afterLogin }: LoginFormProps) => {
+const LoginForm = ({ presetEmail, appearance, onSuccess }: LoginFormProps) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
@@ -77,12 +83,11 @@ const LoginForm = ({ presetEmail, afterLogin }: LoginFormProps) => {
     });
 
     if (loginResult.success) {
-      if (afterLogin) {
-        afterLogin();
+      if (onSuccess) {
+        onSuccess();
       } else {
-        // Some default function?
-        // Render account component?
-        // Push window location to home?
+        // TODO: DEFAULT ACTION
+        console.error("No onSuccess prop found 😵");
       }
     } else {
       setError(loginResult.error_message);
@@ -101,6 +106,7 @@ const LoginForm = ({ presetEmail, afterLogin }: LoginFormProps) => {
           value={email}
           readOnly={!!presetEmail}
           onChange={(e) => setEmail(e.target.value)}
+          appearance={appearance?.elements?.EmailInput}
         />
       </div>
       <div>
@@ -110,9 +116,12 @@ const LoginForm = ({ presetEmail, afterLogin }: LoginFormProps) => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          appearance={appearance?.elements?.PasswordInput}
         />
       </div>
-      <Button loading={loading}>Login</Button>
+      <Button loading={loading} className={"ActionButton"}>
+        Login
+      </Button>
       <ErrorMessage error={error} />
     </form>
   );
@@ -128,12 +137,16 @@ const BottomLinks = ({ onRedirectToSignup, onRedirectToForgotPassword, appearanc
   return (
     <>
       {onRedirectToSignup && (
-        <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink}>
+        <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink} className={"BottomLink"}>
           Sign up
         </Button>
       )}
       {onRedirectToForgotPassword && (
-        <Button onClick={onRedirectToForgotPassword} appearance={appearance?.elements?.ForgotPasswordLink}>
+        <Button
+          onClick={onRedirectToForgotPassword}
+          appearance={appearance?.elements?.ForgotPasswordLink}
+          className={"BottomLink"}
+        >
           Forgot password
         </Button>
       )}

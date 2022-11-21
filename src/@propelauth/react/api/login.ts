@@ -5,5 +5,5 @@ export type LoginOptions = {
 
 export async function apiLogin(options: LoginOptions): Promise<any> {
   console.log(options);
-  return true;
+  return { success: true };
 }

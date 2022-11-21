@@ -69,7 +69,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 
   if (successMessage) {
     return (
-      <Container appearance={appearance?.elements?.Container}>
+      <Container appearance={appearance?.elements?.Container} className={"Container"}>
         <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
         <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
         <Paragraph>{successMessage}</Paragraph>
@@ -78,8 +78,13 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
   }
 
   return (
-    <Container appearance={appearance?.elements?.Container}>
-      <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+    <Container appearance={appearance?.elements?.Container} className={"Container"}>
+      <Logo
+        src={config.logo_url}
+        alt={config.site_display_name}
+        appearance={appearance?.elements?.Logo}
+        className={"Logo"}
+      />
       <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
       <ForgotPasswordDirections hasPasswordlessLogin={config.has_passwordless_login} />
       <form onSubmit={submitForgotPassword}>
@@ -93,12 +98,21 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
             appearance={appearance?.elements?.EmailInput}
           />
         </div>
-        <Button loading={passwordResetLoading} appearance={appearance?.elements?.SubmitButton}>
+        <Button
+          loading={passwordResetLoading}
+          appearance={appearance?.elements?.SubmitButton}
+          className={"ActionButton"}
+        >
           Reset Password
         </Button>
       </form>
       {config.has_passwordless_login && (
-        <Button loading={magicLinkLoading} onClick={submitMagicLink} appearance={appearance?.elements?.MagicLinkButton}>
+        <Button
+          loading={magicLinkLoading}
+          onClick={submitMagicLink}
+          appearance={appearance?.elements?.MagicLinkButton}
+          className={"ActionButton"}
+        >
           Send Magic Link
         </Button>
       )}
@@ -132,7 +146,7 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <>
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink} className={"BottomLink"}>
           Back to login
         </Button>
       )}
