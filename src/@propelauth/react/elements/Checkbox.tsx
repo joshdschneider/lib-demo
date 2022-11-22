@@ -2,45 +2,41 @@ import { useElements } from "../state";
 import { Appearance, getClasses, getStyles } from "../utils";
 import { ChangeEventHandler, CSSProperties } from "react";
 
-export type InputProps = {
-  value: string;
+export type CheckboxProps = {
+  checked: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   id?: string;
-  type?: string;
+  label?: string;
   required?: boolean;
   disabled?: boolean;
-  readOnly?: boolean;
-  placeholder?: string;
   className?: string;
   style?: CSSProperties;
 };
 
-export type InputPropsWithAppearance = { appearance?: Appearance } & InputProps;
+export type CheckboxPropsWithAppearance = { appearance?: Appearance } & CheckboxProps;
 
-export const Input = ({
+export const Checkbox = ({
   appearance,
-  type,
-  placeholder,
   id,
-  value,
+  label,
+  checked,
   onChange,
   required,
   disabled,
   className,
   style,
-}: InputPropsWithAppearance) => {
+}: CheckboxPropsWithAppearance) => {
   const { elements } = useElements();
   const classes = getClasses(className, appearance);
   const styles = getStyles(style, appearance);
 
   return (
-    <elements.Input
+    <elements.Checkbox
       id={id}
-      type={type}
+      label={label}
       required={required}
       disabled={disabled}
-      value={value}
-      placeholder={placeholder}
+      checked={checked}
       onChange={onChange}
       className={classes}
       style={styles}

@@ -2,8 +2,9 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useStat
 import { BaseElements } from "../../../@propelauth/base-elements";
 import {
   ContainerProps,
-  LogoProps,
+  ImageProps,
   InputProps,
+  CheckboxProps,
   ButtonProps,
   LinkProps,
   H1Props,
@@ -15,8 +16,9 @@ import "../assets/elements.css";
 
 export type Elements = {
   Container: (props: ContainerProps) => JSX.Element;
-  Logo: (props: LogoProps) => JSX.Element;
+  Image: (props: ImageProps) => JSX.Element;
   Input: (props: InputProps) => JSX.Element;
+  Checkbox: (props: CheckboxProps) => JSX.Element;
   Button: (props: ButtonProps) => JSX.Element;
   Link: (props: LinkProps) => JSX.Element;
   H1: (props: H1Props) => JSX.Element;

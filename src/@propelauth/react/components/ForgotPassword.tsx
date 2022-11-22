@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState } from "react";
 import { apiForgotPassword } from "../api/forgotPassword";
 import { apiLoginPasswordless } from "../api/loginPasswordless";
-import { Container, Logo, Input, Button, H3, Paragraph } from "../elements";
+import { Container, Image, Input, Button, H3, Paragraph } from "../elements";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
@@ -70,7 +70,15 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
   if (successMessage) {
     return (
       <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-        <Logo src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+        <div className="pa_logo-container">
+          <Image
+            src={config.logo_url}
+            alt={config.site_display_name}
+            appearance={appearance?.elements?.Logo}
+            className={"pa_logo"}
+          />
+        </div>
+        <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
         <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
         <Paragraph>{successMessage}</Paragraph>
       </Container>
@@ -79,12 +87,14 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 
   return (
     <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      <Logo
-        src={config.logo_url}
-        alt={config.site_display_name}
-        appearance={appearance?.elements?.Logo}
-        className={"Logo"}
-      />
+      <div className="pa_logo-container">
+        <Image
+          src={config.logo_url}
+          alt={config.site_display_name}
+          appearance={appearance?.elements?.Logo}
+          className={"pa_logo"}
+        />
+      </div>
       <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
       <ForgotPasswordDirections hasPasswordlessLogin={config.has_passwordless_login} />
       <form onSubmit={submitForgotPassword}>

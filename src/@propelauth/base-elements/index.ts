@@ -1,6 +1,7 @@
 import { BaseContainer } from "./BaseContainer";
-import { BaseLogo } from "./BaseLogo";
+import { BaseImage } from "./BaseImage";
 import { BaseInput } from "./BaseInput";
+import { BaseCheckbox } from "./BaseCheckbox";
 import { BaseButton } from "./BaseButton";
 import { BaseLink } from "./BaseLink";
 import { BaseH1 } from "./BaseH1";
@@ -10,8 +11,9 @@ import { BaseParagraph } from "./BaseParagraph";
 
 export const BaseElements = {
   Container: BaseContainer,
-  Logo: BaseLogo,
+  Image: BaseImage,
   Input: BaseInput,
+  Checkbox: BaseCheckbox,
   Button: BaseButton,
   Link: BaseLink,
   H1: BaseH1,

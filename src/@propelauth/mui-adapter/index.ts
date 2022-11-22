@@ -1,6 +1,7 @@
 import { MuiContainer } from "./MuiContainer";
-import { MuiLogo } from "./MuiLogo";
+import { MuiImage } from "./MuiImage";
 import { MuiInput } from "./MuiInput";
+import { MuiCheckbox } from "./MuiCheckbox";
 import { MuiButton } from "./MuiButton";
 import { MuiLink } from "./MuiLink";
 import { MuiH1 } from "./MuiH1";
@@ -10,8 +11,9 @@ import { MuiParagraph } from "./MuiParagraph";
 
 export const MuiElements = {
   Container: MuiContainer,
-  Logo: MuiLogo,
+  Image: MuiImage,
   Input: MuiInput,
+  Checkbox: MuiCheckbox,
   Button: MuiButton,
   Link: MuiLink,
   H1: MuiH1,

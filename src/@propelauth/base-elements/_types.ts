@@ -2,16 +2,18 @@ import {
   ButtonProps,
   ContainerProps,
   InputProps,
+  CheckboxProps,
   LinkProps,
-  LogoProps,
+  ImageProps,
   H1Props,
   H3Props,
   H5Props,
   ParagraphProps,
 } from "../../@propelauth/react";
 export type BaseContainerProps = ContainerProps;
-export type BaseLogoProps = LogoProps;
+export type BaseImageProps = ImageProps;
 export type BaseInputProps = InputProps;
+export type BaseCheckboxProps = CheckboxProps;
 export type BaseButtonProps = ButtonProps;
 export type BaseLinkProps = LinkProps;
 export type BaseH1Props = H1Props;

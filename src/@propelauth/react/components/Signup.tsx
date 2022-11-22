@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Container, Logo, Input, Button, H3 } from "../elements";
+import { Container, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
 import { ErrorMessage } from "./shared/ErrorMessage";
@@ -34,12 +34,14 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
 
   return (
     <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      <Logo
-        src={config.logo_url}
-        alt={config.site_display_name}
-        appearance={appearance?.elements?.Logo}
-        className={"Logo"}
-      />
+      <div className="pa_logo-container">
+        <Image
+          src={config.logo_url}
+          alt={config.site_display_name}
+          appearance={appearance?.elements?.Logo}
+          className={"pa_logo"}
+        />
+      </div>
       <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
       <SigninOptions config={config} />
       {config.has_password_login && config.has_any_social_login && <hr className="pa_divider" />}

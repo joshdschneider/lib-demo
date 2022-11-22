@@ -2,16 +2,18 @@ import {
   ButtonProps,
   ContainerProps,
   InputProps,
+  CheckboxProps,
   LinkProps,
-  LogoProps,
+  ImageProps,
   H1Props,
   H3Props,
   H5Props,
   ParagraphProps,
 } from "../../@propelauth/react";
 export type MuiContainerProps = ContainerProps;
-export type MuiLogoProps = LogoProps;
+export type MuiImageProps = ImageProps;
 export type MuiInputProps = InputProps;
+export type MuiCheckboxProps = CheckboxProps;
 export type MuiButtonProps = ButtonProps;
 export type MuiLinkProps = LinkProps;
 export type MuiH1Props = H1Props;

@@ -17,6 +17,7 @@ export type Config = {
   require_username: boolean;
   require_name: boolean;
   require_profile_picture: boolean;
+  orgs_metaname: string;
 };
 
 const DEFAULT_CONFIG = {
@@ -35,6 +36,7 @@ const DEFAULT_CONFIG = {
   require_username: false,
   require_name: false,
   require_profile_picture: false,
+  orgs_metaname: "Team",
 };
 
 export const useConfig = () => {

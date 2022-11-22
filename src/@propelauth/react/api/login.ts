@@ -1,9 +1,15 @@
+import { LoginState } from "../components";
+
 export type LoginOptions = {
   email: string;
   password: string;
 };
 
-export async function apiLogin(options: LoginOptions): Promise<any> {
+export type LoginResponse = {
+  next_step: LoginState;
+};
+
+export async function apiLogin(options: LoginOptions): Promise<LoginResponse> {
   console.log(options);
-  return { success: true };
+  return { next_step: "FINISHED" };
 }
