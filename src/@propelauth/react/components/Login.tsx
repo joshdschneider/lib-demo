@@ -6,7 +6,7 @@ import { apiCreateOrg, CreateOrgOptions } from "../api/createOrg";
 import { Config, useConfig } from "../state";
 import { Appearance } from "../utils";
 import { SigninOptions } from "./shared/SigninOptions";
-import { Alert, Container, Divider, Image, Input, Button, H3, Paragraph, Checkbox } from "../elements";
+import { Alert, Container, Divider, Image, Input, Label, Button, H3, Paragraph, Checkbox } from "../elements";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -387,7 +387,7 @@ const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
           />
         </div>
         <div>
-          <label htmlFor={"autojoin_by_domain"}>Auto-join by domain</label>
+          <Label htmlFor={"autojoin_by_domain"}>Auto-join by domain</Label>
           <Checkbox
             id={"autojoin_by_domain"}
             label={"Auto-join by domain"}
