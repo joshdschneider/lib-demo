@@ -1,5 +1,6 @@
 export * from "./Alert";
 export * from "./Container";
+export * from "./Divider";
 export * from "./Image";
 export * from "./Input";
 export * from "./Checkbox";

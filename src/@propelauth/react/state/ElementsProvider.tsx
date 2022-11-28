@@ -3,6 +3,7 @@ import { BaseElements } from "../../../@propelauth/base-elements";
 import {
   AlertProps,
   ContainerProps,
+  DividerProps,
   ImageProps,
   InputProps,
   CheckboxProps,
@@ -19,6 +20,7 @@ import "../assets/elements.css";
 export type Elements = {
   Alert: (props: AlertProps) => JSX.Element;
   Container: (props: ContainerProps) => JSX.Element;
+  Divider: (props: DividerProps) => JSX.Element;
   Image: (props: ImageProps) => JSX.Element;
   Input: (props: InputProps) => JSX.Element;
   Checkbox: (props: CheckboxProps) => JSX.Element;

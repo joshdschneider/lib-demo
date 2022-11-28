@@ -1,5 +1,6 @@
 import { BaseAlert } from "./BaseAlert";
 import { BaseContainer } from "./BaseContainer";
+import { BaseDivider } from "./BaseDivider";
 import { BaseImage } from "./BaseImage";
 import { BaseInput } from "./BaseInput";
 import { BaseCheckbox } from "./BaseCheckbox";
@@ -14,6 +15,7 @@ import { BaseProgress } from "./BaseProgress";
 export const BaseElements = {
   Alert: BaseAlert,
   Container: BaseContainer,
+  Divider: BaseDivider,
   Image: BaseImage,
   Input: BaseInput,
   Progress: BaseProgress,

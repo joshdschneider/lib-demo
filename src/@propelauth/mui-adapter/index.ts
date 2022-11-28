@@ -1,5 +1,6 @@
 import { MuiAlert } from "./MuiAlert";
 import { MuiContainer } from "./MuiContainer";
+import { MuiDivider } from "./MuiDivider";
 import { MuiImage } from "./MuiImage";
 import { MuiInput } from "./MuiInput";
 import { MuiCheckbox } from "./MuiCheckbox";
@@ -14,6 +15,7 @@ import { MuiProgress } from "./MuiProgress";
 export const MuiElements = {
   Alert: MuiAlert,
   Container: MuiContainer,
+  Divider: MuiDivider,
   Image: MuiImage,
   Input: MuiInput,
   Checkbox: MuiCheckbox,

@@ -2,6 +2,7 @@ import {
   AlertProps,
   ButtonProps,
   ContainerProps,
+  DividerProps,
   InputProps,
   CheckboxProps,
   LinkProps,
@@ -14,6 +15,7 @@ import {
 } from "../../@propelauth/react";
 export type MuiAlertProps = AlertProps;
 export type MuiContainerProps = ContainerProps;
+export type MuiDividerProps = DividerProps;
 export type MuiImageProps = ImageProps;
 export type MuiInputProps = InputProps;
 export type MuiCheckboxProps = CheckboxProps;

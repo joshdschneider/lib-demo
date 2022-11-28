@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Alert, Container, Image, Input, Button, H3 } from "../elements";
+import { Alert, Container, Divider, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
 import { SigninOptions } from "./shared/SigninOptions";
@@ -43,7 +43,7 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
       </div>
       <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
       <SigninOptions config={config} />
-      {config.has_password_login && config.has_any_social_login && <hr className="pa_divider" />}
+      {config.has_password_login && config.has_any_social_login && <Divider className="pa_divider" />}
       {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
     </Container>

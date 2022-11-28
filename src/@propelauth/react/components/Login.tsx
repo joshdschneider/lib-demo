@@ -6,7 +6,7 @@ import { apiCreateOrg, CreateOrgOptions } from "../api/createOrg";
 import { Config, useConfig } from "../state";
 import { Appearance } from "../utils";
 import { SigninOptions } from "./shared/SigninOptions";
-import { Alert, Container, Image, Input, Button, H3, Paragraph, Checkbox } from "../elements";
+import { Alert, Container, Divider, Image, Input, Button, H3, Paragraph, Checkbox } from "../elements";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -130,7 +130,7 @@ const LoginOptions = ({
       </div>
       <H3>Welcome</H3>
       {(config.has_passwordless_login || config.has_any_social_login) && <SigninOptions config={config} />}
-      {config.has_password_login && config.has_any_social_login && <hr className="pa_divider" />}
+      {config.has_password_login && config.has_any_social_login && <Divider className="pa_divider" />}
       {config.has_password_login && (
         <form onSubmit={login}>
           <div>

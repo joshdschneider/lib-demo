@@ -2,6 +2,7 @@ import {
   AlertProps,
   ButtonProps,
   ContainerProps,
+  DividerProps,
   InputProps,
   CheckboxProps,
   LinkProps,
@@ -14,6 +15,7 @@ import {
 } from "../../@propelauth/react";
 export type BaseAlertProps = AlertProps;
 export type BaseContainerProps = ContainerProps;
+export type BaseDividerProps = DividerProps;
 export type BaseImageProps = ImageProps;
 export type BaseProgressProps = ProgressProps;
 export type BaseInputProps = InputProps;
