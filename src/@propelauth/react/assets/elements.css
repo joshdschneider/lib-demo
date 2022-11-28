@@ -25,6 +25,9 @@
   width: 100%;
   margin-bottom: 10px;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .pa_button--social:last-child {
