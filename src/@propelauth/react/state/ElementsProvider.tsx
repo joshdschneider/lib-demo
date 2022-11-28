@@ -7,6 +7,7 @@ import {
   InputProps,
   CheckboxProps,
   ButtonProps,
+  ProgressProps,
   LinkProps,
   H1Props,
   H3Props,
@@ -21,6 +22,7 @@ export type Elements = {
   Image: (props: ImageProps) => JSX.Element;
   Input: (props: InputProps) => JSX.Element;
   Checkbox: (props: CheckboxProps) => JSX.Element;
+  Progress: (props: ProgressProps) => JSX.Element;
   Button: (props: ButtonProps) => JSX.Element;
   Link: (props: LinkProps) => JSX.Element;
   H1: (props: H1Props) => JSX.Element;

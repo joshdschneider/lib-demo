@@ -6,6 +6,7 @@ import {
   CheckboxProps,
   LinkProps,
   ImageProps,
+  ProgressProps,
   H1Props,
   H3Props,
   H5Props,
@@ -14,6 +15,7 @@ import {
 export type BaseAlertProps = AlertProps;
 export type BaseContainerProps = ContainerProps;
 export type BaseImageProps = ImageProps;
+export type BaseProgressProps = ProgressProps;
 export type BaseInputProps = InputProps;
 export type BaseCheckboxProps = CheckboxProps;
 export type BaseButtonProps = ButtonProps;

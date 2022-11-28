@@ -9,12 +9,14 @@ import { BaseH1 } from "./BaseH1";
 import { BaseH3 } from "./BaseH3";
 import { BaseH5 } from "./BaseH5";
 import { BaseParagraph } from "./BaseParagraph";
+import { BaseProgress } from "./BaseProgress";
 
 export const BaseElements = {
   Alert: BaseAlert,
   Container: BaseContainer,
   Image: BaseImage,
   Input: BaseInput,
+  Progress: BaseProgress,
   Checkbox: BaseCheckbox,
   Button: BaseButton,
   Link: BaseLink,

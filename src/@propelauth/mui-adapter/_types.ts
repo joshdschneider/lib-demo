@@ -5,6 +5,7 @@ import {
   InputProps,
   CheckboxProps,
   LinkProps,
+  ProgressProps,
   ImageProps,
   H1Props,
   H3Props,
@@ -16,6 +17,7 @@ export type MuiContainerProps = ContainerProps;
 export type MuiImageProps = ImageProps;
 export type MuiInputProps = InputProps;
 export type MuiCheckboxProps = CheckboxProps;
+export type MuiProgressProps = ProgressProps;
 export type MuiButtonProps = ButtonProps;
 export type MuiLinkProps = LinkProps;
 export type MuiH1Props = H1Props;

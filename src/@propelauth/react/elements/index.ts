@@ -3,6 +3,7 @@ export * from "./Container";
 export * from "./Image";
 export * from "./Input";
 export * from "./Checkbox";
+export * from "./Progress";
 export * from "./Button";
 export * from "./Link";
 export * from "./H1";

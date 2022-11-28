@@ -9,6 +9,7 @@ import { MuiH1 } from "./MuiH1";
 import { MuiH3 } from "./MuiH3";
 import { MuiH5 } from "./MuiH5";
 import { MuiParagraph } from "./MuiParagraph";
+import { MuiProgress } from "./MuiProgress";
 
 export const MuiElements = {
   Alert: MuiAlert,
@@ -16,6 +17,7 @@ export const MuiElements = {
   Image: MuiImage,
   Input: MuiInput,
   Checkbox: MuiCheckbox,
+  Progress: MuiProgress,
   Button: MuiButton,
   Link: MuiLink,
   H1: MuiH1,
