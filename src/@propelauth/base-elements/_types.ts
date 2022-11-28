@@ -1,4 +1,5 @@
 import {
+  AlertProps,
   ButtonProps,
   ContainerProps,
   InputProps,
@@ -10,6 +11,7 @@ import {
   H5Props,
   ParagraphProps,
 } from "../../@propelauth/react";
+export type BaseAlertProps = AlertProps;
 export type BaseContainerProps = ContainerProps;
 export type BaseImageProps = ImageProps;
 export type BaseInputProps = InputProps;

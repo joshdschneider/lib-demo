@@ -1,3 +1,4 @@
+import { BaseAlert } from "./BaseAlert";
 import { BaseContainer } from "./BaseContainer";
 import { BaseImage } from "./BaseImage";
 import { BaseInput } from "./BaseInput";
@@ -10,6 +11,7 @@ import { BaseH5 } from "./BaseH5";
 import { BaseParagraph } from "./BaseParagraph";
 
 export const BaseElements = {
+  Alert: BaseAlert,
   Container: BaseContainer,
   Image: BaseImage,
   Input: BaseInput,

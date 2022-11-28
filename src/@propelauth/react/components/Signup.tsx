@@ -1,9 +1,8 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup, SignupOptions } from "../api/signup";
-import { Container, Image, Input, Button, H3 } from "../elements";
+import { Alert, Container, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
-import { ErrorMessage } from "./shared/ErrorMessage";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type SignupProps = {
@@ -169,7 +168,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
       <Button loading={loading} className={"pa_button pa_button--action"}>
         Sign up
       </Button>
-      <ErrorMessage error={error} />
+      {error && <Alert type={"error"}>{error}</Alert>}
     </form>
   );
 };

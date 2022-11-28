@@ -1,3 +1,4 @@
+export * from "./Alert";
 export * from "./Container";
 export * from "./Image";
 export * from "./Input";

@@ -1,6 +1,7 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 import { BaseElements } from "../../../@propelauth/base-elements";
 import {
+  AlertProps,
   ContainerProps,
   ImageProps,
   InputProps,
@@ -15,6 +16,7 @@ import {
 import "../assets/elements.css";
 
 export type Elements = {
+  Alert: (props: AlertProps) => JSX.Element;
   Container: (props: ContainerProps) => JSX.Element;
   Image: (props: ImageProps) => JSX.Element;
   Input: (props: InputProps) => JSX.Element;

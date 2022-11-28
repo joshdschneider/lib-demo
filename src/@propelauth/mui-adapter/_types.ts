@@ -1,4 +1,5 @@
 import {
+  AlertProps,
   ButtonProps,
   ContainerProps,
   InputProps,
@@ -10,6 +11,7 @@ import {
   H5Props,
   ParagraphProps,
 } from "../../@propelauth/react";
+export type MuiAlertProps = AlertProps;
 export type MuiContainerProps = ContainerProps;
 export type MuiImageProps = ImageProps;
 export type MuiInputProps = InputProps;

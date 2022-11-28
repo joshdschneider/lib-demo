@@ -1,3 +1,4 @@
+import { MuiAlert } from "./MuiAlert";
 import { MuiContainer } from "./MuiContainer";
 import { MuiImage } from "./MuiImage";
 import { MuiInput } from "./MuiInput";
@@ -10,6 +11,7 @@ import { MuiH5 } from "./MuiH5";
 import { MuiParagraph } from "./MuiParagraph";
 
 export const MuiElements = {
+  Alert: MuiAlert,
   Container: MuiContainer,
   Image: MuiImage,
   Input: MuiInput,

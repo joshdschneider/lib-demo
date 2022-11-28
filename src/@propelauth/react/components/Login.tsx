@@ -3,11 +3,10 @@ import { apiVerifyMfa } from "../api/verifyMfa";
 import { apiLogin } from "../api/login";
 import { apiUpdateMetadata, UpdateMetadataOptions } from "../api/updateMetadata";
 import { apiCreateOrg, CreateOrgOptions } from "../api/createOrg";
-import { Container, Image, Input, Button, H3, Paragraph, Checkbox } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance } from "../utils";
-import { ErrorMessage } from "./shared/ErrorMessage";
 import { SigninOptions } from "./shared/SigninOptions";
+import { Alert, Container, Image, Input, Button, H3, Paragraph, Checkbox } from "../elements";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -24,6 +23,7 @@ export type LoginAppearance = {
     // - transition?
     // - divider?
     // - logo position? / show logo?
+    // - layout
   };
   elements?: {
     Container?: Appearance;
@@ -159,7 +159,7 @@ const LoginOptions = ({
           <Button loading={loading} className={"pa_button pa_button--action"}>
             Login
           </Button>
-          <ErrorMessage error={error} />
+          {error && <Alert type={"error"}>{error}</Alert>}
         </form>
       )}
       {(onRedirectToSignup || onRedirectToForgotPassword) && (
@@ -248,7 +248,7 @@ const Verify = ({ setStep }: VerifyProps) => {
         <Button loading={loading} className={"pa_button pa_button--action"}>
           {useBackupCode ? "Verify Backup Code" : "Verify"}
         </Button>
-        <ErrorMessage error={error} />
+        {error && <Alert type={"error"}>{error}</Alert>}
       </form>
       <div className="pa_bottom-links">
         <Button onClick={toggleCodeType} className={"pa_button pa_button--minimal"}>
@@ -334,7 +334,7 @@ const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
         <Button loading={loading} className={"pa_button pa_button--action"}>
           Continue
         </Button>
-        <ErrorMessage error={error} />
+        {error && <Alert type={"error"}>{error}</Alert>}
       </form>
     </Container>
   );
@@ -408,7 +408,7 @@ const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
         <Button loading={loading} className={"pa_button pa_button--action"}>
           {`Create ${orgMetaname}`}
         </Button>
-        <ErrorMessage error={error} />
+        {error && <Alert type={"error"}>{error}</Alert>}
         {/** handle joinable orgs & personal domains */}
       </form>
     </Container>

@@ -1,10 +1,9 @@
 import { SyntheticEvent, useState } from "react";
 import { apiForgotPassword } from "../api/forgotPassword";
 import { apiLoginPasswordless } from "../api/loginPasswordless";
-import { Container, Image, Input, Button, H3, Paragraph } from "../elements";
+import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
-import { ErrorMessage } from "./shared/ErrorMessage";
 
 export type ForgotPasswordProps = {
   onRedirectToLogin?: VoidFunction;
@@ -128,7 +127,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         </Button>
       )}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
-      <ErrorMessage error={error} />
+      {error && <Alert type={"error"}>{error}</Alert>}
     </Container>
   );
 };
