@@ -41,7 +41,12 @@ const DEFAULT_CONFIG = {
 
 export const useConfig = () => {
   const context = useContext(AuthContext);
-  const authUrl = context === undefined ? undefined : context.authUrl;
+
+  if (context === undefined) {
+    throw new Error("useConfig must be used within an AuthProvider");
+  }
+
+  const authUrl = context.authUrl;
   const [config, setConfig] = useState<Config>(DEFAULT_CONFIG);
 
   useEffect(() => {
