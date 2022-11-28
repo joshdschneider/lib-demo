@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { apiLogin } from "../api/login";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
@@ -16,12 +16,9 @@ export type LoginProps = {
 
 export type LoginAppearance = {
   options?: {
-    // ideas:
-    // - greeting text?
-    // - transition?
-    // - divider?
-    // - logo position? / show logo?
-    // - layout
+    headerText?: string;
+    showDivider?: boolean;
+    // layout
   };
   elements?: {
     Container?: Appearance;
@@ -67,6 +64,12 @@ export const Login = ({
     }
   };
 
+  useEffect(() => {
+    if (step === "FINISHED") {
+      onSuccess();
+    }
+  }, [step, onSuccess]);
+
   switch (step) {
     case "LOGIN":
       return (
@@ -79,9 +82,11 @@ export const Login = ({
               className={"pa_logo"}
             />
           </div>
-          <H3>Welcome</H3>
+          <H3>{appearance?.options?.headerText || "Welcome"}</H3>
           {(config.has_passwordless_login || config.has_any_social_login) && <SigninOptions config={config} />}
-          {config.has_password_login && config.has_any_social_login && <Divider className="pa_divider" />}
+          {config.has_password_login && config.has_any_social_login && appearance?.options?.showDivider !== false && (
+            <Divider className="pa_divider" />
+          )}
           {config.has_password_login && (
             <form onSubmit={login}>
               <div>
@@ -148,8 +153,6 @@ export const Login = ({
       return <CreateOrg setStep={setStep} config={config} />;
 
     case "FINISHED":
-      onSuccess();
-
       return (
         <Container>
           <H3>Login successful</H3>
