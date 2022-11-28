@@ -2,35 +2,37 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useStat
 import { BaseElements } from "../../../@propelauth/base-elements";
 import {
   AlertProps,
+  ButtonProps,
+  CheckboxProps,
   ContainerProps,
   DividerProps,
-  ImageProps,
-  InputProps,
-  CheckboxProps,
-  ButtonProps,
-  ProgressProps,
-  LinkProps,
   H1Props,
   H3Props,
   H5Props,
+  ImageProps,
+  InputProps,
+  LabelProps,
+  LinkProps,
   ParagraphProps,
+  ProgressProps,
 } from "../elements";
 import "../assets/elements.css";
 
 export type Elements = {
   Alert: (props: AlertProps) => JSX.Element;
+  Button: (props: ButtonProps) => JSX.Element;
+  Checkbox: (props: CheckboxProps) => JSX.Element;
   Container: (props: ContainerProps) => JSX.Element;
   Divider: (props: DividerProps) => JSX.Element;
-  Image: (props: ImageProps) => JSX.Element;
-  Input: (props: InputProps) => JSX.Element;
-  Checkbox: (props: CheckboxProps) => JSX.Element;
-  Progress: (props: ProgressProps) => JSX.Element;
-  Button: (props: ButtonProps) => JSX.Element;
-  Link: (props: LinkProps) => JSX.Element;
   H1: (props: H1Props) => JSX.Element;
   H3: (props: H3Props) => JSX.Element;
   H5: (props: H5Props) => JSX.Element;
+  Image: (props: ImageProps) => JSX.Element;
+  Input: (props: InputProps) => JSX.Element;
+  Label: (props: LabelProps) => JSX.Element;
+  Link: (props: LinkProps) => JSX.Element;
   Paragraph: (props: ParagraphProps) => JSX.Element;
+  Progress: (props: ProgressProps) => JSX.Element;
 };
 
 export type ElementsState = {
