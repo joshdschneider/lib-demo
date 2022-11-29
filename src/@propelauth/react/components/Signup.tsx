@@ -1,12 +1,12 @@
 import { SyntheticEvent, useState } from "react";
-import { apiSignup, SignupOptions } from "../api/signup";
+import { apiSignup, SignupOptions } from "../api";
 import { Alert, Container, Divider, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
 import { SigninOptions } from "./shared/SigninOptions";
 
 export type SignupProps = {
-  onSuccess?: VoidFunction;
+  onSuccess: VoidFunction;
   onRedirectToLogin?: VoidFunction;
   presetEmail?: string;
   appearance?: SignupAppearance;
@@ -14,17 +14,23 @@ export type SignupProps = {
 
 export type SignupAppearance = {
   options?: {
-    logoPosition?: "inside" | "outside" | "none";
-    greetingText?: string | null;
+    headerText?: string;
     showDivider?: boolean;
+    // layout?
   };
   elements?: {
     Container?: Appearance;
     Logo?: Appearance;
+    Header?: Appearance;
+    Divider?: Appearance;
+    FirstNameInput?: Appearance;
+    LastNameInput?: Appearance;
+    UsernameInput?: Appearance;
     EmailInput?: Appearance;
     PasswordInput?: Appearance;
     SubmitButton?: Appearance;
     LoginLink?: Appearance;
+    Alert?: Appearance;
   };
 };
 
@@ -41,9 +47,11 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
           className={"pa_logo"}
         />
       </div>
-      <H3>{appearance?.options?.greetingText || "Create an account"}</H3>
+      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Signup"}</H3>
       <SigninOptions config={config} />
-      {config.has_password_login && config.has_any_social_login && <Divider className="pa_divider" />}
+      {config.has_password_login && config.has_any_social_login && appearance?.options?.showDivider !== false && (
+        <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
+      )}
       {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
     </Container>
@@ -61,47 +69,48 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstname] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
 
   const signup = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const options: SignupOptions = {
-      email: email,
-      password: password,
-    };
-
-    if (config.require_name) {
-      options.firstName = firstName;
-      options.lastName = lastName;
-    }
-
-    if (config.require_username) {
-      options.username = username;
-    }
-
-    const inviteToken = getTokenFromURL();
-    if (inviteToken) {
-      options.inviteToken = inviteToken;
-    }
-
-    const signupResult = await apiSignup(options);
-    if (signupResult.success) {
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        // TODO: DEFAULT ACTION
-        console.error("No onSuccess prop found 😵");
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const options: SignupOptions = {
+        email: email,
+        password: password,
+      };
+      if (config.require_name) {
+        options.firstName = firstName;
+        options.lastName = lastName;
       }
-    } else {
-      setError(signupResult.error_message);
+      if (config.require_username) {
+        options.username = username;
+      }
+      const inviteToken = getTokenFromURL();
+      if (inviteToken) {
+        options.inviteToken = inviteToken;
+      }
+      const response = await apiSignup(options);
+      if (response.ok) {
+        // ??
+      } else if (response.error.errorName === "NotFound") {
+        setError("Email not found");
+      } else if (response.error.errorName === "Unauthorized") {
+        setError("Unauthorized");
+      } else if (response.error.errorName === "TooManyRequests") {
+        setError("Too many signup attempts");
+      } else {
+        setError("Something went wrong");
+      }
+    } catch (e) {
+      setError("Something went wrong");
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -113,9 +122,9 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
               required
               type="text"
               value={firstName}
-              onChange={(e) => setFirstname(e.target.value)}
+              onChange={(e) => setFirstName(e.target.value)}
               placeholder="First Name"
-              appearance={appearance?.elements?.EmailInput}
+              appearance={appearance?.elements?.FirstNameInput}
               className={"pa_input"}
             />
           </div>
@@ -126,7 +135,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Last Name"
-              appearance={appearance?.elements?.PasswordInput}
+              appearance={appearance?.elements?.LastNameInput}
               className={"pa_input"}
             />
           </div>
@@ -140,6 +149,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           value={email}
           readOnly={!!presetEmail}
           onChange={(e) => setEmail(e.target.value)}
+          appearance={appearance?.elements?.EmailInput}
           className={"pa_input"}
         />
       </div>
@@ -151,6 +161,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            appearance={appearance?.elements?.UsernameInput}
             className={"pa_input"}
           />
         </div>
@@ -162,13 +173,22 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          appearance={appearance?.elements?.PasswordInput}
           className={"pa_input"}
         />
       </div>
-      <Button loading={loading} className={"pa_button pa_button--action"}>
+      <Button
+        appearance={appearance?.elements?.SubmitButton}
+        loading={loading}
+        className={"pa_button pa_button--action"}
+      >
         Sign up
       </Button>
-      {error && <Alert type={"error"}>{error}</Alert>}
+      {error && (
+        <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+          {error}
+        </Alert>
+      )}
     </form>
   );
 };

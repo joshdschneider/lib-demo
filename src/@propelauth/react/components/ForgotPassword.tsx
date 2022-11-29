@@ -1,6 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { apiForgotPassword } from "../api/forgotPassword";
-import { apiLoginPasswordless } from "../api/loginPasswordless";
+import { apiForgotPassword, apiLoginPasswordless } from "../api";
 import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
@@ -20,6 +19,8 @@ export type ForgotPasswordAppearance = {
   elements?: {
     Container?: Appearance;
     Logo?: Appearance;
+    Header?: Appearance;
+    SuccessText?: Appearance;
     EmailInput?: Appearance;
     PasswordInput?: Appearance;
     SubmitButton?: Appearance;
@@ -37,33 +38,53 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
   const { config } = useConfig();
 
   async function submitForgotPassword(e: SyntheticEvent) {
-    e.preventDefault();
-    setPasswordResetLoading(true);
-
-    const response = await apiForgotPassword({ email });
-    if (response.success) {
-      const message = `If that email address is in our database, we will send you an email to reset your password.`;
-      setSuccessMessage(message);
-    } else if (response.error) {
-      setError(response.error.message);
+    try {
+      e.preventDefault();
+      setPasswordResetLoading(true);
+      const response = await apiForgotPassword({ email });
+      if (response.ok) {
+        const message = `If that email address is in our database, we will send you an email to reset your password.`;
+        setSuccessMessage(message);
+      } else if (response.error.errorName === "NotFound") {
+        setError("Email not found");
+      } else if (response.error.errorName === "Unauthorized") {
+        setError("Unauthorized");
+      } else if (response.error.errorName === "TooManyRequests") {
+        setError("Too many login attempts");
+      } else {
+        setError("Something went wrong");
+      }
+    } catch (e) {
+      setError("Something went wrong");
+      console.error(e);
+    } finally {
+      setPasswordResetLoading(false);
     }
-
-    setPasswordResetLoading(false);
   }
 
   async function submitMagicLink(e: SyntheticEvent) {
-    e.preventDefault();
-    setMagicLinkLoading(true);
-
-    const response = await apiLoginPasswordless({ email, create_if_doesnt_exist: false });
-    if (response.success) {
-      const message = `If that email address is in our database, we will send you an email to login to your account.`;
-      setSuccessMessage(message);
-    } else if (response.error) {
-      setError(response.error.message);
+    try {
+      e.preventDefault();
+      setMagicLinkLoading(true);
+      const response = await apiLoginPasswordless({ email, createIfDoesntExist: false });
+      if (response.ok) {
+        const message = `If that email address is in our database, we will send you an email to login to your account.`;
+        setSuccessMessage(message);
+      } else if (response.error.errorName === "NotFound") {
+        setError("Email not found");
+      } else if (response.error.errorName === "Unauthorized") {
+        setError("Unauthorized");
+      } else if (response.error.errorName === "TooManyRequests") {
+        setError("Too many login attempts");
+      } else {
+        setError("Something went wrong");
+      }
+    } catch (e) {
+      setError("Something went wrong");
+      console.error(e);
+    } finally {
+      setMagicLinkLoading(false);
     }
-
-    setMagicLinkLoading(false);
   }
 
   if (successMessage) {
@@ -77,9 +98,8 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
             className={"pa_logo"}
           />
         </div>
-        <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
-        <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
-        <Paragraph>{successMessage}</Paragraph>
+        <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
+        <Paragraph appearance={appearance?.elements?.SuccessText}>{successMessage}</Paragraph>
       </Container>
     );
   }
@@ -94,8 +114,8 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
           className={"pa_logo"}
         />
       </div>
-      <H3>{appearance?.options?.headerText || "Forgot password"}</H3>
-      <ForgotPasswordDirections hasPasswordlessLogin={config.has_passwordless_login} />
+      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
+      <ForgotPasswordDirections appearance={appearance} hasPasswordlessLogin={config.has_passwordless_login} />
       <form onSubmit={submitForgotPassword}>
         <div>
           <Input
@@ -133,10 +153,11 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 };
 
 type ForgotPasswordDirectionsProps = {
+  appearance?: ForgotPasswordAppearance;
   hasPasswordlessLogin: boolean;
 };
 
-const ForgotPasswordDirections = ({ hasPasswordlessLogin }: ForgotPasswordDirectionsProps) => {
+const ForgotPasswordDirections = ({ appearance, hasPasswordlessLogin }: ForgotPasswordDirectionsProps) => {
   const passwordMessage = `Enter your email address and we will send you an email with a link that will let you reset your password.`;
   const passwordlessMessage = `You can choose between receiving an email to reset your password or receiving an email with a magic link that will log you in.`;
 

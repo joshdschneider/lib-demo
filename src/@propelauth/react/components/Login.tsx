@@ -1,5 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react";
-import { apiLogin } from "../api/login";
+import { apiLogin } from "../api";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
 import { SigninOptions } from "./shared/SigninOptions";
@@ -18,16 +18,19 @@ export type LoginAppearance = {
   options?: {
     headerText?: string;
     showDivider?: boolean;
-    // layout
+    // layout?
   };
   elements?: {
     Container?: Appearance;
     Logo?: Appearance;
+    Header?: Appearance;
+    Divider?: Appearance;
     EmailInput?: Appearance;
     PasswordInput?: Appearance;
     SubmitButton?: Appearance;
     SignupLink?: Appearance;
     ForgotPasswordLink?: Appearance;
+    Alert?: Appearance;
   };
 };
 
@@ -52,12 +55,23 @@ export const Login = ({
       e.preventDefault();
       setLoading(true);
       setError(undefined);
-      const loginResult = await apiLogin({
+      const response = await apiLogin({
         email: email,
         password: password,
       });
-      setStep(loginResult.next_step);
+      if (response.ok) {
+        // ??
+      } else if (response.error.errorName === "NotFound") {
+        setError("Email not found");
+      } else if (response.error.errorName === "Unauthorized") {
+        setError("Incorrect password");
+      } else if (response.error.errorName === "TooManyRequests") {
+        setError("Too many login attempts");
+      } else {
+        setError("Something went wrong");
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -82,10 +96,10 @@ export const Login = ({
               className={"pa_logo"}
             />
           </div>
-          <H3>{appearance?.options?.headerText || "Welcome"}</H3>
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
           {(config.has_passwordless_login || config.has_any_social_login) && <SigninOptions config={config} />}
           {config.has_password_login && config.has_any_social_login && appearance?.options?.showDivider !== false && (
-            <Divider className="pa_divider" />
+            <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
           )}
           {config.has_password_login && (
             <form onSubmit={login}>
@@ -112,10 +126,18 @@ export const Login = ({
                   className={"pa_input"}
                 />
               </div>
-              <Button loading={loading} className={"pa_button pa_button--action"}>
+              <Button
+                appearance={appearance?.elements?.SubmitButton}
+                loading={loading}
+                className={"pa_button pa_button--action"}
+              >
                 Login
               </Button>
-              {error && <Alert type={"error"}>{error}</Alert>}
+              {error && (
+                <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                  {error}
+                </Alert>
+              )}
             </form>
           )}
           {(onRedirectToSignup || onRedirectToForgotPassword) && (
