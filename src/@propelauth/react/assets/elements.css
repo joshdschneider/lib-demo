@@ -1,3 +1,18 @@
+#login .BaseContainer {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 0px auto;
+  padding: 20px;
+}
+
+#login .BaseImage {
+  width: auto;
+  height: 100px;
+}
+
+/* ↑↑↑ new approach ↑↑↑ */
+
 .pa_container {
   width: 300px;
   border: 1px solid #ddd;

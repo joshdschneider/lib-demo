@@ -89,88 +89,85 @@ export const Login = ({
   switch (step) {
     case LoginStateEnum.Login:
       return (
-        <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-          {appearance?.options?.displayLogo !== false && (
-            <div className="pa_logo-container">
-              <Image
-                src={config.logo_url}
-                alt={config.site_display_name}
-                appearance={appearance?.elements?.Logo}
-                className={"pa_logo"}
-              />
-            </div>
-          )}
-          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
-          {(config.has_passwordless_login || config.has_any_social_login) && (
-            <SigninOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
-          )}
-          {config.has_password_login &&
-            config.has_any_social_login &&
-            appearance?.options?.displayDivider !== false && (
-              <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
+        <div id="login">
+          <Container appearance={appearance?.elements?.Container}>
+            {appearance?.options?.displayLogo !== false && (
+              <div id="logo">
+                <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+              </div>
             )}
-          {config.has_password_login && (
-            <form onSubmit={login}>
-              <div>
-                <Input
-                  required
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  readOnly={!!presetEmail}
-                  onChange={(e) => setEmail(e.target.value)}
-                  appearance={appearance?.elements?.EmailInput}
-                  className={"pa_input"}
-                />
-              </div>
-              <div>
-                <Input
-                  required
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  appearance={appearance?.elements?.PasswordInput}
-                  className={"pa_input"}
-                />
-              </div>
-              <Button
-                appearance={appearance?.elements?.SubmitButton}
-                loading={loading}
-                className={"pa_button pa_button--action"}
-              >
-                Login
-              </Button>
-              {error && (
-                <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-                  {error}
-                </Alert>
+            <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
+            {(config.has_passwordless_login || config.has_any_social_login) && (
+              <SigninOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
+            )}
+            {config.has_password_login &&
+              config.has_any_social_login &&
+              appearance?.options?.displayDivider !== false && (
+                <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
               )}
-            </form>
-          )}
-          {(onRedirectToSignup || onRedirectToForgotPassword) && (
-            <div className="pa_bottom-links">
-              {onRedirectToSignup && (
+            {config.has_password_login && (
+              <form onSubmit={login}>
+                <div>
+                  <Input
+                    required
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    readOnly={!!presetEmail}
+                    onChange={(e) => setEmail(e.target.value)}
+                    appearance={appearance?.elements?.EmailInput}
+                    className={"pa_input"}
+                  />
+                </div>
+                <div>
+                  <Input
+                    required
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    appearance={appearance?.elements?.PasswordInput}
+                    className={"pa_input"}
+                  />
+                </div>
                 <Button
-                  onClick={onRedirectToSignup}
-                  appearance={appearance?.elements?.SignupLink}
-                  className={"pa_button pa_button--minimal"}
+                  appearance={appearance?.elements?.SubmitButton}
+                  loading={loading}
+                  className={"pa_button pa_button--action"}
                 >
-                  Sign up
+                  Login
                 </Button>
-              )}
-              {onRedirectToForgotPassword && (
-                <Button
-                  onClick={onRedirectToForgotPassword}
-                  appearance={appearance?.elements?.ForgotPasswordLink}
-                  className={"pa_button pa_button--minimal"}
-                >
-                  Forgot password
-                </Button>
-              )}
-            </div>
-          )}
-        </Container>
+                {error && (
+                  <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                    {error}
+                  </Alert>
+                )}
+              </form>
+            )}
+            {(onRedirectToSignup || onRedirectToForgotPassword) && (
+              <div className="pa_bottom-links">
+                {onRedirectToSignup && (
+                  <Button
+                    onClick={onRedirectToSignup}
+                    appearance={appearance?.elements?.SignupLink}
+                    className={"pa_button pa_button--minimal"}
+                  >
+                    Sign up
+                  </Button>
+                )}
+                {onRedirectToForgotPassword && (
+                  <Button
+                    onClick={onRedirectToForgotPassword}
+                    appearance={appearance?.elements?.ForgotPasswordLink}
+                    className={"pa_button pa_button--minimal"}
+                  >
+                    Forgot password
+                  </Button>
+                )}
+              </div>
+            )}
+          </Container>
+        </div>
       );
 
     case LoginStateEnum.TwoFactorRequired:
