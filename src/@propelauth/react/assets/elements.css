@@ -31,9 +31,38 @@ div[data-contain="login"] .BaseButton {
 }
 
 div[data-contain="login"] .BaseDivider {
-  border: 1px solid #ddd;
-  border-top: none;
-  margin: 20px 0;
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 10px 0;
+}
+
+div[data-contain="login"] .BaseDivider span {
+  position: relative;
+  display: inline-block;
+  color: #b5b5b5;
+  font-size: 14px;
+}
+
+div[data-contain="login"] .BaseDivider span:before,
+div[data-contain="login"] .BaseDivider span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9999px;
+  height: 1px;
+  background: #ddd;
+}
+
+div[data-contain="login"] .BaseDivider span:before {
+  right: 100%;
+  margin-right: 15px;
+}
+
+div[data-contain="login"] .BaseDivider span:after {
+  left: 100%;
+  margin-left: 15px;
 }
 
 div[data-contain="login"] form .BaseButton {
