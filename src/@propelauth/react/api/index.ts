@@ -1,20 +1,13 @@
-import { PropelAuthFeV2 } from "@propel-auth-fern/fe_v2-client";
+import { Client } from "@propel-auth-fern/fe_v2-client/api";
 
-const propelInternalClient = new PropelAuthFeV2.Client({
+const propelInternalClient = new Client({
   _origin: "https://auth.buildwithfern.com",
-  _token: "5WslzTSPnJxVNemvtczNTQLrbByqHYTN",
+  _token: "INSERT_YOUR_TOKEN_HERE",
 });
 
 export const apiLogin = propelInternalClient.login.login;
 export const apiSignup = propelInternalClient.signup.signup;
 export const apiForgotPassword = propelInternalClient.forgotPassword.forgotPassword;
 export const apiLoginPasswordless = propelInternalClient.login.sendMagicLinkLogin;
-
-export type SignupOptions = {
-  email: string;
-  password: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  inviteToken?: string;
-};
+export const apiCreateOrg = propelInternalClient.org.createOrg;
+export const apiVerifyMfa = propelInternalClient.mfaLogin.mfaVerify;

@@ -11,20 +11,20 @@ export type ForgotPasswordProps = {
 
 export type ForgotPasswordAppearance = {
   options?: {
-    logoPosition?: "inside" | "outside" | "none";
-    headerText?: string | null;
-    paragraphText?: string | null;
-    showDivider?: boolean;
+    headerText?: string;
+    displayLogo?: boolean;
   };
   elements?: {
     Container?: Appearance;
     Logo?: Appearance;
     Header?: Appearance;
     SuccessText?: Appearance;
+    InstructionsText?: Appearance;
     EmailInput?: Appearance;
     PasswordInput?: Appearance;
     SubmitButton?: Appearance;
     MagicLinkButton?: Appearance;
+    Alert?: Appearance;
     LoginLink?: Appearance;
   };
 };
@@ -45,12 +45,6 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
       if (response.ok) {
         const message = `If that email address is in our database, we will send you an email to reset your password.`;
         setSuccessMessage(message);
-      } else if (response.error.errorName === "NotFound") {
-        setError("Email not found");
-      } else if (response.error.errorName === "Unauthorized") {
-        setError("Unauthorized");
-      } else if (response.error.errorName === "TooManyRequests") {
-        setError("Too many login attempts");
       } else {
         setError("Something went wrong");
       }
@@ -70,12 +64,6 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
       if (response.ok) {
         const message = `If that email address is in our database, we will send you an email to login to your account.`;
         setSuccessMessage(message);
-      } else if (response.error.errorName === "NotFound") {
-        setError("Email not found");
-      } else if (response.error.errorName === "Unauthorized") {
-        setError("Unauthorized");
-      } else if (response.error.errorName === "TooManyRequests") {
-        setError("Too many login attempts");
       } else {
         setError("Something went wrong");
       }
@@ -90,14 +78,16 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
   if (successMessage) {
     return (
       <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
-        </div>
+        {appearance?.options?.displayLogo && (
+          <div className="pa_logo-container">
+            <Image
+              src={config.logo_url}
+              alt={config.site_display_name}
+              appearance={appearance?.elements?.Logo}
+              className={"pa_logo"}
+            />
+          </div>
+        )}
         <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
         <Paragraph appearance={appearance?.elements?.SuccessText}>{successMessage}</Paragraph>
       </Container>
@@ -106,14 +96,16 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 
   return (
     <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      <div className="pa_logo-container">
-        <Image
-          src={config.logo_url}
-          alt={config.site_display_name}
-          appearance={appearance?.elements?.Logo}
-          className={"pa_logo"}
-        />
-      </div>
+      {appearance?.options?.displayLogo && (
+        <div className="pa_logo-container">
+          <Image
+            src={config.logo_url}
+            alt={config.site_display_name}
+            appearance={appearance?.elements?.Logo}
+            className={"pa_logo"}
+          />
+        </div>
+      )}
       <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
       <ForgotPasswordDirections appearance={appearance} hasPasswordlessLogin={config.has_passwordless_login} />
       <form onSubmit={submitForgotPassword}>
@@ -147,7 +139,11 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         </Button>
       )}
       <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
-      {error && <Alert type={"error"}>{error}</Alert>}
+      {error && (
+        <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+          {error}
+        </Alert>
+      )}
     </Container>
   );
 };
@@ -162,10 +158,10 @@ const ForgotPasswordDirections = ({ appearance, hasPasswordlessLogin }: ForgotPa
   const passwordlessMessage = `You can choose between receiving an email to reset your password or receiving an email with a magic link that will log you in.`;
 
   if (hasPasswordlessLogin) {
-    return <Paragraph>{passwordlessMessage}</Paragraph>;
+    return <Paragraph appearance={appearance?.elements?.InstructionsText}>{passwordlessMessage}</Paragraph>;
   }
 
-  return <Paragraph>{passwordMessage}</Paragraph>;
+  return <Paragraph appearance={appearance?.elements?.InstructionsText}>{passwordMessage}</Paragraph>;
 };
 
 type BottomLinksProps = {

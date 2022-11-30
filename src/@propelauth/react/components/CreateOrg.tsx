@@ -1,19 +1,37 @@
+import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
-import { apiCreateOrg, CreateOrgOptions } from "../api/createOrg";
-import { Alert, Container, Input, Label, Button, H3, Checkbox } from "../elements";
-import { LoginState } from "../components";
+import { apiCreateOrg } from "../api";
+import { Alert, Container, Image, Input, Label, Button, H3, Checkbox } from "../elements";
 import { Config } from "../state";
+import { Appearance } from "../utils";
 
 export type CreateOrgProps = {
   config: Config;
-  setStep: Dispatch<SetStateAction<LoginState>>;
-  // createOrgAppearance?
+  setStep: Dispatch<SetStateAction<LoginStateEnum>>;
+  appearance?: CreateOrgAppearance;
 };
 
-export const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
+export type CreateOrgAppearance = {
+  options?: {
+    headerText?: string;
+    displayLogo?: boolean;
+  };
+  elements?: {
+    Container?: Appearance;
+    Header?: Appearance;
+    Logo?: Appearance;
+    OrgNameInput?: Appearance;
+    AutojoinByDomainCheckbox?: Appearance;
+    RestrictToDomainCheckbox?: Appearance;
+    SubmitButton?: Appearance;
+    Alert?: Appearance;
+  };
+};
+
+export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [autojoinByDomain, setAutojoinByDomain] = useState(false);
+  const [autojoinByDefault, setAutojoinByDefault] = useState(false);
   const [restrictToDomain, setRestrictToDomain] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const orgMetaname = config.orgs_metaname || "Organization";
@@ -23,13 +41,14 @@ export const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
       e.preventDefault();
       setLoading(true);
       setError(undefined);
-      const options: CreateOrgOptions = {
+      const options = {
         name,
-        autojoinByDomain,
+        autojoinByDefault,
         restrictToDomain,
       };
-      const createOrgResult = await apiCreateOrg(options);
-      setStep(createOrgResult.next_step);
+      // const response = await apiCreateOrg(options);
+      // if (response.ok) ..
+      setStep(LoginStateEnum.Finished);
     } catch (e) {
       console.error(e);
     } finally {
@@ -38,8 +57,20 @@ export const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
   }
 
   return (
-    <Container>
-      <H3>{`Create your ${orgMetaname}`}</H3>
+    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
+      {appearance?.options?.displayLogo && (
+        <div className="pa_logo-container">
+          <Image
+            src={config.logo_url}
+            alt={config.site_display_name}
+            appearance={appearance?.elements?.Logo}
+            className={"pa_logo"}
+          />
+        </div>
+      )}
+      <H3 appearance={appearance?.elements?.Header}>
+        {appearance?.options?.headerText || `Create your ${orgMetaname}`}
+      </H3>
       <form onSubmit={createOrg}>
         <div>
           <Input
@@ -47,16 +78,19 @@ export const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
             placeholder={orgMetaname + "name"}
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className={"pa_input"}
+            appearance={appearance?.elements?.OrgNameInput}
             required
           />
         </div>
         <div>
-          <Label htmlFor={"autojoin_by_domain"}>Auto-join by domain</Label>
           <Checkbox
             id={"autojoin_by_domain"}
             label={"Auto-join by domain"}
-            checked={autojoinByDomain}
-            onChange={(e) => setAutojoinByDomain(e.target.checked)}
+            checked={autojoinByDefault}
+            onChange={(e) => setAutojoinByDefault(e.target.checked)}
+            className={"pa_checkbox"}
+            appearance={appearance?.elements?.AutojoinByDomainCheckbox}
             disabled={true}
           />
         </div>
@@ -66,13 +100,23 @@ export const CreateOrg = ({ config, setStep }: CreateOrgProps) => {
             label={"Restrict to domain"}
             checked={restrictToDomain}
             onChange={(e) => setRestrictToDomain(e.target.checked)}
+            className={"pa_checkbox"}
+            appearance={appearance?.elements?.RestrictToDomainCheckbox}
             disabled={true}
           />
         </div>
-        <Button loading={loading} className={"pa_button pa_button--action"}>
+        <Button
+          loading={loading}
+          appearance={appearance?.elements?.SubmitButton}
+          className={"pa_button pa_button--action"}
+        >
           {`Create ${orgMetaname}`}
         </Button>
-        {error && <Alert type={"error"}>{error}</Alert>}
+        {error && (
+          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+            {error}
+          </Alert>
+        )}
         {/** handle joinable orgs & personal domains */}
       </form>
     </Container>

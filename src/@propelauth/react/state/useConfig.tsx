@@ -33,7 +33,7 @@ const DEFAULT_CONFIG = {
   has_sso_login: false,
   has_password_login: true,
   only_extra_login_is_passwordless: false,
-  require_username: false,
+  require_username: true,
   require_name: false,
   require_profile_picture: false,
   orgs_metaname: "Team",

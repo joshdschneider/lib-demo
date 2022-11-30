@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { apiSignup, SignupOptions } from "../api";
+import { apiSignup } from "../api";
 import { Alert, Container, Divider, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
@@ -15,8 +15,8 @@ export type SignupProps = {
 export type SignupAppearance = {
   options?: {
     headerText?: string;
-    showDivider?: boolean;
-    // layout?
+    displayLogo?: boolean;
+    displayDivider?: boolean;
   };
   elements?: {
     Container?: Appearance;
@@ -28,6 +28,7 @@ export type SignupAppearance = {
     UsernameInput?: Appearance;
     EmailInput?: Appearance;
     PasswordInput?: Appearance;
+    SocialButton?: Appearance;
     SubmitButton?: Appearance;
     LoginLink?: Appearance;
     Alert?: Appearance;
@@ -39,17 +40,19 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
 
   return (
     <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      <div className="pa_logo-container">
-        <Image
-          src={config.logo_url}
-          alt={config.site_display_name}
-          appearance={appearance?.elements?.Logo}
-          className={"pa_logo"}
-        />
-      </div>
+      {appearance?.options?.displayLogo !== false && (
+        <div className="pa_logo-container">
+          <Image
+            src={config.logo_url}
+            alt={config.site_display_name}
+            appearance={appearance?.elements?.Logo}
+            className={"pa_logo"}
+          />
+        </div>
+      )}
       <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Signup"}</H3>
-      <SigninOptions config={config} />
-      {config.has_password_login && config.has_any_social_login && appearance?.options?.showDivider !== false && (
+      <SigninOptions config={config} buttonAppearance={appearance?.elements?.SocialButton} />
+      {config.has_password_login && config.has_any_social_login && appearance?.options?.displayDivider !== false && (
         <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
       )}
       {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
@@ -58,10 +61,19 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
   );
 };
 
+export type SignupOptions = {
+  email: string;
+  password: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  inviteToken?: string;
+};
+
 type SignupFormProps = {
+  onSuccess: VoidFunction;
   config: Config;
   presetEmail?: string;
-  onSuccess?: VoidFunction;
   appearance?: SignupAppearance;
 };
 
@@ -93,18 +105,9 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
       if (inviteToken) {
         options.inviteToken = inviteToken;
       }
-      const response = await apiSignup(options);
-      if (response.ok) {
-        // ??
-      } else if (response.error.errorName === "NotFound") {
-        setError("Email not found");
-      } else if (response.error.errorName === "Unauthorized") {
-        setError("Unauthorized");
-      } else if (response.error.errorName === "TooManyRequests") {
-        setError("Too many signup attempts");
-      } else {
-        setError("Something went wrong");
-      }
+      // const response = await apiSignup(options);
+      // if (response.ok) ..
+      onSuccess();
     } catch (e) {
       setError("Something went wrong");
       console.error(e);

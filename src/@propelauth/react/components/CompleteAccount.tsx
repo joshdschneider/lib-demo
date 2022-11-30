@@ -1,18 +1,41 @@
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
-import { apiUpdateMetadata, UpdateMetadataOptions } from "../api/updateMetadata";
-import { Alert, Container, Input, Button, H3 } from "../elements";
-import { LoginState } from "../components";
+import { Alert, Container, Image, Input, Button, H3 } from "../elements";
 import { Config } from "../state";
+import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
+import { Appearance } from "../utils";
 
 export type CompleteAccountProps = {
   config: Config;
-  setStep: Dispatch<SetStateAction<LoginState>>;
-  // completeAccountAppearance?
+  setStep: Dispatch<SetStateAction<LoginStateEnum>>;
+  appearance?: CompleteAccountAppearance;
 };
 
-export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
+export type CompleteAccountAppearance = {
+  options?: {
+    headerText?: string;
+    displayLogo?: boolean;
+  };
+  elements?: {
+    Container?: Appearance;
+    Header?: Appearance;
+    Logo?: Appearance;
+    FirstNameInput?: Appearance;
+    LastNameInput?: Appearance;
+    UsernameInput?: Appearance;
+    SubmitButton?: Appearance;
+    Alert?: Appearance;
+  };
+};
+
+export interface UpdateMetadataOptions {
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccountProps) => {
   const [loading, setLoading] = useState(false);
-  const [firstName, setFirstname] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
@@ -30,8 +53,9 @@ export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
       if (config.require_username) {
         options.username = username;
       }
-      const completeAccountResult = await apiUpdateMetadata(options);
-      setStep(completeAccountResult.next_step);
+      // const response = await apiUpdateMetadata(options);
+      // if (response.ok) ..
+      setStep(LoginStateEnum.OrgCreationRequired);
     } catch (e) {
       console.error(e);
     } finally {
@@ -41,7 +65,17 @@ export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
 
   return (
     <Container className={"pa_container"}>
-      <H3>Complete your account</H3>
+      {appearance?.options?.displayLogo && (
+        <div className="pa_logo-container">
+          <Image
+            src={config.logo_url}
+            alt={config.site_display_name}
+            appearance={appearance?.elements?.Logo}
+            className={"pa_logo"}
+          />
+        </div>
+      )}
+      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Complete your account"}</H3>
       <form onSubmit={completeAccount}>
         {config.require_name && (
           <>
@@ -50,7 +84,8 @@ export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
                 type={"text"}
                 placeholder={"First name"}
                 value={firstName}
-                onChange={(e) => setFirstname(e.target.value)}
+                onChange={(e) => setFirstName(e.target.value)}
+                appearance={appearance?.elements?.FirstNameInput}
                 className={"pa_input"}
               />
             </div>
@@ -60,6 +95,7 @@ export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
                 placeholder={"Last name"}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                appearance={appearance?.elements?.LastNameInput}
                 className={"pa_input"}
               />
             </div>
@@ -72,14 +108,23 @@ export const CompleteAccount = ({ config, setStep }: CompleteAccountProps) => {
               placeholder={"Username"}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              appearance={appearance?.elements?.UsernameInput}
               className={"pa_input"}
             />
           </div>
         )}
-        <Button loading={loading} className={"pa_button pa_button--action"}>
+        <Button
+          loading={loading}
+          appearance={appearance?.elements?.SubmitButton}
+          className={"pa_button pa_button--action"}
+        >
           Continue
         </Button>
-        {error && <Alert type={"error"}>{error}</Alert>}
+        {error && (
+          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+            {error}
+          </Alert>
+        )}
       </form>
     </Container>
   );
