@@ -1,8 +1,9 @@
 import { BaseAlertProps } from "./_types";
+import { prepend } from "./_utils";
 
 export const BaseAlert = ({ type, className, children, ...rest }: BaseAlertProps) => {
   return (
-    <div className={className ? `alert-${type} ${className}` : `alert-${type}`} {...rest}>
+    <div className={prepend(type ? `BaseAlert BaseAlert--${type}` : "BaseAlert", className)} {...rest}>
       <span>{children}</span>
     </div>
   );

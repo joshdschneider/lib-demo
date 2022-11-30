@@ -1,4 +1,4 @@
-#login .BaseContainer {
+div[data-contain="login"] .BaseContainer {
   width: 300px;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -6,12 +6,74 @@
   padding: 20px;
 }
 
-#login .BaseImage {
+div[data-contain="login"] .BaseImage {
   width: auto;
   height: 100px;
 }
 
-/* ↑↑↑ new approach ↑↑↑ */
+div[data-contain="login"] .BaseInput {
+  width: calc(100% - 25px);
+  margin: 0px 0px 10px 0px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: none;
+}
+
+div[data-contain="login"] .BaseButton {
+  appearance: none;
+  cursor: pointer;
+  margin: 0px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: transparent;
+}
+
+div[data-contain="login"] .BaseDivider {
+  border: 1px solid #ddd;
+  border-top: none;
+  margin: 20px 0;
+}
+
+div[data-contain="login"] form .BaseButton {
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+div[data-contain="social_buttons"] .BaseButton {
+  width: 100%;
+  margin-bottom: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div[data-contain="social_buttons"] .BaseButton:last-child {
+  margin-bottom: 0px;
+}
+
+div[data-contain="social_buttons"] svg {
+  position: absolute;
+  left: 10px;
+  width: 18px;
+  height: auto;
+}
+
+div[data-contain="redirect_links"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+div[data-contain="redirect_links"] .BaseButton {
+  border: none;
+  background: none;
+}
 
 .pa_container {
   width: 300px;

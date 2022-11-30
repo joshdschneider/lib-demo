@@ -28,63 +28,39 @@ export const SigninOptions = ({ config, buttonAppearance }: SigninOptionsProps) 
   };
 
   return (
-    <div>
+    <div data-contain="social_buttons">
       {config.has_google_login && (
-        <Button
-          onClick={loginWithSocial(GOOGLE_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(GOOGLE_LOGIN_PATH)} appearance={buttonAppearance}>
           <GoogleLogo />
           <span>Sign in with Google</span>
         </Button>
       )}
       {config.has_github_login && (
-        <Button
-          onClick={loginWithSocial(GITHUB_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(GITHUB_LOGIN_PATH)} appearance={buttonAppearance}>
           <GithubLogo />
           <span>Sign in with Github</span>
         </Button>
       )}
       {config.has_slack_login && (
-        <Button
-          onClick={loginWithSocial(SLACK_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(SLACK_LOGIN_PATH)} appearance={buttonAppearance}>
           <SlackLogo />
           <span>Sign in with Slack</span>
         </Button>
       )}
       {config.has_microsoft_login && (
-        <Button
-          onClick={loginWithSocial(MICROSOFT_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(MICROSOFT_LOGIN_PATH)} appearance={buttonAppearance}>
           <MicrosoftLogo />
           <span>Sign in with Microsoft</span>
         </Button>
       )}
       {config.has_linkedin_login && (
-        <Button
-          onClick={loginWithSocial(LINKEDIN_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(LINKEDIN_LOGIN_PATH)} appearance={buttonAppearance}>
           <LinkedinLogo />
           <span>Sign in with LinkedIn</span>
         </Button>
       )}
       {config.has_passwordless_login && (
-        <Button
-          onClick={loginWithSocial(PASSWORDLESS_LOGIN_PATH)}
-          appearance={buttonAppearance}
-          className={"pa_button pa_button--social"}
-        >
+        <Button onClick={loginWithSocial(PASSWORDLESS_LOGIN_PATH)} appearance={buttonAppearance}>
           <PasswordlessLogo />
           <span>Sign in with Email</span>
         </Button>

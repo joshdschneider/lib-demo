@@ -29,7 +29,7 @@ export type LoginAppearance = {
   options?: {
     headerText?: string;
     displayLogo?: boolean;
-    displayDivider?: boolean;
+    divider?: string | boolean;
   };
   elements?: {
     Container?: Appearance;
@@ -89,24 +89,26 @@ export const Login = ({
   switch (step) {
     case LoginStateEnum.Login:
       return (
-        <div id="login">
+        <div data-contain="login">
           <Container appearance={appearance?.elements?.Container}>
             {appearance?.options?.displayLogo !== false && (
-              <div id="logo">
+              <div data-contain="logo">
                 <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
               </div>
             )}
-            <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
+            <div data-contain="header">
+              <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
+            </div>
             {(config.has_passwordless_login || config.has_any_social_login) && (
               <SigninOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
             )}
-            {config.has_password_login &&
-              config.has_any_social_login &&
-              appearance?.options?.displayDivider !== false && (
-                <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
-              )}
+            {config.has_password_login && config.has_any_social_login && appearance?.options?.divider !== false && (
+              <Divider appearance={appearance?.elements?.Divider}>
+                {typeof appearance?.options?.divider === "string" && appearance?.options?.divider}
+              </Divider>
+            )}
             {config.has_password_login && (
-              <form onSubmit={login}>
+              <form data-contain="login_form" onSubmit={login}>
                 <div>
                   <Input
                     required
@@ -116,7 +118,6 @@ export const Login = ({
                     readOnly={!!presetEmail}
                     onChange={(e) => setEmail(e.target.value)}
                     appearance={appearance?.elements?.EmailInput}
-                    className={"pa_input"}
                   />
                 </div>
                 <div>
@@ -127,14 +128,9 @@ export const Login = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     appearance={appearance?.elements?.PasswordInput}
-                    className={"pa_input"}
                   />
                 </div>
-                <Button
-                  appearance={appearance?.elements?.SubmitButton}
-                  loading={loading}
-                  className={"pa_button pa_button--action"}
-                >
+                <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
                   Login
                 </Button>
                 {error && (
@@ -145,22 +141,14 @@ export const Login = ({
               </form>
             )}
             {(onRedirectToSignup || onRedirectToForgotPassword) && (
-              <div className="pa_bottom-links">
+              <div data-contain="redirect_links">
                 {onRedirectToSignup && (
-                  <Button
-                    onClick={onRedirectToSignup}
-                    appearance={appearance?.elements?.SignupLink}
-                    className={"pa_button pa_button--minimal"}
-                  >
+                  <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink}>
                     Sign up
                   </Button>
                 )}
                 {onRedirectToForgotPassword && (
-                  <Button
-                    onClick={onRedirectToForgotPassword}
-                    appearance={appearance?.elements?.ForgotPasswordLink}
-                    className={"pa_button pa_button--minimal"}
-                  >
+                  <Button onClick={onRedirectToForgotPassword} appearance={appearance?.elements?.ForgotPasswordLink}>
                     Forgot password
                   </Button>
                 )}

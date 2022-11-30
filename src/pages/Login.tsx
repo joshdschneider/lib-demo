@@ -9,7 +9,11 @@ export const LoginPage = () => {
         onRedirectToSignup={() => navigate("/signup")}
         onRedirectToForgotPassword={() => navigate("/forgot-password")}
         onSuccess={() => navigate("/dashboard")}
-        appearance={{}}
+        appearance={{
+          options: {
+            divider: "OR",
+          },
+        }}
       />
     </div>
   );
