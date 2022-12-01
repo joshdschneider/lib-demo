@@ -1,11 +1,10 @@
 import { useContext } from "react";
-import { Button } from "../../elements";
-import { AuthContext, Config } from "../../state";
-import { Appearance } from "../../utils";
+import { Button, ButtonProps } from "../../elements";
+import { AuthContext, Config, ElementAppearance } from "../../state";
 
 export type SignInOptionsProps = {
   config: Config;
-  buttonAppearance?: Appearance;
+  buttonAppearance?: ElementAppearance<ButtonProps>;
 };
 
 export const SignInOptions = ({ config, buttonAppearance }: SignInOptionsProps) => {

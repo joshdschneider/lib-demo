@@ -1,5 +1,5 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
 import { ChangeEventHandler, CSSProperties } from "react";
 
 export type CheckboxProps = {
@@ -13,7 +13,7 @@ export type CheckboxProps = {
   style?: CSSProperties;
 };
 
-export type CheckboxPropsWithAppearance = { appearance?: Appearance } & CheckboxProps;
+export type CheckboxPropsWithAppearance = { appearance?: ElementAppearance<CheckboxProps> } & CheckboxProps;
 
 export const Checkbox = ({
   appearance,
@@ -23,12 +23,31 @@ export const Checkbox = ({
   onChange,
   required,
   disabled,
-  className,
-  style,
 }: CheckboxPropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Checkbox;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
+
+  if (joinedProps.Element) {
+    return (
+      <joinedProps.Element
+        id={id}
+        label={label}
+        required={required}
+        disabled={disabled}
+        checked={checked}
+        onChange={onChange}
+        className={joinedProps.classes}
+        style={joinedProps.styles}
+      />
+    );
+  }
 
   return (
     <elements.Checkbox
@@ -38,8 +57,8 @@ export const Checkbox = ({
       disabled={disabled}
       checked={checked}
       onChange={onChange}
-      className={classes}
-      style={styles}
+      className={joinedProps.classes}
+      style={joinedProps.styles}
     />
   );
 };

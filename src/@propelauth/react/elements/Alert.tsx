@@ -1,6 +1,6 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
-import { CSSProperties, ReactNode } from "react";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
+import { ReactNode, CSSProperties } from "react";
 
 export type AlertProps = {
   type?: "error" | "info" | "success" | "warning";
@@ -9,15 +9,29 @@ export type AlertProps = {
   children?: ReactNode;
 };
 
-export type AlertPropsWithAppearance = { appearance?: Appearance } & AlertProps;
+export type AlertPropsWithAppearance = { appearance?: ElementAppearance<AlertProps> } & AlertProps;
 
-export const Alert = ({ appearance, type, className, style, children }: AlertPropsWithAppearance) => {
+export const Alert = ({ appearance, type, children }: AlertPropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Alert;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
+
+  if (joinedProps.Element) {
+    return (
+      <joinedProps.Element type={type} className={joinedProps.classes} style={joinedProps.styles}>
+        {children}
+      </joinedProps.Element>
+    );
+  }
 
   return (
-    <elements.Alert type={type} className={classes} style={styles}>
+    <elements.Alert type={type} className={joinedProps.classes} style={joinedProps.styles}>
       {children}
     </elements.Alert>
   );

@@ -1,9 +1,23 @@
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 import { apiCreateOrg } from "../api";
-import { Alert, Container, Image, Input, Button, H3, Checkbox } from "../elements";
-import { Config } from "../state";
-import { Appearance } from "../utils";
+import { Config, ElementAppearance } from "../state";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  Checkbox,
+  AlertProps,
+  ContainerProps,
+  ImageProps,
+  InputProps,
+  ButtonProps,
+  H3Props,
+  CheckboxProps,
+} from "../elements";
 
 export type CreateOrgProps = {
   config: Config;
@@ -17,14 +31,14 @@ export type CreateOrgAppearance = {
     displayLogo?: boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Header?: Appearance;
-    Logo?: Appearance;
-    OrgNameInput?: Appearance;
-    AutojoinByDomainCheckbox?: Appearance;
-    RestrictToDomainCheckbox?: Appearance;
-    SubmitButton?: Appearance;
-    Alert?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Header?: ElementAppearance<H3Props>;
+    Logo?: ElementAppearance<ImageProps>;
+    OrgNameInput?: ElementAppearance<InputProps>;
+    AutojoinByDomainCheckbox?: ElementAppearance<CheckboxProps>;
+    RestrictToDomainCheckbox?: ElementAppearance<CheckboxProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
   };
 };
 

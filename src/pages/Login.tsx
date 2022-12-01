@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Login } from "../@propelauth/react";
+import { InputProps, Login } from "../@propelauth/react";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,8 +13,15 @@ export const LoginPage = () => {
           options: {
             divider: "FOO",
           },
+          elements: {
+            EmailInput: CustomInput,
+          },
         }}
       />
     </div>
   );
+};
+
+export const CustomInput = ({ className, ...rest }: InputProps) => {
+  return <input className="FOOOO" {...rest} />;
 };

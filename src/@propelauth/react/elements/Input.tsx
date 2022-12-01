@@ -1,5 +1,5 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
 import { ChangeEventHandler, CSSProperties } from "react";
 
 export type InputProps = {
@@ -15,7 +15,7 @@ export type InputProps = {
   style?: CSSProperties;
 };
 
-export type InputPropsWithAppearance = { appearance?: Appearance } & InputProps;
+export type InputPropsWithAppearance = { appearance?: ElementAppearance<InputProps> } & InputProps;
 
 export const Input = ({
   appearance,
@@ -26,12 +26,32 @@ export const Input = ({
   onChange,
   required,
   disabled,
-  className,
-  style,
 }: InputPropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Input;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
+
+  if (joinedProps.Element) {
+    return (
+      <joinedProps.Element
+        id={id}
+        type={type}
+        required={required}
+        disabled={disabled}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+        className={joinedProps.classes}
+        style={joinedProps.styles}
+      />
+    );
+  }
 
   return (
     <elements.Input
@@ -42,8 +62,8 @@ export const Input = ({
       value={value}
       placeholder={placeholder}
       onChange={onChange}
-      className={classes}
-      style={styles}
+      className={joinedProps.classes}
+      style={joinedProps.styles}
     />
   );
 };

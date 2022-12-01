@@ -1,5 +1,5 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
 import { CSSProperties } from "react";
 
 export type ImageProps = {
@@ -9,12 +9,22 @@ export type ImageProps = {
   style?: CSSProperties;
 };
 
-export type ImagePropsWithAppearance = { appearance?: Appearance } & ImageProps;
+export type ImagePropsWithAppearance = { appearance?: ElementAppearance<ImageProps> } & ImageProps;
 
-export const Image = ({ className, style, appearance, src, alt }: ImagePropsWithAppearance) => {
+export const Image = ({ src, alt, appearance }: ImagePropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Image;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
 
-  return <elements.Image src={src} alt={alt} className={classes} style={styles} />;
+  if (joinedProps.Element) {
+    return <joinedProps.Element src={src} alt={alt} className={joinedProps.classes} style={joinedProps.styles} />;
+  }
+
+  return <elements.Image src={src} alt={alt} className={joinedProps.classes} style={joinedProps.styles} />;
 };

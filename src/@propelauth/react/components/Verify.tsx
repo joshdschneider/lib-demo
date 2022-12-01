@@ -1,9 +1,23 @@
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { Dispatch, MouseEvent, SetStateAction, SyntheticEvent, useState } from "react";
 import { apiVerifyMfa } from "../api";
-import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
-import { useConfig } from "../state";
-import { Appearance } from "../utils";
+import { ElementAppearance, useConfig } from "../state";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  Paragraph,
+  AlertProps,
+  ContainerProps,
+  ImageProps,
+  InputProps,
+  ButtonProps,
+  H3Props,
+  ParagraphProps,
+} from "../elements";
 
 export type VerifyProps = {
   setStep: Dispatch<SetStateAction<LoginStateEnum>>;
@@ -16,14 +30,14 @@ export type VerifyAppearance = {
     displayLogo?: boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Logo?: Appearance;
-    Header?: Appearance;
-    InstructionText?: Appearance;
-    CodeInput?: Appearance;
-    SubmitButton?: Appearance;
-    CodeTypeLink?: Appearance;
-    Alert?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Logo?: ElementAppearance<ImageProps>;
+    Header?: ElementAppearance<H3Props>;
+    InstructionText?: ElementAppearance<ParagraphProps>;
+    CodeInput?: ElementAppearance<InputProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    CodeTypeLink?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
   };
 };
 

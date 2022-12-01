@@ -1,8 +1,20 @@
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
-import { Alert, Container, Image, Input, Button, H3 } from "../elements";
-import { Config } from "../state";
+import { Config, ElementAppearance } from "../state";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
-import { Appearance } from "../utils";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  AlertProps,
+  ContainerProps,
+  ImageProps,
+  InputProps,
+  ButtonProps,
+  H3Props,
+} from "../elements";
 
 export type CompleteAccountProps = {
   config: Config;
@@ -16,14 +28,14 @@ export type CompleteAccountAppearance = {
     displayLogo?: boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Header?: Appearance;
-    Logo?: Appearance;
-    FirstNameInput?: Appearance;
-    LastNameInput?: Appearance;
-    UsernameInput?: Appearance;
-    SubmitButton?: Appearance;
-    Alert?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Header?: ElementAppearance<H3Props>;
+    Logo?: ElementAppearance<ImageProps>;
+    FirstNameInput?: ElementAppearance<InputProps>;
+    LastNameInput?: ElementAppearance<InputProps>;
+    UsernameInput?: ElementAppearance<InputProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
   };
 };
 

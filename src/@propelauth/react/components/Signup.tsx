@@ -1,10 +1,24 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup } from "../api";
-import { Alert, Container, Image, Input, Button, H3 } from "../elements";
-import { Config, useConfig } from "../state";
-import { Appearance, getTokenFromURL } from "../utils";
+import { Config, ElementAppearance, useConfig } from "../state";
+import { getTokenFromURL } from "../utils";
 import { SignInDivider } from "./shared/SignInDivider";
 import { SignInOptions } from "./shared/SignInOptions";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  AlertProps,
+  ContainerProps,
+  ImageProps,
+  InputProps,
+  ButtonProps,
+  H3Props,
+  DividerProps,
+} from "../elements";
 
 export type SignupProps = {
   onSuccess: VoidFunction;
@@ -20,19 +34,19 @@ export type SignupAppearance = {
     divider?: string | boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Logo?: Appearance;
-    Header?: Appearance;
-    Divider?: Appearance;
-    FirstNameInput?: Appearance;
-    LastNameInput?: Appearance;
-    UsernameInput?: Appearance;
-    EmailInput?: Appearance;
-    PasswordInput?: Appearance;
-    SocialButton?: Appearance;
-    SubmitButton?: Appearance;
-    LoginLink?: Appearance;
-    Alert?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Logo?: ElementAppearance<ImageProps>;
+    Header?: ElementAppearance<H3Props>;
+    Divider?: ElementAppearance<DividerProps>;
+    FirstNameInput?: ElementAppearance<InputProps>;
+    LastNameInput?: ElementAppearance<InputProps>;
+    UsernameInput?: ElementAppearance<InputProps>;
+    EmailInput?: ElementAppearance<InputProps>;
+    PasswordInput?: ElementAppearance<InputProps>;
+    SocialButton?: ElementAppearance<ButtonProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    LoginLink?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
   };
 };
 

@@ -1,6 +1,6 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
-import { CSSProperties, ReactNode } from "react";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
+import { ReactNode, CSSProperties } from "react";
 
 export type ParagraphProps = {
   className?: string;
@@ -8,15 +8,29 @@ export type ParagraphProps = {
   children?: ReactNode;
 };
 
-export type ParagraphPropsWithAppearance = { appearance?: Appearance } & ParagraphProps;
+export type ParagraphPropsWithAppearance = { appearance?: ElementAppearance<ParagraphProps> } & ParagraphProps;
 
-export const Paragraph = ({ className, style, appearance, children }: ParagraphPropsWithAppearance) => {
+export const Paragraph = ({ appearance, children }: ParagraphPropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Paragraph;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
+
+  if (joinedProps.Element) {
+    return (
+      <joinedProps.Element className={joinedProps.classes} style={joinedProps.styles}>
+        {children}
+      </joinedProps.Element>
+    );
+  }
 
   return (
-    <elements.Paragraph className={classes} style={styles}>
+    <elements.Paragraph className={joinedProps.classes} style={joinedProps.styles}>
       {children}
     </elements.Paragraph>
   );

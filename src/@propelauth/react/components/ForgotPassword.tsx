@@ -1,8 +1,22 @@
 import { SyntheticEvent, useState } from "react";
 import { apiForgotPassword, apiLoginPasswordless } from "../api";
-import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
-import { useConfig } from "../state";
-import { Appearance } from "../utils";
+import { useConfig, ElementAppearance } from "../state";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  Paragraph,
+  AlertProps,
+  ContainerProps,
+  ImageProps,
+  InputProps,
+  ButtonProps,
+  H3Props,
+  ParagraphProps,
+} from "../elements";
 
 export type ForgotPasswordProps = {
   onRedirectToLogin?: VoidFunction;
@@ -15,17 +29,17 @@ export type ForgotPasswordAppearance = {
     displayLogo?: boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Logo?: Appearance;
-    Header?: Appearance;
-    SuccessText?: Appearance;
-    InstructionsText?: Appearance;
-    EmailInput?: Appearance;
-    PasswordInput?: Appearance;
-    SubmitButton?: Appearance;
-    MagicLinkButton?: Appearance;
-    Alert?: Appearance;
-    LoginLink?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Logo?: ElementAppearance<ImageProps>;
+    Header?: ElementAppearance<H3Props>;
+    SuccessText?: ElementAppearance<ParagraphProps>;
+    InstructionsText?: ElementAppearance<ParagraphProps>;
+    EmailInput?: ElementAppearance<InputProps>;
+    PasswordInput?: ElementAppearance<InputProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    MagicLinkButton?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
+    LoginLink?: ElementAppearance<ButtonProps>;
   };
 };
 

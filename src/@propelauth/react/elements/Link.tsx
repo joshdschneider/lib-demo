@@ -1,6 +1,6 @@
-import { useElements } from "../state";
-import { Appearance, getClasses, getStyles } from "../utils";
-import { CSSProperties, ReactNode } from "react";
+import { ElementAppearance, useAppearance, useElements } from "../state";
+import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
+import { ReactNode, CSSProperties } from "react";
 
 export type LinkProps = {
   href: string;
@@ -9,15 +9,29 @@ export type LinkProps = {
   children?: ReactNode;
 };
 
-export type LinkPropsWithAppearance = { appearance?: Appearance } & LinkProps;
+export type LinkPropsWithAppearance = { appearance?: ElementAppearance<LinkProps> } & LinkProps;
 
-export const Link = ({ appearance, className, style, href, children }: LinkPropsWithAppearance) => {
+export const Link = ({ appearance, href, children }: LinkPropsWithAppearance) => {
   const { elements } = useElements();
-  const classes = getClasses(className, appearance);
-  const styles = getStyles(style, appearance);
+  const globalAppearance = useAppearance().appearance.elements?.Link;
+  const globalProps = getPropsFromAppearance(globalAppearance);
+  const localProps = getPropsFromAppearance(appearance);
+  const joinedProps = {
+    classes: joinClasses(globalProps.classes, localProps.classes),
+    styles: joinStyles(globalProps.styles, localProps.styles),
+    Element: localProps.Element || globalProps.Element,
+  };
+
+  if (joinedProps.Element) {
+    return (
+      <joinedProps.Element href={href} className={joinedProps.classes} style={joinedProps.styles}>
+        {children}
+      </joinedProps.Element>
+    );
+  }
 
   return (
-    <elements.Link href={href} className={classes} style={styles}>
+    <elements.Link href={href} className={joinedProps.classes} style={joinedProps.styles}>
       {children}
     </elements.Link>
   );

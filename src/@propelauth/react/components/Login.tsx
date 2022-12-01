@@ -1,9 +1,25 @@
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { apiLogin } from "../api";
-import { useConfig } from "../state";
-import { Appearance } from "../utils";
-import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
+import { useConfig, ElementAppearance } from "../state";
+import { SignInDivider } from "./shared/SignInDivider";
+import { SignInOptions } from "./shared/SignInOptions";
+import {
+  Alert,
+  Container,
+  Image,
+  Input,
+  Button,
+  H3,
+  Paragraph,
+  ContainerProps,
+  ImageProps,
+  H3Props,
+  DividerProps,
+  InputProps,
+  ButtonProps,
+  AlertProps,
+} from "../elements";
 import {
   Verify,
   VerifyAppearance,
@@ -12,8 +28,6 @@ import {
   CreateOrg,
   CreateOrgAppearance,
 } from "../components";
-import { SignInDivider } from "./shared/SignInDivider";
-import { SignInOptions } from "./shared/SignInOptions";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -33,17 +47,17 @@ export type LoginAppearance = {
     divider?: string | boolean;
   };
   elements?: {
-    Container?: Appearance;
-    Logo?: Appearance;
-    Header?: Appearance;
-    Divider?: Appearance;
-    EmailInput?: Appearance;
-    PasswordInput?: Appearance;
-    SocialButton?: Appearance;
-    SubmitButton?: Appearance;
-    SignupLink?: Appearance;
-    ForgotPasswordLink?: Appearance;
-    Alert?: Appearance;
+    Container?: ElementAppearance<ContainerProps>;
+    Logo?: ElementAppearance<ImageProps>;
+    Header?: ElementAppearance<H3Props>;
+    Divider?: ElementAppearance<DividerProps>;
+    EmailInput?: ElementAppearance<InputProps>;
+    PasswordInput?: ElementAppearance<InputProps>;
+    SocialButton?: ElementAppearance<ButtonProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    SignupLink?: ElementAppearance<ButtonProps>;
+    ForgotPasswordLink?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -170,8 +184,8 @@ export const Login = ({
 
     case LoginStateEnum.Finished:
       return (
-        <Container>
-          <H3>Login successful</H3>
+        <Container appearance={appearance?.elements?.Container}>
+          <H3 appearance={appearance?.elements?.Header}>Login successful</H3>
           <Paragraph>Redirecting...</Paragraph>
         </Container>
       );
@@ -181,9 +195,7 @@ export const Login = ({
         <Container>
           <H3>Something went wrong</H3>
           <Paragraph>Looks like something went wrong. Please return to login.</Paragraph>
-          <Button onClick={() => setStep(LoginStateEnum.Login)} className={"pa_button pa_button--action"}>
-            Return to login
-          </Button>
+          <Button onClick={() => setStep(LoginStateEnum.Login)}>Return to login</Button>
         </Container>
       );
   }
