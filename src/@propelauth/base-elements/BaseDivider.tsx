@@ -3,8 +3,8 @@ import { prepend } from "./_utils";
 
 export const BaseDivider = ({ className, children, ...rest }: BaseDividerProps) => {
   return (
-    <div className={prepend("BaseDivider", className)} {...rest}>
-      {children && <span>{children}</span>}
+    <div className={prepend("BaseDivider", className)} data-children={!!children} {...rest}>
+      <span>{children}</span>
     </div>
   );
 };

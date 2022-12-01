@@ -16,7 +16,7 @@ import {
   ParagraphProps,
   ProgressProps,
 } from "../elements";
-import "../assets/elements.css";
+import "../assets/base-styles.css";
 
 export type Elements = {
   Alert: (props: AlertProps) => JSX.Element;

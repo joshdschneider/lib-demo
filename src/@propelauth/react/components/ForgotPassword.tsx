@@ -77,74 +77,74 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
 
   if (successMessage) {
     return (
-      <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-        {appearance?.options?.displayLogo && (
-          <div className="pa_logo-container">
-            <Image
-              src={config.logo_url}
-              alt={config.site_display_name}
-              appearance={appearance?.elements?.Logo}
-              className={"pa_logo"}
-            />
+      <div data-contain="component">
+        <Container appearance={appearance?.elements?.Container}>
+          {appearance?.options?.displayLogo && (
+            <div data-contain="logo">
+              <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+            </div>
+          )}
+          <div data-contain="header">
+            <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
           </div>
-        )}
-        <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
-        <Paragraph appearance={appearance?.elements?.SuccessText}>{successMessage}</Paragraph>
-      </Container>
+          <div data-contain="content">
+            <Paragraph appearance={appearance?.elements?.SuccessText}>{successMessage}</Paragraph>
+          </div>
+        </Container>
+      </div>
     );
   }
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      {appearance?.options?.displayLogo && (
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
+    <div data-contain="component">
+      <Container appearance={appearance?.elements?.Container}>
+        {appearance?.options?.displayLogo && (
+          <div data-contain="logo">
+            <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+          </div>
+        )}
+        <div data-contain="header">
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
         </div>
-      )}
-      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
-      <ForgotPasswordDirections appearance={appearance} hasPasswordlessLogin={config.has_passwordless_login} />
-      <form onSubmit={submitForgotPassword}>
-        <div>
-          <Input
-            required
-            type={"email"}
-            placeholder={"email@example.com"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            appearance={appearance?.elements?.EmailInput}
-            className={"pa_input"}
-          />
+        <div data-contain="content">
+          <ForgotPasswordDirections appearance={appearance} hasPasswordlessLogin={config.has_passwordless_login} />
         </div>
-        <Button
-          loading={passwordResetLoading}
-          appearance={appearance?.elements?.SubmitButton}
-          className={"pa_button pa_button--action"}
-        >
-          Reset Password
-        </Button>
-      </form>
-      {config.has_passwordless_login && (
-        <Button
-          loading={magicLinkLoading}
-          onClick={submitMagicLink}
-          appearance={appearance?.elements?.MagicLinkButton}
-          className={"pa_button pa_button--action"}
-        >
-          Send Magic Link
-        </Button>
-      )}
-      <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
-      {error && (
-        <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-          {error}
-        </Alert>
-      )}
-    </Container>
+        <div data-contain="form">
+          <form onSubmit={submitForgotPassword}>
+            <div>
+              <Input
+                required
+                type={"email"}
+                placeholder={"email@example.com"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                appearance={appearance?.elements?.EmailInput}
+              />
+            </div>
+            <Button loading={passwordResetLoading} appearance={appearance?.elements?.SubmitButton}>
+              Reset Password
+            </Button>
+          </form>
+        </div>
+        {config.has_passwordless_login && (
+          <div data-contain="form">
+            <Button
+              loading={magicLinkLoading}
+              onClick={submitMagicLink}
+              appearance={appearance?.elements?.MagicLinkButton}
+            >
+              Send Magic Link
+            </Button>
+          </div>
+        )}
+        <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
+        {error && (
+          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+            {error}
+          </Alert>
+        )}
+      </Container>
+    </div>
   );
 };
 
@@ -156,12 +156,11 @@ type ForgotPasswordDirectionsProps = {
 const ForgotPasswordDirections = ({ appearance, hasPasswordlessLogin }: ForgotPasswordDirectionsProps) => {
   const passwordMessage = `Enter your email address and we will send you an email with a link that will let you reset your password.`;
   const passwordlessMessage = `You can choose between receiving an email to reset your password or receiving an email with a magic link that will log you in.`;
-
   if (hasPasswordlessLogin) {
     return <Paragraph appearance={appearance?.elements?.InstructionsText}>{passwordlessMessage}</Paragraph>;
+  } else {
+    return <Paragraph appearance={appearance?.elements?.InstructionsText}>{passwordMessage}</Paragraph>;
   }
-
-  return <Paragraph appearance={appearance?.elements?.InstructionsText}>{passwordMessage}</Paragraph>;
 };
 
 type BottomLinksProps = {
@@ -171,16 +170,12 @@ type BottomLinksProps = {
 
 const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
-    <>
+    <div data-contain="link">
       {onRedirectToLogin && (
-        <Button
-          onClick={onRedirectToLogin}
-          appearance={appearance?.elements?.LoginLink}
-          className={"pa_button pa_button--minimal"}
-        >
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
           Back to login
         </Button>
       )}
-    </>
+    </div>
   );
 };

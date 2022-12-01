@@ -3,8 +3,7 @@ import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { apiLogin } from "../api";
 import { useConfig } from "../state";
 import { Appearance } from "../utils";
-import { SigninOptions } from "./shared/SigninOptions";
-import { Alert, Container, Divider, Image, Input, Button, H3, Paragraph } from "../elements";
+import { Alert, Container, Image, Input, Button, H3, Paragraph } from "../elements";
 import {
   Verify,
   VerifyAppearance,
@@ -13,6 +12,8 @@ import {
   CreateOrg,
   CreateOrgAppearance,
 } from "../components";
+import { SignInDivider } from "./shared/SignInDivider";
+import { SignInOptions } from "./shared/SignInOptions";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -89,7 +90,7 @@ export const Login = ({
   switch (step) {
     case LoginStateEnum.Login:
       return (
-        <div data-contain="login">
+        <div data-contain="component">
           <Container appearance={appearance?.elements?.Container}>
             {appearance?.options?.displayLogo !== false && (
               <div data-contain="logo">
@@ -100,48 +101,48 @@ export const Login = ({
               <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
             </div>
             {(config.has_passwordless_login || config.has_any_social_login) && (
-              <SigninOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
+              <SignInOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
             )}
             {config.has_password_login && config.has_any_social_login && appearance?.options?.divider !== false && (
-              <Divider appearance={appearance?.elements?.Divider}>
-                {typeof appearance?.options?.divider === "string" && appearance?.options?.divider}
-              </Divider>
+              <SignInDivider appearance={appearance?.elements?.Divider} options={appearance?.options?.divider} />
             )}
             {config.has_password_login && (
-              <form data-contain="login_form" onSubmit={login}>
-                <div>
-                  <Input
-                    required
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    readOnly={!!presetEmail}
-                    onChange={(e) => setEmail(e.target.value)}
-                    appearance={appearance?.elements?.EmailInput}
-                  />
-                </div>
-                <div>
-                  <Input
-                    required
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    appearance={appearance?.elements?.PasswordInput}
-                  />
-                </div>
-                <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
-                  Login
-                </Button>
-                {error && (
-                  <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-                    {error}
-                  </Alert>
-                )}
-              </form>
+              <div data-contain="form">
+                <form onSubmit={login}>
+                  <div>
+                    <Input
+                      required
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      readOnly={!!presetEmail}
+                      onChange={(e) => setEmail(e.target.value)}
+                      appearance={appearance?.elements?.EmailInput}
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      required
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      appearance={appearance?.elements?.PasswordInput}
+                    />
+                  </div>
+                  <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
+                    Login
+                  </Button>
+                  {error && (
+                    <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                      {error}
+                    </Alert>
+                  )}
+                </form>
+              </div>
             )}
             {(onRedirectToSignup || onRedirectToForgotPassword) && (
-              <div data-contain="redirect_links">
+              <div data-contain="links">
                 {onRedirectToSignup && (
                   <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink}>
                     Sign up

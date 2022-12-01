@@ -64,68 +64,64 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
   }
 
   return (
-    <Container className={"pa_container"}>
-      {appearance?.options?.displayLogo && (
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
-        </div>
-      )}
-      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Complete your account"}</H3>
-      <form onSubmit={completeAccount}>
-        {config.require_name && (
-          <>
-            <div>
-              <Input
-                type={"text"}
-                placeholder={"First name"}
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                appearance={appearance?.elements?.FirstNameInput}
-                className={"pa_input"}
-              />
-            </div>
-            <div>
-              <Input
-                type={"text"}
-                placeholder={"Last name"}
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                appearance={appearance?.elements?.LastNameInput}
-                className={"pa_input"}
-              />
-            </div>
-          </>
-        )}
-        {config.require_username && (
-          <div>
-            <Input
-              type={"text"}
-              placeholder={"Username"}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              appearance={appearance?.elements?.UsernameInput}
-              className={"pa_input"}
-            />
+    <div data-contain="component">
+      <Container appearance={appearance?.elements?.Container}>
+        {appearance?.options?.displayLogo && (
+          <div data-contain="logo">
+            <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
           </div>
         )}
-        <Button
-          loading={loading}
-          appearance={appearance?.elements?.SubmitButton}
-          className={"pa_button pa_button--action"}
-        >
-          Continue
-        </Button>
-        {error && (
-          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-            {error}
-          </Alert>
-        )}
-      </form>
-    </Container>
+        <div data-contain="header">
+          <H3 appearance={appearance?.elements?.Header}>
+            {appearance?.options?.headerText || "Complete your account"}
+          </H3>
+        </div>
+        <div data-contain="form">
+          <form onSubmit={completeAccount}>
+            {config.require_name && (
+              <>
+                <div>
+                  <Input
+                    type={"text"}
+                    placeholder={"First name"}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    appearance={appearance?.elements?.FirstNameInput}
+                  />
+                </div>
+                <div>
+                  <Input
+                    type={"text"}
+                    placeholder={"Last name"}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    appearance={appearance?.elements?.LastNameInput}
+                  />
+                </div>
+              </>
+            )}
+            {config.require_username && (
+              <div>
+                <Input
+                  type={"text"}
+                  placeholder={"Username"}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  appearance={appearance?.elements?.UsernameInput}
+                />
+              </div>
+            )}
+            <Button loading={loading} appearance={appearance?.elements?.SubmitButton}>
+              Continue
+            </Button>
+            {error && (
+              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                {error}
+              </Alert>
+            )}
+          </form>
+        </div>
+      </Container>
+    </div>
   );
 };

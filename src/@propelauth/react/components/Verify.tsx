@@ -66,52 +66,44 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
   }
 
   return (
-    <Container className={"pa_container"} appearance={appearance?.elements?.Container}>
-      {appearance?.options?.displayLogo && (
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
-        </div>
-      )}
-      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Verify"}</H3>
-      <form onSubmit={verifyMfa}>
-        <Paragraph appearance={appearance?.elements?.InstructionText}>{inputLabel}</Paragraph>
-        <div>
-          <Input
-            type={"text"}
-            placeholder={"123456"}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            appearance={appearance?.elements?.CodeInput}
-            className={"pa_input"}
-          />
-        </div>
-        <Button
-          loading={loading}
-          appearance={appearance?.elements?.SubmitButton}
-          className={"pa_button pa_button--action"}
-        >
-          Submit
-        </Button>
-        {error && (
-          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-            {error}
-          </Alert>
+    <div data-contain="component">
+      <Container appearance={appearance?.elements?.Container}>
+        {appearance?.options?.displayLogo && (
+          <div data-contain="logo">
+            <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+          </div>
         )}
-      </form>
-      <div className="pa_bottom-links">
-        <Button
-          onClick={toggleCodeType}
-          appearance={appearance?.elements?.CodeTypeLink}
-          className={"pa_button pa_button--minimal"}
-        >
-          {buttonText}
-        </Button>
-      </div>
-    </Container>
+        <div data-contain="header">
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Verify"}</H3>
+        </div>
+        <div data-contain="form">
+          <form onSubmit={verifyMfa}>
+            <Paragraph appearance={appearance?.elements?.InstructionText}>{inputLabel}</Paragraph>
+            <div>
+              <Input
+                type={"text"}
+                placeholder={"123456"}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                appearance={appearance?.elements?.CodeInput}
+              />
+            </div>
+            <Button loading={loading} appearance={appearance?.elements?.SubmitButton}>
+              Submit
+            </Button>
+            {error && (
+              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                {error}
+              </Alert>
+            )}
+          </form>
+        </div>
+        <div data-contain="link">
+          <Button onClick={toggleCodeType} appearance={appearance?.elements?.CodeTypeLink}>
+            {buttonText}
+          </Button>
+        </div>
+      </Container>
+    </div>
   );
 };

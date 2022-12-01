@@ -1,9 +1,10 @@
 import { SyntheticEvent, useState } from "react";
 import { apiSignup } from "../api";
-import { Alert, Container, Divider, Image, Input, Button, H3 } from "../elements";
+import { Alert, Container, Image, Input, Button, H3 } from "../elements";
 import { Config, useConfig } from "../state";
 import { Appearance, getTokenFromURL } from "../utils";
-import { SigninOptions } from "./shared/SigninOptions";
+import { SignInDivider } from "./shared/SignInDivider";
+import { SignInOptions } from "./shared/SignInOptions";
 
 export type SignupProps = {
   onSuccess: VoidFunction;
@@ -16,7 +17,7 @@ export type SignupAppearance = {
   options?: {
     headerText?: string;
     displayLogo?: boolean;
-    displayDivider?: boolean;
+    divider?: string | boolean;
   };
   elements?: {
     Container?: Appearance;
@@ -39,25 +40,24 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
   const { config } = useConfig();
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      {appearance?.options?.displayLogo !== false && (
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
+    <div data-contain="component">
+      <Container appearance={appearance?.elements?.Container}>
+        {appearance?.options?.displayLogo !== false && (
+          <div data-contain="logo">
+            <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+          </div>
+        )}
+        <div data-contain="header">
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Signup"}</H3>
         </div>
-      )}
-      <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Signup"}</H3>
-      <SigninOptions config={config} buttonAppearance={appearance?.elements?.SocialButton} />
-      {config.has_password_login && config.has_any_social_login && appearance?.options?.displayDivider !== false && (
-        <Divider appearance={appearance?.elements?.Divider} className="pa_divider" />
-      )}
-      {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
-      <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
-    </Container>
+        <SignInOptions config={config} buttonAppearance={appearance?.elements?.SocialButton} />
+        {config.has_password_login && config.has_any_social_login && appearance?.options?.divider !== false && (
+          <SignInDivider appearance={appearance?.elements?.Divider} options={appearance?.options?.divider} />
+        )}
+        {config.has_password_login && <SignupForm config={config} onSuccess={onSuccess} presetEmail={presetEmail} />}
+        <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
+      </Container>
+    </div>
   );
 };
 
@@ -117,82 +117,75 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
   };
 
   return (
-    <form onSubmit={signup}>
-      {config.require_name && (
-        <>
-          <div>
-            <Input
-              required
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First Name"
-              appearance={appearance?.elements?.FirstNameInput}
-              className={"pa_input"}
-            />
-          </div>
-          <div>
-            <Input
-              required
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
-              appearance={appearance?.elements?.LastNameInput}
-              className={"pa_input"}
-            />
-          </div>
-        </>
-      )}
-      <div>
-        <Input
-          required
-          type="email"
-          placeholder="Email"
-          value={email}
-          readOnly={!!presetEmail}
-          onChange={(e) => setEmail(e.target.value)}
-          appearance={appearance?.elements?.EmailInput}
-          className={"pa_input"}
-        />
-      </div>
-      {config.require_username && (
+    <div data-contain="form">
+      <form onSubmit={signup}>
+        {config.require_name && (
+          <>
+            <div>
+              <Input
+                required
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="First Name"
+                appearance={appearance?.elements?.FirstNameInput}
+              />
+            </div>
+            <div>
+              <Input
+                required
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+                appearance={appearance?.elements?.LastNameInput}
+              />
+            </div>
+          </>
+        )}
         <div>
           <Input
             required
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            appearance={appearance?.elements?.UsernameInput}
-            className={"pa_input"}
+            type="email"
+            placeholder="Email"
+            value={email}
+            readOnly={!!presetEmail}
+            onChange={(e) => setEmail(e.target.value)}
+            appearance={appearance?.elements?.EmailInput}
           />
         </div>
-      )}
-      <div>
-        <Input
-          required
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          appearance={appearance?.elements?.PasswordInput}
-          className={"pa_input"}
-        />
-      </div>
-      <Button
-        appearance={appearance?.elements?.SubmitButton}
-        loading={loading}
-        className={"pa_button pa_button--action"}
-      >
-        Sign up
-      </Button>
-      {error && (
-        <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-          {error}
-        </Alert>
-      )}
-    </form>
+        {config.require_username && (
+          <div>
+            <Input
+              required
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              appearance={appearance?.elements?.UsernameInput}
+            />
+          </div>
+        )}
+        <div>
+          <Input
+            required
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            appearance={appearance?.elements?.PasswordInput}
+          />
+        </div>
+        <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
+          Sign up
+        </Button>
+        {error && (
+          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+            {error}
+          </Alert>
+        )}
+      </form>
+    </div>
   );
 };
 
@@ -203,16 +196,12 @@ type BottomLinksProps = {
 
 const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
-    <>
+    <div data-contain="link">
       {onRedirectToLogin && (
-        <Button
-          onClick={onRedirectToLogin}
-          appearance={appearance?.elements?.LoginLink}
-          className={"pa_button pa_button--minimal"}
-        >
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
           Log in
         </Button>
       )}
-    </>
+    </div>
   );
 };

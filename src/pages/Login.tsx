@@ -11,7 +11,7 @@ export const LoginPage = () => {
         onSuccess={() => navigate("/dashboard")}
         appearance={{
           options: {
-            divider: "OR",
+            divider: "FOO",
           },
         }}
       />

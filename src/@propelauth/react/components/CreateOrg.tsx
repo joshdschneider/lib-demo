@@ -1,7 +1,7 @@
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 import { apiCreateOrg } from "../api";
-import { Alert, Container, Image, Input, Label, Button, H3, Checkbox } from "../elements";
+import { Alert, Container, Image, Input, Button, H3, Checkbox } from "../elements";
 import { Config } from "../state";
 import { Appearance } from "../utils";
 
@@ -57,68 +57,62 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
   }
 
   return (
-    <Container appearance={appearance?.elements?.Container} className={"pa_container"}>
-      {appearance?.options?.displayLogo && (
-        <div className="pa_logo-container">
-          <Image
-            src={config.logo_url}
-            alt={config.site_display_name}
-            appearance={appearance?.elements?.Logo}
-            className={"pa_logo"}
-          />
-        </div>
-      )}
-      <H3 appearance={appearance?.elements?.Header}>
-        {appearance?.options?.headerText || `Create your ${orgMetaname}`}
-      </H3>
-      <form onSubmit={createOrg}>
-        <div>
-          <Input
-            type={"text"}
-            placeholder={orgMetaname + "name"}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={"pa_input"}
-            appearance={appearance?.elements?.OrgNameInput}
-            required
-          />
-        </div>
-        <div>
-          <Checkbox
-            id={"autojoin_by_domain"}
-            label={"Auto-join by domain"}
-            checked={autojoinByDefault}
-            onChange={(e) => setAutojoinByDefault(e.target.checked)}
-            className={"pa_checkbox"}
-            appearance={appearance?.elements?.AutojoinByDomainCheckbox}
-            disabled={true}
-          />
-        </div>
-        <div>
-          <Checkbox
-            id={"restrict_to_domain"}
-            label={"Restrict to domain"}
-            checked={restrictToDomain}
-            onChange={(e) => setRestrictToDomain(e.target.checked)}
-            className={"pa_checkbox"}
-            appearance={appearance?.elements?.RestrictToDomainCheckbox}
-            disabled={true}
-          />
-        </div>
-        <Button
-          loading={loading}
-          appearance={appearance?.elements?.SubmitButton}
-          className={"pa_button pa_button--action"}
-        >
-          {`Create ${orgMetaname}`}
-        </Button>
-        {error && (
-          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
-            {error}
-          </Alert>
+    <div data-contain="component">
+      <Container appearance={appearance?.elements?.Container}>
+        {appearance?.options?.displayLogo && (
+          <div data-contain="logo">
+            <Image src={config.logo_url} alt={config.site_display_name} appearance={appearance?.elements?.Logo} />
+          </div>
         )}
-        {/** handle joinable orgs & personal domains */}
-      </form>
-    </Container>
+        <div data-contain="header">
+          <H3 appearance={appearance?.elements?.Header}>
+            {appearance?.options?.headerText || `Create your ${orgMetaname}`}
+          </H3>
+        </div>
+        <div data-contain="form">
+          <form onSubmit={createOrg}>
+            <div>
+              <Input
+                type={"text"}
+                placeholder={orgMetaname + "name"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                appearance={appearance?.elements?.OrgNameInput}
+                required
+              />
+            </div>
+            <div>
+              <Checkbox
+                id={"autojoin_by_domain"}
+                label={"Auto-join by domain"}
+                checked={autojoinByDefault}
+                onChange={(e) => setAutojoinByDefault(e.target.checked)}
+                appearance={appearance?.elements?.AutojoinByDomainCheckbox}
+                disabled={true}
+              />
+            </div>
+            <div>
+              <Checkbox
+                id={"restrict_to_domain"}
+                label={"Restrict to domain"}
+                checked={restrictToDomain}
+                onChange={(e) => setRestrictToDomain(e.target.checked)}
+                appearance={appearance?.elements?.RestrictToDomainCheckbox}
+                disabled={true}
+              />
+            </div>
+            <Button loading={loading} appearance={appearance?.elements?.SubmitButton}>
+              {`Create ${orgMetaname}`}
+            </Button>
+            {error && (
+              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                {error}
+              </Alert>
+            )}
+            {/** handle joinable orgs & personal domains */}
+          </form>
+        </div>
+      </Container>
+    </div>
   );
 };

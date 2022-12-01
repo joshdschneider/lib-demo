@@ -3,12 +3,12 @@ import { Button } from "../../elements";
 import { AuthContext, Config } from "../../state";
 import { Appearance } from "../../utils";
 
-export type SigninOptionsProps = {
+export type SignInOptionsProps = {
   config: Config;
   buttonAppearance?: Appearance;
 };
 
-export const SigninOptions = ({ config, buttonAppearance }: SigninOptionsProps) => {
+export const SignInOptions = ({ config, buttonAppearance }: SignInOptionsProps) => {
   const authContext = useContext(AuthContext);
 
   if (!authContext || !authContext.authUrl) {

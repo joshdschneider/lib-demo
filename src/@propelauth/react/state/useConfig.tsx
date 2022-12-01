@@ -28,7 +28,7 @@ const DEFAULT_CONFIG = {
   has_microsoft_login: false,
   has_slack_login: false,
   has_linkedin_login: false,
-  has_passwordless_login: false,
+  has_passwordless_login: true,
   has_any_social_login: true,
   has_sso_login: false,
   has_password_login: true,

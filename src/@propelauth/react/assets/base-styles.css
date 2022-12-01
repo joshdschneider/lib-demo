@@ -1,0 +1,164 @@
+/*
+  --START--
+  Default styles 
+  for base elements
+*/
+
+.BaseContainer {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.BaseButton {
+  appearance: none;
+  cursor: pointer;
+  margin: 0px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+}
+
+.BaseDivider {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0px 0 15px 0;
+}
+
+.BaseDivider[data-children="false"] {
+  margin: -8px 0 20px 0;
+}
+
+.BaseDivider span {
+  position: relative;
+  display: inline-block;
+  color: #b5b5b5;
+  font-size: 14px;
+}
+
+.BaseDivider span:before,
+.BaseDivider span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9999px;
+  height: 1px;
+  background: #ddd;
+}
+
+.BaseDivider span:before {
+  right: 100%;
+  margin-right: 15px;
+}
+
+.BaseDivider span:after {
+  left: 100%;
+  margin-left: 15px;
+}
+
+.BaseDivider[data-children="false"] span:before {
+  margin-right: 0px;
+}
+
+.BaseDivider[data-children="false"] span:after {
+  margin-left: 0px;
+}
+
+.BaseInput {
+  appearance: none;
+  border: 1px solid #ddd;
+  background: none;
+  margin: 0px;
+  padding: 10px 12px;
+}
+
+.BaseCheckbox {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 0 10px 0;
+}
+
+.BaseCheckbox .BaseLabel {
+  padding-left: 5px;
+}
+
+/*
+  --END--
+  Default styles 
+  for base elements
+*/
+
+/*
+  --START--
+  Default styles for components
+  using base elements
+*/
+
+div[data-contain="logo"] .BaseImage {
+  width: auto;
+  height: 100px;
+}
+
+div[data-contain="component"] .BaseInput {
+  width: calc(100% - 25px);
+  margin: 0px 0px 10px 0px;
+}
+
+div[data-contain="form"] .BaseButton {
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+div[data-contain="social_buttons"] {
+  margin-bottom: 15px;
+}
+
+div[data-contain="social_buttons"] .BaseButton {
+  width: 100%;
+  margin-bottom: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div[data-contain="social_buttons"] .BaseButton:last-child {
+  margin-bottom: 0px;
+}
+
+div[data-contain="social_buttons"] svg {
+  position: absolute;
+  left: 10px;
+  width: 18px;
+  height: auto;
+}
+
+div[data-contain="link"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div[data-contain="links"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+div[data-contain="link"] .BaseButton,
+div[data-contain="links"] .BaseButton {
+  border: none;
+  background: none;
+}
+
+/* 
+  --END--
+  Default styles for components
+  using base elements
+*/
