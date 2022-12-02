@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
 import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ChangeEventHandler, CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 export type ProgressProps = {
   className?: string;

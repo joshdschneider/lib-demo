@@ -1,5 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react";
-import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
+import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import { apiLogin } from "../api";
 import { useConfig, ElementAppearance } from "../state";
 import { SignInDivider } from "./shared/SignInDivider";
@@ -72,7 +72,7 @@ export const Login = ({
   createOrgAppearance,
 }: LoginProps) => {
   const { config } = useConfig();
-  const [step, setStep] = useState<LoginStateEnum>(LoginStateEnum.Login);
+  const [step, setStep] = useState<LoginStateEnum>(LoginStateEnum.LoginRequired);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
@@ -102,7 +102,7 @@ export const Login = ({
   }, [step, onSuccess]);
 
   switch (step) {
-    case LoginStateEnum.Login:
+    case LoginStateEnum.LoginRequired:
       return (
         <div data-contain="component">
           <Container appearance={appearance?.elements?.Container}>
@@ -195,7 +195,7 @@ export const Login = ({
         <Container>
           <H3>Something went wrong</H3>
           <Paragraph>Looks like something went wrong. Please return to login.</Paragraph>
-          <Button onClick={() => setStep(LoginStateEnum.Login)}>Return to login</Button>
+          <Button onClick={() => setStep(LoginStateEnum.LoginRequired)}>Return to login</Button>
         </Container>
       );
   }

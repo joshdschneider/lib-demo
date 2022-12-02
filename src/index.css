@@ -26,7 +26,19 @@ code {
   border-radius: 50%;
 }
 
+.border-radius-circular {
+  border-radius: 50px;
+}
+
 .custom-position {
   max-width: 90px;
   margin-top: -70px;
+}
+
+.dark-mode {
+  background: #000;
+}
+
+.light-mode {
+  background: #fff;
 }

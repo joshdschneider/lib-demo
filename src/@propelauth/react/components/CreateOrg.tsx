@@ -1,4 +1,4 @@
-import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/api";
+import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 import { apiCreateOrg } from "../api";
 import { Config, ElementAppearance } from "../state";
