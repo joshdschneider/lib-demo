@@ -10,6 +10,7 @@ import { BaseImage } from "./BaseImage";
 import { BaseInput } from "./BaseInput";
 import { BaseLabel } from "./BaseLabel";
 import { BaseLink } from "./BaseLink";
+import { BaseModal } from "./BaseModal";
 import { BaseParagraph } from "./BaseParagraph";
 import { BaseProgress } from "./BaseProgress";
 
@@ -26,6 +27,7 @@ export const BaseElements = {
   Input: BaseInput,
   Label: BaseLabel,
   Link: BaseLink,
+  Modal: BaseModal,
   Paragraph: BaseParagraph,
   Progress: BaseProgress,
 };

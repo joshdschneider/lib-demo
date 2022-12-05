@@ -12,6 +12,7 @@ import {
   InputProps,
   LabelProps,
   LinkProps,
+  ModalProps,
   ParagraphProps,
   ProgressProps,
 } from "../elements";
@@ -37,6 +38,7 @@ export type Appearance = {
     Input?: ElementAppearance<InputProps>;
     Label?: ElementAppearance<LabelProps>;
     Link?: ElementAppearance<LinkProps>;
+    Modal?: ElementAppearance<ModalProps>;
     Paragraph?: ElementAppearance<ParagraphProps>;
     Progress?: ElementAppearance<ProgressProps>;
   };

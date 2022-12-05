@@ -11,6 +11,7 @@ import {
   InputProps,
   LabelProps,
   LinkProps,
+  ModalProps,
   ParagraphProps,
   ProgressProps,
 } from "../../@propelauth/react";
@@ -26,5 +27,6 @@ export type BaseImageProps = ImageProps;
 export type BaseInputProps = InputProps;
 export type BaseLabelProps = LabelProps;
 export type BaseLinkProps = LinkProps;
+export type BaseModalProps = ModalProps;
 export type BaseParagraphProps = ParagraphProps;
 export type BaseProgressProps = ProgressProps;

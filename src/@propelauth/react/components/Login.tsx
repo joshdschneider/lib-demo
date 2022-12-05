@@ -19,6 +19,7 @@ import {
   InputProps,
   ButtonProps,
   AlertProps,
+  Modal,
 } from "../elements";
 import {
   Verify,

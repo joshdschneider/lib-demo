@@ -10,5 +10,6 @@ export * from "./Image";
 export * from "./Input";
 export * from "./Label";
 export * from "./Link";
+export * from "./Modal";
 export * from "./Paragraph";
 export * from "./Progress";

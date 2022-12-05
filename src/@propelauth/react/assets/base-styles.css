@@ -85,6 +85,25 @@
   padding-left: 5px;
 }
 
+.BaseModal {
+  display: block;
+  max-width: 350px;
+  padding: 20px;
+  margin: 20px;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  opacity: 0;
+  transform: scale(0);
+  transition: 0.1s;
+}
+
+.BaseModal[data-show] {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+}
+
 /*
   --END--
   Default styles 
@@ -96,6 +115,34 @@
   Default styles for components
   using base elements
 */
+
+body[data-lock] {
+  overflow-y: hidden;
+}
+
+div[data-contain="modal"] {
+  display: none;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+div[data-animate] {
+  opacity: 1;
+  display: flex;
+}
+
+div[data-show] {
+  display: flex;
+}
 
 div[data-contain="logo"] .BaseImage {
   width: auto;

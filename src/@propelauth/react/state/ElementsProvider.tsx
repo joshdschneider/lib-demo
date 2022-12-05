@@ -13,6 +13,7 @@ import {
   InputProps,
   LabelProps,
   LinkProps,
+  ModalProps,
   ParagraphProps,
   ProgressProps,
 } from "../elements";
@@ -31,6 +32,7 @@ export type Elements = {
   Input: (props: InputProps) => JSX.Element;
   Label: (props: LabelProps) => JSX.Element;
   Link: (props: LinkProps) => JSX.Element;
+  Modal: (props: ModalProps) => JSX.Element;
   Paragraph: (props: ParagraphProps) => JSX.Element;
   Progress: (props: ProgressProps) => JSX.Element;
 };
