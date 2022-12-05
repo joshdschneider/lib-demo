@@ -86,6 +86,30 @@
 }
 
 .BaseModal {
+  display: none;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.BaseModal[data-animate] {
+  opacity: 1;
+  display: flex;
+}
+
+.BaseModal[data-show] {
+  display: flex;
+}
+
+.BaseModal--inner {
   display: block;
   max-width: 350px;
   padding: 20px;
@@ -98,7 +122,36 @@
   transition: 0.1s;
 }
 
-.BaseModal[data-show] {
+.BaseModal--inner[data-show] {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.BasePopover {
+  display: none;
+  z-index: 10;
+}
+
+.BasePopover[data-show] {
+  display: block;
+}
+
+.BasePopover--inner {
+  display: block;
+  padding: 0;
+  margin: 0;
+  min-width: 150px;
+  max-width: 300px;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0);
+  transition: 0.1s;
+}
+
+.BasePopover--inner[data-show] {
   display: block;
   opacity: 1;
   transform: scale(1);
@@ -118,30 +171,6 @@
 
 body[data-lock] {
   overflow-y: hidden;
-}
-
-div[data-contain="modal"] {
-  display: none;
-  position: fixed;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.15);
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  opacity: 0;
-  transition: 0.2s;
-}
-
-div[data-animate] {
-  opacity: 1;
-  display: flex;
-}
-
-div[data-show] {
-  display: flex;
 }
 
 div[data-contain="logo"] .BaseImage {

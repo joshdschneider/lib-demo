@@ -15,6 +15,7 @@ import {
   LinkProps,
   ModalProps,
   ParagraphProps,
+  PopoverProps,
   ProgressProps,
 } from "../elements";
 import "../assets/base-styles.css";
@@ -34,6 +35,7 @@ export type Elements = {
   Link: (props: LinkProps) => JSX.Element;
   Modal: (props: ModalProps) => JSX.Element;
   Paragraph: (props: ParagraphProps) => JSX.Element;
+  Popover: (props: PopoverProps) => JSX.Element;
   Progress: (props: ProgressProps) => JSX.Element;
 };
 

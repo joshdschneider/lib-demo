@@ -12,6 +12,7 @@ import { BaseLabel } from "./BaseLabel";
 import { BaseLink } from "./BaseLink";
 import { BaseModal } from "./BaseModal";
 import { BaseParagraph } from "./BaseParagraph";
+import { BasePopover } from "./BasePopover";
 import { BaseProgress } from "./BaseProgress";
 
 export const BaseElements = {
@@ -29,5 +30,6 @@ export const BaseElements = {
   Link: BaseLink,
   Modal: BaseModal,
   Paragraph: BaseParagraph,
+  Popover: BasePopover,
   Progress: BaseProgress,
 };

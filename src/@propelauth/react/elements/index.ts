@@ -12,4 +12,5 @@ export * from "./Label";
 export * from "./Link";
 export * from "./Modal";
 export * from "./Paragraph";
+export * from "./Popover";
 export * from "./Progress";

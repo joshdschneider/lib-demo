@@ -33,8 +33,8 @@ export const BaseModal = ({ show, setShow, onClose, className, children, ...rest
   }, [show, innerElement, modalElement, onClose, setShow]);
 
   return (
-    <div ref={setModalElement} data-contain="modal">
-      <div ref={setInnerElement} className={prepend("BaseModal", className)} {...rest}>
+    <div ref={setModalElement} className={prepend("BaseModal", className)}>
+      <div ref={setInnerElement} className={"BaseModal--inner"} {...rest}>
         {children}
       </div>
     </div>

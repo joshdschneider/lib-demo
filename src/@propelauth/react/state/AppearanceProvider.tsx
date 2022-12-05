@@ -14,6 +14,7 @@ import {
   LinkProps,
   ModalProps,
   ParagraphProps,
+  PopoverProps,
   ProgressProps,
 } from "../elements";
 
@@ -40,6 +41,7 @@ export type Appearance = {
     Link?: ElementAppearance<LinkProps>;
     Modal?: ElementAppearance<ModalProps>;
     Paragraph?: ElementAppearance<ParagraphProps>;
+    Popover?: ElementAppearance<PopoverProps>;
     Progress?: ElementAppearance<ProgressProps>;
   };
 };
