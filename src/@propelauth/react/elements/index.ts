@@ -14,4 +14,5 @@ export * from "./Modal";
 export * from "./Paragraph";
 export * from "./Popover";
 export * from "./Progress";
+export * from "./Select";
 export * from "./Table";

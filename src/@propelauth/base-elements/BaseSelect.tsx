@@ -1,0 +1,33 @@
+import { BaseSelectProps } from "./_types";
+import { prepend } from "./_utils";
+
+export const BaseSelect = ({ options, className, ...rest }: BaseSelectProps) => {
+  return (
+    <select className={prepend("BaseSelect", className)} {...rest}>
+      {options &&
+        options.map((item, i) => {
+          if ("options" in item) {
+            return (
+              <optgroup key={i} label={item.label}>
+                {item.options.map((o, n) => {
+                  return (
+                    <option key={n} label={o.label || o.value} value={o.value}>
+                      {o.label || o.value}
+                    </option>
+                  );
+                })}
+              </optgroup>
+            );
+          } else if ("value" in item) {
+            return (
+              <option key={i} label={item.label || item.value} value={item.value}>
+                {item.label || item.value}
+              </option>
+            );
+          } else {
+            return null;
+          }
+        })}
+    </select>
+  );
+};

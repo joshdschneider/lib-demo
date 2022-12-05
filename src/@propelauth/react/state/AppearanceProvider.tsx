@@ -16,6 +16,7 @@ import {
   ParagraphProps,
   PopoverProps,
   ProgressProps,
+  SelectProps,
   TableProps,
 } from "../elements";
 
@@ -44,6 +45,7 @@ export type Appearance = {
     Paragraph?: ElementAppearance<ParagraphProps>;
     Popover?: ElementAppearance<PopoverProps>;
     Progress?: ElementAppearance<ProgressProps>;
+    Select?: ElementAppearance<SelectProps>;
     Table?: ElementAppearance<TableProps>;
   };
 };

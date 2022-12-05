@@ -14,6 +14,7 @@ import { BaseModal } from "./BaseModal";
 import { BaseParagraph } from "./BaseParagraph";
 import { BasePopover } from "./BasePopover";
 import { BaseProgress } from "./BaseProgress";
+import { BaseSelect } from "./BaseSelect";
 import { BaseTable } from "./BaseTable";
 
 export const BaseElements = {
@@ -33,5 +34,6 @@ export const BaseElements = {
   Paragraph: BaseParagraph,
   Popover: BasePopover,
   Progress: BaseProgress,
+  Select: BaseSelect,
   Table: BaseTable,
 };
