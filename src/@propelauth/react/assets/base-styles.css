@@ -66,6 +66,16 @@
 }
 
 .BaseInput {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #ddd;
+  background: none;
+  margin: 0px;
+  padding: 10px 12px;
+}
+
+.BaseSelect {
+  -webkit-appearance: none;
   appearance: none;
   border: 1px solid #ddd;
   background: none;
