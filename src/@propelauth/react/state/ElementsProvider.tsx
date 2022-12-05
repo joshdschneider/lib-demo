@@ -17,6 +17,7 @@ import {
   ParagraphProps,
   PopoverProps,
   ProgressProps,
+  TableProps,
 } from "../elements";
 import "../assets/base-styles.css";
 
@@ -37,6 +38,7 @@ export type Elements = {
   Paragraph: (props: ParagraphProps) => JSX.Element;
   Popover: (props: PopoverProps) => JSX.Element;
   Progress: (props: ProgressProps) => JSX.Element;
+  Table: (props: TableProps) => JSX.Element;
 };
 
 export type ElementsState = {

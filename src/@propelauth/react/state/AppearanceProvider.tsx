@@ -16,6 +16,7 @@ import {
   ParagraphProps,
   PopoverProps,
   ProgressProps,
+  TableProps,
 } from "../elements";
 
 export type Element<T> = (props: T) => JSX.Element;
@@ -43,6 +44,7 @@ export type Appearance = {
     Paragraph?: ElementAppearance<ParagraphProps>;
     Popover?: ElementAppearance<PopoverProps>;
     Progress?: ElementAppearance<ProgressProps>;
+    Table?: ElementAppearance<TableProps>;
   };
 };
 

@@ -157,6 +157,42 @@
   transform: scale(1);
 }
 
+.BaseTable {
+  display: table;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.BaseTable tbody {
+  display: table-row-group;
+  vertical-align: middle;
+}
+
+.BaseTable tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-bottom: 1px solid #ddd;
+}
+
+.BaseTable tr:last-child {
+  border-bottom: none;
+}
+
+.BaseTable th {
+  display: table-cell;
+  vertical-align: inherit;
+  text-align: left;
+  padding: 10px 15px;
+}
+
+.BaseTable td {
+  display: table-cell;
+  vertical-align: inherit;
+  text-align: left;
+  padding: 10px 15px;
+}
+
 /*
   --END--
   Default styles 

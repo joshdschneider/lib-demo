@@ -14,6 +14,7 @@ import { BaseModal } from "./BaseModal";
 import { BaseParagraph } from "./BaseParagraph";
 import { BasePopover } from "./BasePopover";
 import { BaseProgress } from "./BaseProgress";
+import { BaseTable } from "./BaseTable";
 
 export const BaseElements = {
   Alert: BaseAlert,
@@ -32,4 +33,5 @@ export const BaseElements = {
   Paragraph: BaseParagraph,
   Popover: BasePopover,
   Progress: BaseProgress,
+  Table: BaseTable,
 };

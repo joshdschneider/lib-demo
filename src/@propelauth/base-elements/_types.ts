@@ -15,6 +15,7 @@ import {
   ParagraphProps,
   PopoverProps,
   ProgressProps,
+  TableProps,
 } from "../../@propelauth/react";
 export type BaseAlertProps = AlertProps;
 export type BaseButtonProps = ButtonProps;
@@ -32,3 +33,4 @@ export type BaseModalProps = ModalProps;
 export type BaseParagraphProps = ParagraphProps;
 export type BasePopoverProps = PopoverProps;
 export type BaseProgressProps = ProgressProps;
+export type BaseTableProps = TableProps;
