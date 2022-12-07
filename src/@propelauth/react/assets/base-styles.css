@@ -295,11 +295,12 @@ div[data-contain="search_action"] {
 }
 
 div[data-contain="search_action"] .BaseInput {
-  margin: 0 15px 0 0;
+  margin: 0;
 }
 
 div[data-contain="search_action"] .BaseButton {
   white-space: nowrap;
+  margin-left: 15px;
 }
 
 div[data-contain="table"] td:last-child {
@@ -310,6 +311,21 @@ div[data-contain="table"] td:last-child {
 div[data-contain="table"] td:last-child button {
   margin: -1px;
   padding: 12px 12px;
+}
+
+div[data-contain="pagination"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+div[data-contain="pagination"] .BaseParagraph {
+  margin: 0 0 0 5px;
+}
+
+div[data-contain="pagination_buttons"] .BaseButton:last-child {
+  margin-left: 15px;
 }
 
 /* 

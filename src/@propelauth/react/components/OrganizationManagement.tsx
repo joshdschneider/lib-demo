@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Container, Input, Popover, Table } from "../elements";
+import { Button, Container, Input, Paragraph, Row, Table } from "../elements";
 
 export type OrganizationManagementProps = {
   orgId: string;
@@ -10,6 +10,7 @@ export const OrganizationManagement = ({ orgId }: OrganizationManagementProps) =
   const [query, setQuery] = useState<string>("");
   const [filters, setFilters] = useState<string[]>([]);
   const { results } = useOrgSearch({ users, pendingInvites, query, filters });
+  const { items, controls } = usePagination<Row>({ items: results, itemsPerPage: 10 });
   const [filterPopover, setFilterPopover] = useState<HTMLButtonElement | null>(null);
   const [showFilterPopover, setShowFilterPopover] = useState(false);
   const columns = ["Email", "Role", "Status", null];
@@ -25,7 +26,10 @@ export const OrganizationManagement = ({ orgId }: OrganizationManagementProps) =
           <Button onClick={() => null}>Invite User</Button>
         </div>
         <div data-contain="table">
-          <Table columns={columns} rows={results} />
+          <Table columns={columns} rows={items as Row[]} />
+        </div>
+        <div data-contain="pagination">
+          <Pagination controls={controls} />
         </div>
       </Container>
     </div>
@@ -185,3 +189,68 @@ export const useOrgSearch = ({ users, pendingInvites, query, filters }: UseOrgSe
 
   return { results };
 };
+
+export type PaginationProps<T> = {
+  items: T[];
+} & PaginationControls;
+
+export type PaginationControls = {
+  controls: {
+    currentPage: number;
+    totalPages: number;
+    hasBack: boolean;
+    hasNext: boolean;
+    onBack: VoidFunction;
+    onNext: VoidFunction;
+  };
+};
+
+export const Pagination = ({ controls }: PaginationControls) => {
+  return (
+    <>
+      <Paragraph>{`Page ${controls.currentPage} of ${controls.totalPages}`}</Paragraph>
+      <div data-contain="pagination_buttons">
+        {controls.hasBack && <Button onClick={controls.onBack}>Back</Button>}
+        {controls.hasNext && <Button onClick={controls.onNext}>Next</Button>}
+      </div>
+    </>
+  );
+};
+
+export type UsePaginationProps<T> = {
+  items: T[];
+  itemsPerPage: number;
+};
+
+export function usePagination<T>({ items, itemsPerPage }: UsePaginationProps<T>) {
+  const [page, setPage] = useState<number>(1);
+  const [pageItems, setPageItems] = useState<T[]>(items ?? []);
+  const [numItems, setNumItems] = useState<number>(items ? items.length : 0);
+  const maxPages = Math.ceil(numItems / itemsPerPage);
+
+  useEffect(() => {
+    if (items && items.length) {
+      setNumItems(items.length);
+      setPage(1);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    const arr = items ?? [];
+    const start = (page - 1) * itemsPerPage;
+    const end = page * itemsPerPage;
+    setPageItems(arr.slice(start, end));
+  }, [items, page, itemsPerPage]);
+
+  return {
+    items: pageItems,
+    controls: {
+      currentPage: page,
+      totalPages: maxPages,
+      hasBack: page > 1,
+      hasNext: page < maxPages,
+      onBack: () => setPage(page - 1),
+      onNext: () => setPage(page + 1),
+    },
+  };
+}
