@@ -1,10 +1,12 @@
 import { BaseLinkProps } from "./_types";
 import { prepend } from "./_utils";
+import { forwardRef } from "react";
 
-export const BaseLink = ({ className, children, ...rest }: BaseLinkProps) => {
+export const BaseLink = forwardRef<HTMLAnchorElement, BaseLinkProps>((props, ref) => {
+  const { className, children, ...rest } = props;
   return (
-    <a className={prepend("BaseLink", className)} {...rest}>
+    <a ref={ref} className={prepend("BaseLink", className)} {...rest}>
       {children}
     </a>
   );
-};
+});

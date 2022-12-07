@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { ReactNode, CSSProperties, forwardRef } from "react";
 
 export type AlertProps = {
   type?: "error" | "info" | "success" | "warning";
@@ -9,30 +9,29 @@ export type AlertProps = {
   children?: ReactNode;
 };
 
-export type AlertPropsWithAppearance = { appearance?: ElementAppearance<AlertProps> } & AlertProps;
+export type AlertPropsWithAppearance = {
+  appearance?: ElementAppearance<AlertProps>;
+} & AlertProps;
 
-export const Alert = ({ appearance, type, children }: AlertPropsWithAppearance) => {
+export const Alert = forwardRef<HTMLDivElement, AlertPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Alert;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<AlertProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Alert,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element type={type} className={joinedProps.classes} style={joinedProps.styles}>
-        {children}
-      </joinedProps.Element>
+      <Override type={props.type} className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
-    <elements.Alert type={type} className={joinedProps.classes} style={joinedProps.styles}>
-      {children}
+    <elements.Alert ref={ref} type={props.type} className={classes} style={styles}>
+      {props.children}
     </elements.Alert>
   );
-};
+});

@@ -1,8 +1,8 @@
-import { ButtonProps, Divider } from "../../elements";
+import { DividerProps, Divider } from "../../elements";
 import { ElementAppearance } from "../../state";
 
 export type SignInDividerProps = {
-  appearance?: ElementAppearance<ButtonProps>;
+  appearance?: ElementAppearance<DividerProps>;
   options?: string | boolean | undefined;
 };
 

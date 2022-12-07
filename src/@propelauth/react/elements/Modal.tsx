@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties, Dispatch, SetStateAction } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, Dispatch, SetStateAction } from "react";
 
 export type ModalProps = {
   show: boolean;
@@ -11,42 +11,35 @@ export type ModalProps = {
   children?: ReactNode;
 };
 
-export type ModalPropsWithAppearance = { appearance?: ElementAppearance<ModalProps> } & ModalProps;
+export type ModalPropsWithAppearance = {
+  appearance?: ElementAppearance<ModalProps>;
+} & ModalProps;
 
-export const Modal = ({ show, setShow, onClose, appearance, children }: ModalPropsWithAppearance) => {
+export const Modal = (props: ModalPropsWithAppearance) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Modal;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<ModalProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Modal,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element
-        show={show}
-        setShow={setShow}
-        onClose={onClose}
-        className={joinedProps.classes}
-        style={joinedProps.styles}
-      >
-        {children}
-      </joinedProps.Element>
+      <Override show={props.show} setShow={props.setShow} onClose={props.onClose} className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
     <elements.Modal
-      show={show}
-      setShow={setShow}
-      onClose={onClose}
-      className={joinedProps.classes}
-      style={joinedProps.styles}
+      show={props.show}
+      setShow={props.setShow}
+      onClose={props.onClose}
+      className={classes}
+      style={styles}
     >
-      {children}
+      {props.children}
     </elements.Modal>
   );
 };

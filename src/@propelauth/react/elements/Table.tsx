@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, forwardRef } from "react";
 
 export type Column = ReactNode;
 
@@ -15,24 +15,21 @@ export type TableProps = {
   style?: CSSProperties;
 };
 
-export type TablePropsWithAppearance = { appearance?: ElementAppearance<TableProps> } & TableProps;
+export type TablePropsWithAppearance = {
+  appearance?: ElementAppearance<TableProps>;
+} & TableProps;
 
-export const Table = ({ columns, rows, appearance }: TablePropsWithAppearance) => {
+export const Table = forwardRef<HTMLTableElement, TablePropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Table;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<TableProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Table,
+  });
 
-  if (joinedProps.Element) {
-    return (
-      <joinedProps.Element columns={columns} rows={rows} className={joinedProps.classes} style={joinedProps.styles} />
-    );
+  if (Override) {
+    return <Override columns={props.columns} rows={props.rows} className={classes} style={styles} />;
   }
 
-  return <elements.Table columns={columns} rows={rows} className={joinedProps.classes} style={joinedProps.styles} />;
-};
+  return <elements.Table ref={ref} columns={props.columns} rows={props.rows} className={classes} style={styles} />;
+});

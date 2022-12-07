@@ -1,9 +1,11 @@
 import { BaseTableProps } from "./_types";
 import { prepend } from "./_utils";
+import { forwardRef } from "react";
 
-export const BaseTable = ({ columns, rows, className, ...rest }: BaseTableProps) => {
+export const BaseTable = forwardRef<HTMLTableElement, BaseTableProps>((props, ref) => {
+  const { columns, rows, className, ...rest } = props;
   return (
-    <table className={prepend("BaseTable", className)} {...rest}>
+    <table ref={ref} className={prepend("BaseTable", className)} {...rest}>
       <tbody>
         <tr>
           {columns.map((col, i) => {
@@ -28,4 +30,4 @@ export const BaseTable = ({ columns, rows, className, ...rest }: BaseTableProps)
       </tbody>
     </table>
   );
-};
+});

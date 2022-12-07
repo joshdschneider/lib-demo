@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ChangeEventHandler, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { ChangeEventHandler, CSSProperties, forwardRef } from "react";
 
 export type CheckboxProps = {
   checked: boolean;
@@ -13,52 +13,44 @@ export type CheckboxProps = {
   style?: CSSProperties;
 };
 
-export type CheckboxPropsWithAppearance = { appearance?: ElementAppearance<CheckboxProps> } & CheckboxProps;
+export type CheckboxPropsWithAppearance = {
+  appearance?: ElementAppearance<CheckboxProps>;
+} & CheckboxProps;
 
-export const Checkbox = ({
-  appearance,
-  id,
-  label,
-  checked,
-  onChange,
-  required,
-  disabled,
-}: CheckboxPropsWithAppearance) => {
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Checkbox;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<CheckboxProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Checkbox,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element
-        id={id}
-        label={label}
-        required={required}
-        disabled={disabled}
-        checked={checked}
-        onChange={onChange}
-        className={joinedProps.classes}
-        style={joinedProps.styles}
+      <Override
+        id={props.id}
+        label={props.label}
+        required={props.required}
+        disabled={props.disabled}
+        checked={props.checked}
+        onChange={props.onChange}
+        className={classes}
+        style={styles}
       />
     );
   }
 
   return (
     <elements.Checkbox
-      id={id}
-      label={label}
-      required={required}
-      disabled={disabled}
-      checked={checked}
-      onChange={onChange}
-      className={joinedProps.classes}
-      style={joinedProps.styles}
+      ref={ref}
+      id={props.id}
+      label={props.label}
+      required={props.required}
+      disabled={props.disabled}
+      checked={props.checked}
+      onChange={props.onChange}
+      className={classes}
+      style={styles}
     />
   );
-};
+});

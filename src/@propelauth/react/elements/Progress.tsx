@@ -1,28 +1,27 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, forwardRef } from "react";
 
 export type ProgressProps = {
   className?: string;
   style?: CSSProperties;
 };
 
-export type ProgressPropsWithAppearance = { appearance?: ElementAppearance<ProgressProps> } & ProgressProps;
+export type ProgressPropsWithAppearance = {
+  appearance?: ElementAppearance<ProgressProps>;
+} & ProgressProps;
 
-export const Progress = ({ appearance }: ProgressPropsWithAppearance) => {
+export const Progress = forwardRef<HTMLSpanElement, ProgressPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Progress;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<ProgressProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Progress,
+  });
 
-  if (joinedProps.Element) {
-    return <joinedProps.Element className={joinedProps.classes} style={joinedProps.styles} />;
+  if (Override) {
+    return <Override className={classes} style={styles} />;
   }
 
-  return <elements.Progress className={joinedProps.classes} style={joinedProps.styles} />;
-};
+  return <elements.Progress ref={ref} className={classes} style={styles} />;
+});

@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, forwardRef } from "react";
 
 export type H1Props = {
   className?: string;
@@ -8,30 +8,29 @@ export type H1Props = {
   children?: ReactNode;
 };
 
-export type H1PropsWithAppearance = { appearance?: ElementAppearance<H1Props> } & H1Props;
+export type H1PropsWithAppearance = {
+  appearance?: ElementAppearance<H1Props>;
+} & H1Props;
 
-export const H1 = ({ appearance, children }: H1PropsWithAppearance) => {
+export const H1 = forwardRef<HTMLHeadingElement, H1PropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.H1;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<H1Props>({
+    appearance: props.appearance,
+    element: appearance.elements?.H1,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element className={joinedProps.classes} style={joinedProps.styles}>
-        {children}
-      </joinedProps.Element>
+      <Override className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
-    <elements.H1 className={joinedProps.classes} style={joinedProps.styles}>
-      {children}
+    <elements.H1 ref={ref} className={classes} style={styles}>
+      {props.children}
     </elements.H1>
   );
-};
+});

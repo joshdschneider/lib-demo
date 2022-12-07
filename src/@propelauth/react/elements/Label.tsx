@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, forwardRef } from "react";
 
 export type LabelProps = {
   htmlFor?: string;
@@ -9,30 +9,29 @@ export type LabelProps = {
   children?: ReactNode;
 };
 
-export type LabelPropsWithAppearance = { appearance?: ElementAppearance<LabelProps> } & LabelProps;
+export type LabelPropsWithAppearance = {
+  appearance?: ElementAppearance<LabelProps>;
+} & LabelProps;
 
-export const Label = ({ htmlFor, appearance, children }: LabelPropsWithAppearance) => {
+export const Label = forwardRef<HTMLLabelElement, LabelPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Label;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<LabelProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Label,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element htmlFor={htmlFor} className={joinedProps.classes} style={joinedProps.styles}>
-        {children}
-      </joinedProps.Element>
+      <Override htmlFor={props.htmlFor} className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
-    <elements.Label htmlFor={htmlFor} className={joinedProps.classes} style={joinedProps.styles}>
-      {children}
+    <elements.Label ref={ref} htmlFor={props.htmlFor} className={classes} style={styles}>
+      {props.children}
     </elements.Label>
   );
-};
+});

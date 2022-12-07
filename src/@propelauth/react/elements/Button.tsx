@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
 import { mergeProps } from "../utils";
-import { MouseEventHandler, CSSProperties, ReactNode, Ref, forwardRef } from "react";
+import { MouseEventHandler, CSSProperties, ReactNode, forwardRef } from "react";
 
 export type ButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -9,10 +9,11 @@ export type ButtonProps = {
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
-  ref?: Ref<HTMLButtonElement>;
 };
 
-export type ButtonPropsWithAppearance = { appearance?: ElementAppearance<ButtonProps> } & ButtonProps;
+export type ButtonPropsWithAppearance = {
+  appearance?: ElementAppearance<ButtonProps>;
+} & ButtonProps;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
@@ -30,7 +31,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((
         onClick={props.onClick}
         className={classes}
         style={styles}
-        ref={ref}
       >
         {props.children}
       </Override>
@@ -39,12 +39,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((
 
   return (
     <elements.Button
+      ref={ref}
       loading={props.loading}
       disabled={props.disabled}
       onClick={props.onClick}
       className={classes}
       style={styles}
-      ref={ref}
     >
       {props.children}
     </elements.Button>

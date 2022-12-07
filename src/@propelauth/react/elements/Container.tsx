@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, forwardRef } from "react";
 
 export type ContainerProps = {
   className?: string;
@@ -8,30 +8,29 @@ export type ContainerProps = {
   children?: ReactNode;
 };
 
-export type ContainerPropsWithAppearance = { appearance?: ElementAppearance<ContainerProps> } & ContainerProps;
+export type ContainerPropsWithAppearance = {
+  appearance?: ElementAppearance<ContainerProps>;
+} & ContainerProps;
 
-export const Container = ({ appearance, children }: ContainerPropsWithAppearance) => {
+export const Container = forwardRef<HTMLDivElement, ContainerPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Container;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<ContainerProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Container,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element className={joinedProps.classes} style={joinedProps.styles}>
-        {children}
-      </joinedProps.Element>
+      <Override className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
-    <elements.Container className={joinedProps.classes} style={joinedProps.styles}>
-      {children}
+    <elements.Container ref={ref} className={classes} style={styles}>
+      {props.children}
     </elements.Container>
   );
-};
+});

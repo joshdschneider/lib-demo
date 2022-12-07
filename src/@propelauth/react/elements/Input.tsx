@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ChangeEventHandler, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { ChangeEventHandler, CSSProperties, forwardRef } from "react";
 
 export type InputProps = {
   value: string;
@@ -15,55 +15,46 @@ export type InputProps = {
   style?: CSSProperties;
 };
 
-export type InputPropsWithAppearance = { appearance?: ElementAppearance<InputProps> } & InputProps;
+export type InputPropsWithAppearance = {
+  appearance?: ElementAppearance<InputProps>;
+} & InputProps;
 
-export const Input = ({
-  appearance,
-  type,
-  placeholder,
-  id,
-  value,
-  onChange,
-  required,
-  disabled,
-}: InputPropsWithAppearance) => {
+export const Input = forwardRef<HTMLInputElement, InputPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Input;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<InputProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Input,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element
-        id={id}
-        type={type}
-        required={required}
-        disabled={disabled}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        className={joinedProps.classes}
-        style={joinedProps.styles}
+      <Override
+        id={props.id}
+        type={props.type}
+        required={props.required}
+        disabled={props.disabled}
+        value={props.value}
+        placeholder={props.placeholder}
+        onChange={props.onChange}
+        className={classes}
+        style={styles}
       />
     );
   }
 
   return (
     <elements.Input
-      id={id}
-      type={type}
-      required={required}
-      disabled={disabled}
-      value={value}
-      placeholder={placeholder}
-      onChange={onChange}
-      className={joinedProps.classes}
-      style={joinedProps.styles}
+      ref={ref}
+      id={props.id}
+      type={props.type}
+      required={props.required}
+      disabled={props.disabled}
+      value={props.value}
+      placeholder={props.placeholder}
+      onChange={props.onChange}
+      className={classes}
+      style={styles}
     />
   );
-};
+});

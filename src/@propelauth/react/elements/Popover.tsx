@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties, Dispatch, SetStateAction } from "react";
+import { mergeProps } from "../utils";
+import { Dispatch, SetStateAction, CSSProperties, ReactNode } from "react";
 
 export type PopoverProps = {
   referenceElement: HTMLElement | null;
@@ -12,51 +12,43 @@ export type PopoverProps = {
   children?: ReactNode;
 };
 
-export type PopoverPropsWithAppearance = { appearance?: ElementAppearance<PopoverProps> } & PopoverProps;
+export type PopoverPropsWithAppearance = {
+  appearance?: ElementAppearance<PopoverProps>;
+} & PopoverProps;
 
-export const Popover = ({
-  referenceElement,
-  show,
-  setShow,
-  placement,
-  appearance,
-  children,
-}: PopoverPropsWithAppearance) => {
+export const Popover = (props: PopoverPropsWithAppearance) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Popover;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<PopoverProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Popover,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element
-        referenceElement={referenceElement}
-        show={show}
-        setShow={setShow}
-        placement={placement}
-        className={joinedProps.classes}
-        style={joinedProps.styles}
+      <Override
+        referenceElement={props.referenceElement}
+        show={props.show}
+        setShow={props.setShow}
+        placement={props.placement}
+        className={classes}
+        style={styles}
       >
-        {children}
-      </joinedProps.Element>
+        {props.children}
+      </Override>
     );
   }
 
   return (
     <elements.Popover
-      referenceElement={referenceElement}
-      show={show}
-      setShow={setShow}
-      placement={placement}
-      className={joinedProps.classes}
-      style={joinedProps.styles}
+      referenceElement={props.referenceElement}
+      show={props.show}
+      setShow={props.setShow}
+      placement={props.placement}
+      className={classes}
+      style={styles}
     >
-      {children}
+      {props.children}
     </elements.Popover>
   );
 };

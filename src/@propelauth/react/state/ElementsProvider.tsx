@@ -6,6 +6,7 @@ import {
   useContext,
   useState,
   ForwardRefExoticComponent,
+  RefAttributes,
 } from "react";
 import { BaseElements } from "../../../@propelauth/base-elements";
 import {
@@ -31,24 +32,24 @@ import {
 import "../assets/base-styles.css";
 
 export type Elements = {
-  Alert: (props: AlertProps) => JSX.Element;
-  Button: ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>>;
-  Checkbox: (props: CheckboxProps) => JSX.Element;
-  Container: (props: ContainerProps) => JSX.Element;
-  Divider: (props: DividerProps) => JSX.Element;
-  H1: (props: H1Props) => JSX.Element;
-  H3: (props: H3Props) => JSX.Element;
-  H5: (props: H5Props) => JSX.Element;
-  Image: (props: ImageProps) => JSX.Element;
-  Input: (props: InputProps) => JSX.Element;
-  Label: (props: LabelProps) => JSX.Element;
-  Link: (props: LinkProps) => JSX.Element;
+  Alert: ForwardRefExoticComponent<AlertProps & RefAttributes<HTMLDivElement>>;
+  Button: ForwardRefExoticComponent<ButtonProps & RefAttributes<HTMLButtonElement>>;
+  Checkbox: ForwardRefExoticComponent<CheckboxProps & RefAttributes<HTMLInputElement>>;
+  Container: ForwardRefExoticComponent<ContainerProps & RefAttributes<HTMLDivElement>>;
+  Divider: ForwardRefExoticComponent<DividerProps & RefAttributes<HTMLDivElement>>;
+  H1: ForwardRefExoticComponent<H1Props & RefAttributes<HTMLHeadingElement>>;
+  H3: ForwardRefExoticComponent<H3Props & RefAttributes<HTMLHeadingElement>>;
+  H5: ForwardRefExoticComponent<H5Props & RefAttributes<HTMLHeadingElement>>;
+  Image: ForwardRefExoticComponent<ImageProps & RefAttributes<HTMLImageElement>>;
+  Input: ForwardRefExoticComponent<InputProps & RefAttributes<HTMLInputElement>>;
+  Label: ForwardRefExoticComponent<LabelProps & RefAttributes<HTMLLabelElement>>;
+  Link: ForwardRefExoticComponent<LinkProps & RefAttributes<HTMLAnchorElement>>;
   Modal: (props: ModalProps) => JSX.Element;
-  Paragraph: (props: ParagraphProps) => JSX.Element;
+  Paragraph: ForwardRefExoticComponent<ParagraphProps & RefAttributes<HTMLParagraphElement>>;
   Popover: (props: PopoverProps) => JSX.Element;
-  Progress: (props: ProgressProps) => JSX.Element;
-  Select: (props: SelectProps) => JSX.Element;
-  Table: (props: TableProps) => JSX.Element;
+  Progress: ForwardRefExoticComponent<ProgressProps & RefAttributes<HTMLSpanElement>>;
+  Select: ForwardRefExoticComponent<SelectProps & RefAttributes<HTMLSelectElement>>;
+  Table: ForwardRefExoticComponent<TableProps & RefAttributes<HTMLTableElement>>;
 };
 
 export type ElementsState = {
@@ -69,18 +70,8 @@ export type ElementsProviderProps = {
 };
 
 export const ElementsProvider = ({ elements, children }: ElementsProviderProps) => {
-  const [_elements, _setElements] = useState(elements || DEFAULT_ELEMENTS);
-
-  return (
-    <ElementsContext.Provider
-      value={{
-        elements: _elements,
-        setElements: _setElements,
-      }}
-    >
-      {children}
-    </ElementsContext.Provider>
-  );
+  const [el, setEl] = useState(elements || DEFAULT_ELEMENTS);
+  return <ElementsContext.Provider value={{ elements: el, setElements: setEl }}>{children}</ElementsContext.Provider>;
 };
 
 export const useElements = () => {

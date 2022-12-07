@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, forwardRef } from "react";
 
 export type ImageProps = {
   src: string;
@@ -9,22 +9,21 @@ export type ImageProps = {
   style?: CSSProperties;
 };
 
-export type ImagePropsWithAppearance = { appearance?: ElementAppearance<ImageProps> } & ImageProps;
+export type ImagePropsWithAppearance = {
+  appearance?: ElementAppearance<ImageProps>;
+} & ImageProps;
 
-export const Image = ({ src, alt, appearance }: ImagePropsWithAppearance) => {
+export const Image = forwardRef<HTMLImageElement, ImagePropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Image;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<ImageProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Image,
+  });
 
-  if (joinedProps.Element) {
-    return <joinedProps.Element src={src} alt={alt} className={joinedProps.classes} style={joinedProps.styles} />;
+  if (Override) {
+    return <Override src={props.src} alt={props.alt} className={classes} style={styles} />;
   }
 
-  return <elements.Image src={src} alt={alt} className={joinedProps.classes} style={joinedProps.styles} />;
-};
+  return <elements.Image ref={ref} src={props.src} alt={props.alt} className={classes} style={styles} />;
+});

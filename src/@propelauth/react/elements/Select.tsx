@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, forwardRef } from "react";
 
 export type Option = {
   label: string;
@@ -18,22 +18,21 @@ export type SelectProps = {
   style?: CSSProperties;
 };
 
-export type SelectPropsWithAppearance = { appearance?: ElementAppearance<SelectProps> } & SelectProps;
+export type SelectPropsWithAppearance = {
+  appearance?: ElementAppearance<SelectProps>;
+} & SelectProps;
 
-export const Select = ({ options, appearance }: SelectPropsWithAppearance) => {
+export const Select = forwardRef<HTMLSelectElement, SelectPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Select;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<SelectProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Select,
+  });
 
-  if (joinedProps.Element) {
-    return <joinedProps.Element options={options} className={joinedProps.classes} style={joinedProps.styles} />;
+  if (Override) {
+    return <Override options={props.options} className={classes} style={styles} />;
   }
 
-  return <elements.Select options={options} className={joinedProps.classes} style={joinedProps.styles} />;
-};
+  return <elements.Select ref={ref} options={props.options} className={classes} style={styles} />;
+});

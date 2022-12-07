@@ -1,9 +1,11 @@
 import { BaseSelectProps } from "./_types";
 import { prepend } from "./_utils";
+import { forwardRef } from "react";
 
-export const BaseSelect = ({ options, className, ...rest }: BaseSelectProps) => {
+export const BaseSelect = forwardRef<HTMLSelectElement, BaseSelectProps>((props, ref) => {
+  const { options, className, ...rest } = props;
   return (
-    <select className={prepend("BaseSelect", className)} {...rest}>
+    <select ref={ref} className={prepend("BaseSelect", className)} {...rest}>
       {options &&
         options.map((item, i) => {
           if ("options" in item) {
@@ -30,4 +32,4 @@ export const BaseSelect = ({ options, className, ...rest }: BaseSelectProps) => 
         })}
     </select>
   );
-};
+});

@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { ReactNode, CSSProperties } from "react";
+import { mergeProps } from "../utils";
+import { CSSProperties, ReactNode, forwardRef } from "react";
 
 export type LinkProps = {
   href: string;
@@ -9,30 +9,29 @@ export type LinkProps = {
   children?: ReactNode;
 };
 
-export type LinkPropsWithAppearance = { appearance?: ElementAppearance<LinkProps> } & LinkProps;
+export type LinkPropsWithAppearance = {
+  appearance?: ElementAppearance<LinkProps>;
+} & LinkProps;
 
-export const Link = ({ appearance, href, children }: LinkPropsWithAppearance) => {
+export const Link = forwardRef<HTMLAnchorElement, LinkPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Link;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<LinkProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Link,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element href={href} className={joinedProps.classes} style={joinedProps.styles}>
-        {children}
-      </joinedProps.Element>
+      <Override href={props.href} className={classes} style={styles}>
+        {props.children}
+      </Override>
     );
   }
 
   return (
-    <elements.Link href={href} className={joinedProps.classes} style={joinedProps.styles}>
-      {children}
+    <elements.Link ref={ref} href={props.href} className={classes} style={styles}>
+      {props.children}
     </elements.Link>
   );
-};
+});
