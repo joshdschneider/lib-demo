@@ -5,7 +5,6 @@
 */
 
 .BaseContainer {
-  width: 300px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -218,6 +217,15 @@
 body[data-lock] {
   overflow-y: hidden;
 }
+div[data-contain="component"] .BaseContainer {
+  width: 100%;
+  max-width: 300px;
+}
+
+div[data-width="full"] .BaseContainer {
+  width: 100%;
+  max-width: 768px;
+}
 
 div[data-contain="logo"] .BaseImage {
   width: auto;
@@ -277,6 +285,31 @@ div[data-contain="link"] .BaseButton,
 div[data-contain="links"] .BaseButton {
   border: none;
   background: none;
+}
+
+div[data-contain="search_action"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+div[data-contain="search_action"] .BaseInput {
+  margin: 0 15px 0 0;
+}
+
+div[data-contain="search_action"] .BaseButton {
+  white-space: nowrap;
+}
+
+div[data-contain="table"] td:last-child {
+  text-align: right;
+  padding: 0;
+}
+
+div[data-contain="table"] td:last-child button {
+  margin: -1px;
+  padding: 12px 12px;
 }
 
 /* 

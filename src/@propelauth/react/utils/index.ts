@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Element, ElementAppearance } from "../state";
+import { Element, ElementAppearance, useAppearance } from "../state";
 
 export type PropsFromAppearance<T> = {
   classes?: string;
@@ -11,13 +11,10 @@ export function getPropsFromAppearance<T>(appearance: ElementAppearance<T> | und
   switch (typeof appearance) {
     case "string":
       return { classes: appearance, styles: undefined, Element: undefined };
-
     case "object":
       return { classes: undefined, styles: appearance, Element: undefined };
-
     case "function":
       return { classes: undefined, styles: undefined, Element: appearance };
-
     default:
       return { classes: undefined, styles: undefined, Element: undefined };
   }
@@ -61,4 +58,18 @@ export function joinStyles(x?: CSSProperties, y?: CSSProperties): CSSProperties 
     ...x,
     ...y,
   };
+}
+
+export type MergeProps<T> = {
+  appearance?: ElementAppearance<T>;
+  element?: ElementAppearance<T>;
+};
+
+export function mergeProps<T>({ appearance, element }: MergeProps<T>) {
+  const globalProps = getPropsFromAppearance(element);
+  const localProps = getPropsFromAppearance(appearance);
+  const classes = joinClasses(globalProps.classes, localProps.classes);
+  const styles = joinStyles(globalProps.styles, localProps.styles);
+  const Override = localProps.Element || globalProps.Element;
+  return { classes, styles, Override };
 }

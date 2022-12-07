@@ -1,4 +1,12 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+  ForwardRefExoticComponent,
+} from "react";
 import { BaseElements } from "../../../@propelauth/base-elements";
 import {
   AlertProps,
@@ -24,7 +32,7 @@ import "../assets/base-styles.css";
 
 export type Elements = {
   Alert: (props: AlertProps) => JSX.Element;
-  Button: (props: ButtonProps) => JSX.Element;
+  Button: ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>>;
   Checkbox: (props: CheckboxProps) => JSX.Element;
   Container: (props: ContainerProps) => JSX.Element;
   Divider: (props: DividerProps) => JSX.Element;

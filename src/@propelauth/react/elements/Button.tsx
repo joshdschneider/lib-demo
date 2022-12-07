@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
-import { getPropsFromAppearance, joinClasses, joinStyles } from "../utils";
-import { MouseEventHandler, CSSProperties, ReactNode } from "react";
+import { mergeProps } from "../utils";
+import { MouseEventHandler, CSSProperties, ReactNode, Ref, forwardRef } from "react";
 
 export type ButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -9,44 +9,44 @@ export type ButtonProps = {
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
+  ref?: Ref<HTMLButtonElement>;
 };
 
 export type ButtonPropsWithAppearance = { appearance?: ElementAppearance<ButtonProps> } & ButtonProps;
 
-export const Button = ({ appearance, loading, disabled, onClick, children }: ButtonPropsWithAppearance) => {
+export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((props, ref) => {
   const { elements } = useElements();
-  const globalAppearance = useAppearance().appearance.elements?.Button;
-  const globalProps = getPropsFromAppearance(globalAppearance);
-  const localProps = getPropsFromAppearance(appearance);
-  const joinedProps = {
-    classes: joinClasses(globalProps.classes, localProps.classes),
-    styles: joinStyles(globalProps.styles, localProps.styles),
-    Element: localProps.Element || globalProps.Element,
-  };
+  const { appearance } = useAppearance();
+  const { classes, styles, Override } = mergeProps<ButtonProps>({
+    appearance: props.appearance,
+    element: appearance.elements?.Button,
+  });
 
-  if (joinedProps.Element) {
+  if (Override) {
     return (
-      <joinedProps.Element
-        loading={loading}
-        disabled={disabled}
-        onClick={onClick}
-        className={joinedProps.classes}
-        style={joinedProps.styles}
+      <Override
+        loading={props.loading}
+        disabled={props.disabled}
+        onClick={props.onClick}
+        className={classes}
+        style={styles}
+        ref={ref}
       >
-        {children}
-      </joinedProps.Element>
+        {props.children}
+      </Override>
     );
   }
 
   return (
     <elements.Button
-      loading={loading}
-      disabled={disabled}
-      onClick={onClick}
-      className={joinedProps.classes}
-      style={joinedProps.styles}
+      loading={props.loading}
+      disabled={props.disabled}
+      onClick={props.onClick}
+      className={classes}
+      style={styles}
+      ref={ref}
     >
-      {children}
+      {props.children}
     </elements.Button>
   );
-};
+});
