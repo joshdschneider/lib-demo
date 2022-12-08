@@ -1,7 +1,7 @@
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
-import { apiCreateOrg } from "../api";
 import { Config, ElementAppearance } from "../state";
+import { useClient } from "../state/useClient";
 import {
   Alert,
   Container,
@@ -43,6 +43,7 @@ export type CreateOrgAppearance = {
 };
 
 export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
+  const { orgApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [autojoinByDefault, setAutojoinByDefault] = useState(false);
@@ -60,7 +61,7 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
         autojoinByDefault,
         restrictToDomain,
       };
-      // const response = await apiCreateOrg(options);
+      // const response = await orgApi.createOrg(options);
       // if (response.ok) ..
       setStep(LoginStateEnum.Finished);
     } catch (e) {

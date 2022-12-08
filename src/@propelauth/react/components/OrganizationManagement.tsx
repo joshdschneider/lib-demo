@@ -1,5 +1,6 @@
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import { ElementAppearance } from "../state";
+import { useClient } from "../state/useClient";
 import {
   Button,
   Checkbox,
@@ -33,6 +34,7 @@ export type OrganizationAppearance = {
 };
 
 export const OrganizationManagement = ({ organizationId, appearance }: OrganizationManagementProps) => {
+  const { orgApi, orgUserApi } = useClient();
   const { users, invitations, inviteePossibleRoles, roles } = useOrgInfo({ orgId: organizationId });
   const [query, setQuery] = useState<string>("");
   const [filters, setFilters] = useState<string[]>([]);
@@ -186,11 +188,11 @@ export const useRowEditor = ({ rows, orgId }: UseRowEditorProps) => {
   function getModalContents() {
     if (rowToEdit) {
       if (rowToEdit.status === "active" && rowToEdit.user_id) {
-        return <EditActiveUser orgId={orgId} user={rowToEdit} />;
+        return <EditActiveUser orgId={orgId} user={rowToEdit as User} onClose={closeEditRow} />;
       } else if (rowToEdit.status === "pending") {
-        return <EditPendingInvitation orgId={orgId} user={rowToEdit} />;
+        return <EditPendingInvitation orgId={orgId} user={rowToEdit as Invitation} />;
       } else if (rowToEdit.status === "expired") {
-        return <EditExpiredInvitation orgId={orgId} user={rowToEdit} />;
+        return <EditExpiredInvitation orgId={orgId} user={rowToEdit as Invitation} />;
       }
     }
   }
@@ -407,11 +409,14 @@ export function usePagination<T>({ items, itemsPerPage }: UsePaginationProps<T>)
 
 export type EditActiveUserProps = {
   orgId: string;
-  user: UserOrInvitation;
+  user: User;
+  onClose: VoidFunction;
 };
 
-export const EditActiveUser = ({ orgId, user }: EditActiveUserProps) => {
+export const EditActiveUser = ({ orgId, user, onClose }: EditActiveUserProps) => {
   const [role, setRole] = useState(user.role);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const changeRoleDisabled = !user.possible_roles || user.possible_roles.length === 0;
 
   function getRoleOptions() {
@@ -424,15 +429,41 @@ export const EditActiveUser = ({ orgId, user }: EditActiveUserProps) => {
     }
   }
 
-  function handleRoleChange(e: FormEvent) {
-    e.preventDefault();
-    console.log(role);
+  async function handleRoleChange(e: FormEvent) {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      setError(undefined);
+      const options = { role, orgId, userId: user.user_id };
+      //const response = await orgUserApi.changeRole(options);
+      // if (response.ok) ..
+      onClose();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRemoveUser() {
+    try {
+      setLoading(true);
+      setError(undefined);
+      const options = { orgId, userId: user.user_id };
+      //const response = await orgUserApi.removeUser(options);
+      // if (response.ok) ..
+      onClose();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div data-contain="modal">
       <H3>Edit {user.email}</H3>
-      <form data-contain="form" onSubmit={handleRoleChange}>
+      <form onSubmit={handleRoleChange}>
         <Label htmlFor={"change_role"}>Change role</Label>
         <Select
           id={"change_role"}
@@ -440,9 +471,15 @@ export const EditActiveUser = ({ orgId, user }: EditActiveUserProps) => {
           onChange={(e) => setRole(e.target.value)}
           disabled={changeRoleDisabled}
         />
-        <Button>Save</Button>
+        <Button loading={loading} disabled={user.role === role}>
+          Save
+        </Button>
       </form>
-      <Button onClick={() => null}>Remove user</Button>
+      {user.can_be_deleted && (
+        <Button loading={loading} onClick={handleRemoveUser}>
+          Remove user
+        </Button>
+      )}
     </div>
   );
 };
@@ -453,7 +490,11 @@ export type EditPendingInvitationProps = {
 };
 
 export const EditPendingInvitation = ({ orgId, user }: EditPendingInvitationProps) => {
-  return <div>EditPendingInvitation</div>;
+  return (
+    <div data-contain="modal">
+      <H3>Edit {user.email}</H3>
+    </div>
+  );
 };
 
 export type EditExpiredInvitationProps = {
@@ -462,5 +503,9 @@ export type EditExpiredInvitationProps = {
 };
 
 export const EditExpiredInvitation = ({ orgId, user }: EditExpiredInvitationProps) => {
-  return <div>EditExpiredInvitation</div>;
+  return (
+    <div data-contain="modal">
+      <H3>Edit {user.email}</H3>
+    </div>
+  );
 };

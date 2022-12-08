@@ -1,5 +1,4 @@
 import { SyntheticEvent, useState } from "react";
-import { apiForgotPassword, apiLoginPasswordless } from "../api";
 import { useConfig, ElementAppearance } from "../state";
 import {
   Alert,
@@ -17,6 +16,7 @@ import {
   H3Props,
   ParagraphProps,
 } from "../elements";
+import { useClient } from "../state/useClient";
 
 export type ForgotPasswordProps = {
   onRedirectToLogin?: VoidFunction;
@@ -44,18 +44,19 @@ export type ForgotPasswordAppearance = {
 };
 
 export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPasswordProps) => {
+  const { loginApi } = useClient();
+  const { config } = useConfig();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
   const [passwordResetLoading, setPasswordResetLoading] = useState(false);
   const [magicLinkLoading, setMagicLinkLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
-  const { config } = useConfig();
 
   async function submitForgotPassword(e: SyntheticEvent) {
     try {
       e.preventDefault();
       setPasswordResetLoading(true);
-      const response = await apiForgotPassword({ email });
+      const response = await loginApi.forgotPassword({ email });
       if (response.ok) {
         const message = `If that email address is in our database, we will send you an email to reset your password.`;
         setSuccessMessage(message);
@@ -74,7 +75,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
     try {
       e.preventDefault();
       setMagicLinkLoading(true);
-      const response = await apiLoginPasswordless({ email, createIfDoesntExist: false });
+      const response = await loginApi.sendMagicLinkLogin({ email, createIfDoesntExist: false });
       if (response.ok) {
         const message = `If that email address is in our database, we will send you an email to login to your account.`;
         setSuccessMessage(message);

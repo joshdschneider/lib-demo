@@ -1,6 +1,6 @@
 import { SyntheticEvent, useEffect, useState } from "react";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
-import { apiLogin } from "../api";
+import { useClient } from "../state/useClient";
 import { useConfig, ElementAppearance } from "../state";
 import { SignInDivider } from "./shared/SignInDivider";
 import { SignInOptions } from "./shared/SignInOptions";
@@ -77,6 +77,7 @@ export const Login = ({
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
+  const { loginApi } = useClient();
 
   const login = async (e: SyntheticEvent) => {
     try {
@@ -84,7 +85,7 @@ export const Login = ({
       setLoading(true);
       setError(undefined);
       const options = { email, password };
-      // const response = await apiLogin(options);
+      // const response = await loginApi.login(options)
       // if (response.ok) ..
       setStep(LoginStateEnum.TwoFactorRequired);
     } catch (e) {

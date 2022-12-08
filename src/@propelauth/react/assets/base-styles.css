@@ -120,7 +120,7 @@
 
 .BaseModal--inner {
   display: block;
-  max-width: 350px;
+  max-width: 300px;
   padding: 20px;
   margin: 20px;
   width: 100%;
@@ -344,6 +344,40 @@ div[data-contain="filter_group"]:last-child {
 
 div[data-contain="filter_group"] .BaseCheckbox:last-child {
   margin: 0;
+}
+
+div[data-contain="modal"] {
+  text-align: left;
+}
+
+div[data-contain="modal"] .BaseH3 {
+  margin: 0px 0 15px 0;
+}
+
+div[data-contain="modal"] form .BaseLabel {
+  display: block;
+  padding-bottom: 10px;
+}
+
+div[data-contain="modal"] form .BaseSelect {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+div[data-contain="modal"] form .BaseSelect {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+div[data-contain="modal"] form .BaseButton {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+div[data-contain="modal"] .BaseButton {
+  width: 100%;
 }
 
 /* 

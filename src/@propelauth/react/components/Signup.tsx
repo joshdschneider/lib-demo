@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
-import { apiSignup } from "../api";
 import { Config, ElementAppearance, useConfig } from "../state";
+import { useClient } from "../state/useClient";
 import { getTokenFromURL } from "../utils";
 import { SignInDivider } from "./shared/SignInDivider";
 import { SignInOptions } from "./shared/SignInOptions";
@@ -92,6 +92,7 @@ type SignupFormProps = {
 };
 
 const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormProps) => {
+  const { userApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(presetEmail || "");
   const [password, setPassword] = useState("");
@@ -119,7 +120,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
       if (inviteToken) {
         options.inviteToken = inviteToken;
       }
-      // const response = await apiSignup(options);
+      // const response = await userApi.signup(options)
       // if (response.ok) ..
       onSuccess();
     } catch (e) {

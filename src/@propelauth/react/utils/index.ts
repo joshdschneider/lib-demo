@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Element, ElementAppearance, useAppearance } from "../state";
+import { Element, ElementAppearance } from "../state";
 
 export type PropsFromAppearance<T> = {
   classes?: string;
