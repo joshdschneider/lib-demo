@@ -303,6 +303,11 @@ div[data-contain="search_action"] .BaseButton {
   margin-left: 15px;
 }
 
+div[data-contain="table"] th:first-child,
+div[data-contain="table"] td:first-child {
+  display: none;
+}
+
 div[data-contain="table"] td:last-child {
   text-align: right;
   padding: 0;
@@ -326,6 +331,19 @@ div[data-contain="pagination"] .BaseParagraph {
 
 div[data-contain="pagination_buttons"] .BaseButton:last-child {
   margin-left: 15px;
+}
+
+div[data-contain="filter_group"] {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+div[data-contain="filter_group"]:last-child {
+  border-bottom: none;
+}
+
+div[data-contain="filter_group"] .BaseCheckbox:last-child {
+  margin: 0;
 }
 
 /* 
