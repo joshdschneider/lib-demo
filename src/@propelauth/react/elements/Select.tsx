@@ -1,6 +1,6 @@
 import { ElementAppearance, useAppearance, useElements } from "../state";
 import { mergeProps } from "../utils";
-import { CSSProperties, forwardRef } from "react";
+import { ChangeEventHandler, CSSProperties, forwardRef } from "react";
 
 export type Option = {
   label: string;
@@ -13,7 +13,10 @@ export type OptionGroup = {
 };
 
 export type SelectProps = {
+  onChange: ChangeEventHandler<HTMLSelectElement>;
   options?: Array<OptionGroup | Option>;
+  disabled?: boolean;
+  id?: string;
   className?: string;
   style?: CSSProperties;
 };
@@ -31,8 +34,27 @@ export const Select = forwardRef<HTMLSelectElement, SelectPropsWithAppearance>((
   });
 
   if (Override) {
-    return <Override options={props.options} className={classes} style={styles} />;
+    return (
+      <Override
+        onChange={props.onChange}
+        options={props.options}
+        disabled={props.disabled}
+        id={props.id}
+        className={classes}
+        style={styles}
+      />
+    );
   }
 
-  return <elements.Select ref={ref} options={props.options} className={classes} style={styles} />;
+  return (
+    <elements.Select
+      ref={ref}
+      onChange={props.onChange}
+      options={props.options}
+      disabled={props.disabled}
+      id={props.id}
+      className={classes}
+      style={styles}
+    />
+  );
 });

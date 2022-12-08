@@ -1,14 +1,17 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import { ElementAppearance } from "../state";
 import {
   Button,
   Checkbox,
   Container,
   ContainerProps,
+  H3,
   Input,
+  Label,
   Modal,
   Paragraph,
   Popover,
+  Select,
   Table,
   TableProps,
 } from "../elements";
@@ -30,7 +33,7 @@ export type OrganizationAppearance = {
 };
 
 export const OrganizationManagement = ({ organizationId, appearance }: OrganizationManagementProps) => {
-  const { users, invitations, roles } = useOrgInfo({ orgId: organizationId });
+  const { users, invitations, inviteePossibleRoles, roles } = useOrgInfo({ orgId: organizationId });
   const [query, setQuery] = useState<string>("");
   const [filters, setFilters] = useState<string[]>([]);
   const { results } = useOrgSearch({ users, invitations, query, filters });
@@ -42,7 +45,14 @@ export const OrganizationManagement = ({ organizationId, appearance }: Organizat
     <div data-contain="component" data-width="full">
       <Container appearance={appearance?.elements?.Container}>
         <div data-contain="search_action">
-          <OrgControls query={query} setQuery={setQuery} filters={filters} setFilters={setFilters} roles={roles} />
+          <OrgControls
+            query={query}
+            setQuery={setQuery}
+            filters={filters}
+            setFilters={setFilters}
+            roles={roles}
+            inviteePossibleRoles={inviteePossibleRoles}
+          />
         </div>
         <div data-contain="table">
           <Table columns={columns} rows={rows} appearance={appearance?.elements?.Table} />
@@ -86,6 +96,7 @@ export type UseOrgInfoProps = {
 export const useOrgInfo = ({ orgId }: UseOrgInfoProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [inviteePossibleRoles, setInviteePossibleRoles] = useState<string[]>([]);
   const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
@@ -108,7 +119,7 @@ export const useOrgInfo = ({ orgId }: UseOrgInfoProps) => {
         user_id: "565",
         email: "kevin@bar.com",
         role: "Member",
-        possible_roles: ["Member"],
+        possible_roles: [],
         can_be_deleted: true,
       },
       {
@@ -137,9 +148,10 @@ export const useOrgInfo = ({ orgId }: UseOrgInfoProps) => {
       },
     ]);
     setRoles(["Owner", "Admin", "Member"]);
+    setInviteePossibleRoles(["Owner", "Admin", "Member"]);
   }, [orgId]);
 
-  return { users, invitations, roles };
+  return { users, invitations, inviteePossibleRoles, roles };
 };
 
 export type UseRowEditorProps = {
@@ -174,11 +186,11 @@ export const useRowEditor = ({ rows, orgId }: UseRowEditorProps) => {
   function getModalContents() {
     if (rowToEdit) {
       if (rowToEdit.status === "active" && rowToEdit.user_id) {
-        return <EditActiveUser orgId={orgId} userId={rowToEdit.user_id} />;
+        return <EditActiveUser orgId={orgId} user={rowToEdit} />;
       } else if (rowToEdit.status === "pending") {
-        return <EditPendingInvitation orgId={orgId} email={rowToEdit.email} />;
+        return <EditPendingInvitation orgId={orgId} user={rowToEdit} />;
       } else if (rowToEdit.status === "expired") {
-        return <EditExpiredInvitation orgId={orgId} email={rowToEdit.email} />;
+        return <EditExpiredInvitation orgId={orgId} user={rowToEdit} />;
       }
     }
   }
@@ -199,12 +211,21 @@ export type OrgControlsProps = {
   filters: string[];
   setFilters: Dispatch<SetStateAction<string[]>>;
   roles: string[];
+  inviteePossibleRoles: string[];
 };
 
-export const OrgControls = ({ query, setQuery, filters, setFilters, roles }: OrgControlsProps) => {
+export const OrgControls = ({
+  query,
+  setQuery,
+  filters,
+  setFilters,
+  roles,
+  inviteePossibleRoles,
+}: OrgControlsProps) => {
   const [filterPopover, setFilterPopover] = useState<HTMLButtonElement | null>(null);
   const [showFilterPopover, setShowFilterPopover] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const canInviteUsers = !!inviteePossibleRoles && inviteePossibleRoles.length > 0;
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFilters((state) => {
@@ -222,7 +243,7 @@ export const OrgControls = ({ query, setQuery, filters, setFilters, roles }: Org
       <Button ref={setFilterPopover} onClick={() => setShowFilterPopover(!showFilterPopover)}>
         Filter
       </Button>
-      <Button onClick={() => setShowInviteModal(true)}>Invite User</Button>
+      {canInviteUsers && <Button onClick={() => setShowInviteModal(true)}>Invite User</Button>}
       <Popover referenceElement={filterPopover} show={showFilterPopover} setShow={setShowFilterPopover}>
         <div data-contain="filter_group">
           {roles.map((role) => {
@@ -386,27 +407,60 @@ export function usePagination<T>({ items, itemsPerPage }: UsePaginationProps<T>)
 
 export type EditActiveUserProps = {
   orgId: string;
-  userId: string;
+  user: UserOrInvitation;
 };
 
-export const EditActiveUser = ({ orgId, userId }: EditActiveUserProps) => {
-  return <div>EditActiveUser</div>;
+export const EditActiveUser = ({ orgId, user }: EditActiveUserProps) => {
+  const [role, setRole] = useState(user.role);
+  const changeRoleDisabled = !user.possible_roles || user.possible_roles.length === 0;
+
+  function getRoleOptions() {
+    if (user.possible_roles && user.possible_roles.length > 0) {
+      return user.possible_roles.map((role) => {
+        return { label: role, value: role };
+      });
+    } else {
+      return [{ label: role, value: role }];
+    }
+  }
+
+  function handleRoleChange(e: FormEvent) {
+    e.preventDefault();
+    console.log(role);
+  }
+
+  return (
+    <div data-contain="modal">
+      <H3>Edit {user.email}</H3>
+      <form data-contain="form" onSubmit={handleRoleChange}>
+        <Label htmlFor={"change_role"}>Change role</Label>
+        <Select
+          id={"change_role"}
+          options={getRoleOptions()}
+          onChange={(e) => setRole(e.target.value)}
+          disabled={changeRoleDisabled}
+        />
+        <Button>Save</Button>
+      </form>
+      <Button onClick={() => null}>Remove user</Button>
+    </div>
+  );
 };
 
 export type EditPendingInvitationProps = {
   orgId: string;
-  email: string;
+  user: UserOrInvitation;
 };
 
-export const EditPendingInvitation = ({ orgId, email }: EditPendingInvitationProps) => {
+export const EditPendingInvitation = ({ orgId, user }: EditPendingInvitationProps) => {
   return <div>EditPendingInvitation</div>;
 };
 
 export type EditExpiredInvitationProps = {
   orgId: string;
-  email: string;
+  user: UserOrInvitation;
 };
 
-export const EditExpiredInvitation = ({ orgId, email }: EditExpiredInvitationProps) => {
+export const EditExpiredInvitation = ({ orgId, user }: EditExpiredInvitationProps) => {
   return <div>EditExpiredInvitation</div>;
 };

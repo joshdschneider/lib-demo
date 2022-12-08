@@ -6,6 +6,7 @@ export type ButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   loading?: boolean;
   disabled?: boolean;
+  id?: string;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
@@ -29,6 +30,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((
         loading={props.loading}
         disabled={props.disabled}
         onClick={props.onClick}
+        id={props.id}
         className={classes}
         style={styles}
       >
@@ -43,6 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonPropsWithAppearance>((
       loading={props.loading}
       disabled={props.disabled}
       onClick={props.onClick}
+      id={props.id}
       className={classes}
       style={styles}
     >
