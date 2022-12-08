@@ -13,6 +13,7 @@ export type OptionGroup = {
 };
 
 export type SelectProps = {
+  value: string;
   onChange: ChangeEventHandler<HTMLSelectElement>;
   options?: Array<OptionGroup | Option>;
   disabled?: boolean;
@@ -36,6 +37,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectPropsWithAppearance>((
   if (Override) {
     return (
       <Override
+        value={props.value}
         onChange={props.onChange}
         options={props.options}
         disabled={props.disabled}
@@ -49,6 +51,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectPropsWithAppearance>((
   return (
     <elements.Select
       ref={ref}
+      value={props.value}
       onChange={props.onChange}
       options={props.options}
       disabled={props.disabled}

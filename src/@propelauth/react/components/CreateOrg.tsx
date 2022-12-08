@@ -124,7 +124,6 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
                 {error}
               </Alert>
             )}
-            {/** handle joinable orgs & personal domains */}
           </form>
         </div>
       </Container>

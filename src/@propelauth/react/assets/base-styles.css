@@ -7,6 +7,7 @@
 .BaseContainer {
   margin: 0 auto;
   padding: 20px;
+  width: calc(100% - 40px);
 }
 
 .BaseButton {
@@ -202,6 +203,22 @@
   padding: 10px 15px;
 }
 
+.BaseAlert {
+  margin: 15px 0;
+}
+
+.BaseAlert--error {
+  color: red;
+}
+
+.BaseAlert--success {
+  color: green;
+}
+
+.BaseAlert--warning {
+  color: orange;
+}
+
 /*
   --END--
   Default styles 
@@ -218,12 +235,10 @@ body[data-lock] {
   overflow-y: hidden;
 }
 div[data-contain="component"] .BaseContainer {
-  width: 100%;
   max-width: 300px;
 }
 
 div[data-width="full"] .BaseContainer {
-  width: 100%;
   max-width: 768px;
 }
 
@@ -238,9 +253,6 @@ div[data-contain="component"] .BaseInput {
 }
 
 div[data-contain="form"] .BaseButton {
-  border: 1px solid #000;
-  background: #000;
-  color: #fff;
   margin-bottom: 10px;
   width: 100%;
 }
@@ -351,34 +363,77 @@ div[data-contain="modal"] {
 }
 
 div[data-contain="modal"] .BaseH3 {
-  margin: 0px 0 15px 0;
-}
-
-div[data-contain="modal"] form .BaseLabel {
-  display: block;
-  padding-bottom: 10px;
-}
-
-div[data-contain="modal"] form .BaseSelect {
-  display: block;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-div[data-contain="modal"] form .BaseSelect {
-  display: block;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-div[data-contain="modal"] form .BaseButton {
-  width: 100%;
-  margin-bottom: 15px;
+  margin: 5px 0;
 }
 
 div[data-contain="modal"] .BaseButton {
   width: 100%;
+  margin-top: 15px;
 }
+
+div[data-contain="modal"] form .BaseLabel {
+  display: block;
+  margin-top: 15px;
+}
+
+div[data-contain="modal"] form .BaseSelect {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.BaseModal--inner .BaseContainer {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.BaseModal--inner .BaseH3 {
+  margin: 5px 0;
+}
+
+.BaseModal--inner div[data-contain="form"] .BaseInput {
+  display: block;
+  width: calc(100% - 26px);
+  margin-top: 15px;
+}
+
+.BaseModal--inner div[data-contain="form"] .BaseSelect {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.BaseModal--inner div[data-contain="form"] .BaseLabel {
+  display: block;
+  margin-top: 15px;
+}
+
+.BaseModal--inner div[data-contain="form"] .BaseButton {
+  width: 100%;
+  margin: 15px 0 0 0;
+}
+
+/* .BaseModal--inner div[data-contain="form_group"] .BaseH3 {
+  margin: 5px 0;
+}
+
+.BaseModal--inner div[data-contain="form_group"] .BaseButton {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.BaseModal--inner div[data-contain="form_group"] .BaseLabel {
+  display: block;
+  margin-top: 15px;
+}
+
+.BaseModal--inner div[data-contain="form_group"] .BaseSelect {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+} */
 
 /* 
   --END--

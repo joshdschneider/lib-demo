@@ -1,9 +1,9 @@
-import { OrganizationManagement } from "../@propelauth/react";
+import { ManageOrg } from "../@propelauth/react";
 
 export const OrgPage = () => {
   return (
     <div>
-      <OrganizationManagement organizationId={"232"} />
+      <ManageOrg orgId={"232"} />
     </div>
   );
 };
