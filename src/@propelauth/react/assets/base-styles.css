@@ -415,26 +415,6 @@ div[data-contain="modal"] form .BaseSelect {
   margin: 15px 0 0 0;
 }
 
-/* .BaseModal--inner div[data-contain="form_group"] .BaseH3 {
-  margin: 5px 0;
-}
-
-.BaseModal--inner div[data-contain="form_group"] .BaseButton {
-  width: 100%;
-  margin-top: 15px;
-}
-
-.BaseModal--inner div[data-contain="form_group"] .BaseLabel {
-  display: block;
-  margin-top: 15px;
-}
-
-.BaseModal--inner div[data-contain="form_group"] .BaseSelect {
-  display: block;
-  width: 100%;
-  margin-top: 15px;
-} */
-
 /* 
   --END--
   Default styles for components

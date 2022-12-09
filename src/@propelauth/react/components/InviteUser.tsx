@@ -1,14 +1,47 @@
 import { FormEvent, useState } from "react";
-import { Container, H3, Label, Input, Select, Button, Alert } from "../elements";
+import { ElementAppearance } from "../state";
 import { useClient } from "../state/useClient";
 import { Invitation, useSelectedOrg } from "./ManageOrg";
+import {
+  Container,
+  H3,
+  Label,
+  Input,
+  Select,
+  Button,
+  Alert,
+  ContainerProps,
+  H3Props,
+  LabelProps,
+  InputProps,
+  SelectProps,
+  ButtonProps,
+  AlertProps,
+} from "../elements";
 
 export type InviteUserProps = {
   orgId: string;
   onSuccess: (invitation: Invitation) => void;
+  appearance?: InviteUserAppearance;
 };
 
-export const InviteUser = ({ orgId, onSuccess }: InviteUserProps) => {
+export type InviteUserAppearance = {
+  options?: {
+    //..
+  };
+  elements?: {
+    Container?: ElementAppearance<ContainerProps>;
+    Header?: ElementAppearance<H3Props>;
+    EmailLabel?: ElementAppearance<LabelProps>;
+    EmailInput?: ElementAppearance<InputProps>;
+    RoleLabel?: ElementAppearance<LabelProps>;
+    RoleSelect?: ElementAppearance<SelectProps>;
+    SubmitButton?: ElementAppearance<ButtonProps>;
+    Alert?: ElementAppearance<AlertProps>;
+  };
+};
+
+export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) => {
   const { orgUserApi } = useClient();
   const { inviteePossibleRoles } = useSelectedOrg({ orgId });
   const [loading, setLoading] = useState(false);
@@ -37,9 +70,11 @@ export const InviteUser = ({ orgId, onSuccess }: InviteUserProps) => {
     const unauthorized = `You are not authorized to perform this action`;
     return (
       <div data-contain="component">
-        <Container>
-          <H3>Invite User</H3>
-          <Alert type={"error"}>{unauthorized}</Alert>
+        <Container appearance={appearance?.elements?.Container}>
+          <H3 appearance={appearance?.elements?.Header}>Invite User</H3>
+          <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+            {unauthorized}
+          </Alert>
         </Container>
       </div>
     );
@@ -47,14 +82,16 @@ export const InviteUser = ({ orgId, onSuccess }: InviteUserProps) => {
 
   return (
     <div data-contain="component">
-      <Container>
+      <Container appearance={appearance?.elements?.Container}>
         <div data-contain="header">
-          <H3>Invite User</H3>
+          <H3 appearance={appearance?.elements?.Header}>Invite User</H3>
         </div>
         <div data-contain="form">
           <form onSubmit={handleSubmit}>
             <div>
-              <Label htmlFor={"email"}>Email</Label>
+              <Label htmlFor={"email"} appearance={appearance?.elements?.EmailLabel}>
+                Email
+              </Label>
               <Input
                 type={"email"}
                 id={"email"}
@@ -62,22 +99,30 @@ export const InviteUser = ({ orgId, onSuccess }: InviteUserProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                appearance={appearance?.elements?.EmailInput}
               />
             </div>
             <div>
-              <Label htmlFor={"role"}>Role</Label>
+              <Label htmlFor={"role"} appearance={appearance?.elements?.RoleLabel}>
+                Role
+              </Label>
               <Select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 options={inviteePossibleRoles.map((role) => {
                   return { label: role, value: role };
                 })}
+                appearance={appearance?.elements?.RoleSelect}
               />
             </div>
-            <Button loading={loading} disabled={disabled}>
+            <Button loading={loading} disabled={disabled} appearance={appearance?.elements?.SubmitButton}>
               Invite User
             </Button>
-            {error && <Alert type={"error"}>{error}</Alert>}
+            {error && (
+              <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+                {error}
+              </Alert>
+            )}
           </form>
         </div>
       </Container>

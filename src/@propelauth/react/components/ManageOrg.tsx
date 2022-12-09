@@ -1,20 +1,30 @@
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import { ElementAppearance } from "../state";
 import { useClient } from "../state/useClient";
-import { InviteUser } from "./InviteUser";
+import { InviteUser, InviteUserAppearance } from "./InviteUser";
 import {
   Alert,
+  AlertProps,
   Button,
+  ButtonProps,
   Checkbox,
+  CheckboxProps,
   Container,
   ContainerProps,
   H3,
+  H3Props,
   Input,
+  InputProps,
   Label,
+  LabelProps,
   Modal,
+  ModalProps,
   Paragraph,
+  ParagraphProps,
   Popover,
+  PopoverProps,
   Select,
+  SelectProps,
   Table,
   TableProps,
 } from "../elements";
@@ -22,16 +32,36 @@ import {
 export type ManageOrgProps = {
   orgId: string;
   appearance?: OrgAppearance;
+  inviteUserAppearance?: InviteUserAppearance;
 };
 
 export type OrgAppearance = {
   options?: {
-    //..
+    rowsPerPage?: number;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
+    SearchInput?: ElementAppearance<InputProps>;
+    FilterButton?: ElementAppearance<ButtonProps>;
+    FilterPopover?: ElementAppearance<PopoverProps>;
+    FilterCheckbox?: ElementAppearance<CheckboxProps>;
+    InviteButton?: ElementAppearance<ButtonProps>;
+    InviteModal?: ElementAppearance<ModalProps>;
     Table?: ElementAppearance<TableProps>;
-    //..
+    EditUserButton?: ElementAppearance<ButtonProps>;
+    EditUserModal?: ElementAppearance<ModalProps>;
+    EditUserModalHeader?: ElementAppearance<H3Props>;
+    EditUserAlert?: ElementAppearance<AlertProps>;
+    ChangeRoleLabel?: ElementAppearance<LabelProps>;
+    ChangeRoleSelect?: ElementAppearance<SelectProps>;
+    SaveRoleButton?: ElementAppearance<ButtonProps>;
+    RemoveUserButton?: ElementAppearance<ButtonProps>;
+    RevokeInvitationButton?: ElementAppearance<ButtonProps>;
+    ResendInvitationButton?: ElementAppearance<ButtonProps>;
+    DeleteInvitationButton?: ElementAppearance<ButtonProps>;
+    PageText?: ElementAppearance<ParagraphProps>;
+    PageBackButton?: ElementAppearance<ButtonProps>;
+    PageNextButton?: ElementAppearance<ButtonProps>;
   };
 };
 
@@ -40,8 +70,9 @@ export const ManageOrg = ({ orgId, appearance }: ManageOrgProps) => {
   const [filters, setFilters] = useState<string[]>([]);
   const { users, invitations, inviteePossibleRoles, roles, methods } = useSelectedOrg({ orgId });
   const { results } = useOrgSearch({ users, invitations, query, filters });
-  const { items, controls } = usePagination<UserOrInvitation>({ items: results, itemsPerPage: 10 });
-  const { rows, editRowModal } = useRowEditor({ rows: items, orgId, methods });
+  const itemsPerPage = appearance?.options?.rowsPerPage || 10;
+  const { items, controls } = usePagination<UserOrInvitation>({ items: results, itemsPerPage });
+  const { rows, editRowModal } = useRowEditor({ rows: items, orgId, methods, appearance });
   const columns = [null, "Email", "Role", "Status", null];
 
   return (
@@ -57,6 +88,7 @@ export const ManageOrg = ({ orgId, appearance }: ManageOrgProps) => {
             roles={roles}
             inviteePossibleRoles={inviteePossibleRoles}
             addInvitation={methods.addInvitation}
+            appearance={appearance}
           />
         </div>
         <div data-contain="table">
@@ -64,7 +96,7 @@ export const ManageOrg = ({ orgId, appearance }: ManageOrgProps) => {
           {editRowModal}
         </div>
         <div data-contain="pagination">
-          <Pagination controls={controls} />
+          <Pagination controls={controls} appearance={appearance} />
         </div>
       </Container>
     </div>
@@ -109,28 +141,49 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
     setUsers([
       {
         user_id: "123",
-        email: "glen@bar.com",
+        email: "andrew@propelauth.com",
         role: "Owner",
         possible_roles: ["Owner", "Admin", "Member"],
         can_be_deleted: false,
       },
       {
         user_id: "353",
-        email: "mike@bar.com",
+        email: "kayla@propelauth.com",
+        role: "Admin",
+        possible_roles: ["Admin", "Member"],
+        can_be_deleted: true,
+      },
+      {
+        user_id: "464",
+        email: "josh@propelauth.com",
+        role: "Admin",
+        possible_roles: ["Admin", "Member"],
+        can_be_deleted: true,
+      },
+      {
+        user_id: "685",
+        email: "justin@propelauth.com",
         role: "Admin",
         possible_roles: ["Admin", "Member"],
         can_be_deleted: true,
       },
       {
         user_id: "565",
-        email: "kevin@bar.com",
+        email: "foo@propelauth.com",
         role: "Member",
-        possible_roles: [],
+        possible_roles: ["Member"],
+        can_be_deleted: true,
+      },
+      {
+        user_id: "003",
+        email: "bar@propelauth.com",
+        role: "Member",
+        possible_roles: ["Member"],
         can_be_deleted: true,
       },
       {
         user_id: "775",
-        email: "sara@bar.com",
+        email: "another@propelauth.com",
         role: "Member",
         possible_roles: ["Member"],
         can_be_deleted: true,
@@ -138,17 +191,27 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
     ]);
     setInvitations([
       {
-        email: "amy@bar.com",
+        email: "jane@propelauth.com",
         role: "Admin",
         status: "pending",
       },
       {
-        email: "jane@bar.com",
+        email: "john@propelauth.com",
         role: "Admin",
         status: "pending",
       },
       {
-        email: "marg@bar.com",
+        email: "joe@propelauth.com",
+        role: "Member",
+        status: "pending",
+      },
+      {
+        email: "jim@propelauth.com",
+        role: "Member",
+        status: "expired",
+      },
+      {
+        email: "jeff@propelauth.com",
         role: "Member",
         status: "expired",
       },
@@ -204,9 +267,10 @@ export type UseRowEditorProps = {
     addInvitation: (invitation: Invitation) => void;
     removeInvitation: (email: string) => void;
   };
+  appearance?: OrgAppearance;
 };
 
-export const useRowEditor = ({ rows, orgId, methods }: UseRowEditorProps) => {
+export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorProps) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [rowToEdit, setRowToEdit] = useState<UserOrInvitation | null>(null);
 
@@ -226,7 +290,11 @@ export const useRowEditor = ({ rows, orgId, methods }: UseRowEditorProps) => {
       email: row.email,
       role: row.role,
       status: row.status.charAt(0).toUpperCase() + row.status.slice(1),
-      edit: <Button onClick={() => editRow(row)}>Edit</Button>,
+      edit: (
+        <Button onClick={() => editRow(row)} appearance={appearance?.elements?.EditUserButton}>
+          Edit
+        </Button>
+      ),
     };
   });
 
@@ -240,6 +308,7 @@ export const useRowEditor = ({ rows, orgId, methods }: UseRowEditorProps) => {
             onClose={closeEditRow}
             setUserRole={methods.setUserRole}
             removeUser={methods.removeUser}
+            appearance={appearance}
           />
         );
       } else if (rowToEdit.status === "pending") {
@@ -249,6 +318,7 @@ export const useRowEditor = ({ rows, orgId, methods }: UseRowEditorProps) => {
             user={rowToEdit as Invitation}
             onClose={closeEditRow}
             removeInvitation={methods.removeInvitation}
+            appearance={appearance}
           />
         );
       } else if (rowToEdit.status === "expired") {
@@ -259,6 +329,7 @@ export const useRowEditor = ({ rows, orgId, methods }: UseRowEditorProps) => {
             onClose={closeEditRow}
             addInvitation={methods.addInvitation}
             removeInvitation={methods.removeInvitation}
+            appearance={appearance}
           />
         );
       }
@@ -284,6 +355,7 @@ export type OrgControlsProps = {
   roles: string[];
   inviteePossibleRoles: string[];
   addInvitation: (invitation: Invitation) => void;
+  appearance?: OrgAppearance;
 };
 
 export const OrgControls = ({
@@ -295,6 +367,7 @@ export const OrgControls = ({
   roles,
   inviteePossibleRoles,
   addInvitation,
+  appearance,
 }: OrgControlsProps) => {
   const [filterPopover, setFilterPopover] = useState<HTMLButtonElement | null>(null);
   const [showFilterPopover, setShowFilterPopover] = useState(false);
@@ -321,17 +394,42 @@ export const OrgControls = ({
 
   return (
     <>
-      <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={"Search"} />
-      <Button ref={setFilterPopover} onClick={() => setShowFilterPopover(!showFilterPopover)}>
+      <Input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={"Search"}
+        appearance={appearance?.elements?.SearchInput}
+      />
+      <Button
+        ref={setFilterPopover}
+        onClick={() => setShowFilterPopover(!showFilterPopover)}
+        appearance={appearance?.elements?.FilterButton}
+      >
         Filter
       </Button>
-      {canInviteUsers && <Button onClick={() => setShowInviteModal(true)}>Invite User</Button>}
-      <Popover referenceElement={filterPopover} show={showFilterPopover} setShow={setShowFilterPopover}>
+      {canInviteUsers && (
+        <Button onClick={() => setShowInviteModal(true)} appearance={appearance?.elements?.InviteButton}>
+          Invite User
+        </Button>
+      )}
+      <Popover
+        referenceElement={filterPopover}
+        show={showFilterPopover}
+        setShow={setShowFilterPopover}
+        appearance={appearance?.elements?.FilterPopover}
+      >
         <div data-contain="filter_group">
           {roles.map((role) => {
             const alias = `role:${role.toLowerCase()}`;
             return (
-              <Checkbox key={role} label={role} id={alias} onChange={handleChange} checked={filters.includes(alias)} />
+              <Checkbox
+                key={role}
+                label={role}
+                id={alias}
+                onChange={handleChange}
+                checked={filters.includes(alias)}
+                appearance={appearance?.elements?.FilterCheckbox}
+              />
             );
           })}
         </div>
@@ -341,17 +439,24 @@ export const OrgControls = ({
             id={"status:pending"}
             onChange={handleChange}
             checked={filters.includes("status:pending")}
+            appearance={appearance?.elements?.FilterCheckbox}
           />
           <Checkbox
             label={"Active"}
             id={"status:active"}
             onChange={handleChange}
             checked={filters.includes("status:active")}
+            appearance={appearance?.elements?.FilterCheckbox}
           />
         </div>
       </Popover>
       {canInviteUsers && (
-        <Modal show={showInviteModal} setShow={setShowInviteModal} onClose={() => setShowInviteModal(false)}>
+        <Modal
+          show={showInviteModal}
+          setShow={setShowInviteModal}
+          onClose={() => setShowInviteModal(false)}
+          appearance={appearance?.elements?.InviteModal}
+        >
           <InviteUser orgId={orgId} onSuccess={onSuccessfulInvite} />
         </Modal>
       )}
@@ -437,15 +542,26 @@ export type PaginationControls = {
     onBack: VoidFunction;
     onNext: VoidFunction;
   };
+  appearance?: OrgAppearance;
 };
 
-export const Pagination = ({ controls }: PaginationControls) => {
+export const Pagination = ({ controls, appearance }: PaginationControls) => {
   return (
     <>
-      <Paragraph>{`Page ${controls.currentPage} of ${controls.totalPages}`}</Paragraph>
+      <Paragraph
+        appearance={appearance?.elements?.PageText}
+      >{`Page ${controls.currentPage} of ${controls.totalPages}`}</Paragraph>
       <div data-contain="pagination_buttons">
-        {controls.hasBack && <Button onClick={controls.onBack}>Back</Button>}
-        {controls.hasNext && <Button onClick={controls.onNext}>Next</Button>}
+        {controls.hasBack && (
+          <Button onClick={controls.onBack} appearance={appearance?.elements?.PageBackButton}>
+            Back
+          </Button>
+        )}
+        {controls.hasNext && (
+          <Button onClick={controls.onNext} appearance={appearance?.elements?.PageNextButton}>
+            Next
+          </Button>
+        )}
       </div>
     </>
   );
@@ -495,9 +611,10 @@ export type EditActiveUserProps = {
   onClose: VoidFunction;
   setUserRole: (userId: string, role: string) => void;
   removeUser: (userId: string) => void;
+  appearance?: OrgAppearance;
 };
 
-export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser }: EditActiveUserProps) => {
+export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, appearance }: EditActiveUserProps) => {
   const [role, setRole] = useState(user.role);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -549,25 +666,28 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser }
   return (
     <div data-contain="modal">
       <div data-contain="header">
-        <H3>Edit {user.email}</H3>
+        <H3 appearance={appearance?.elements?.EditUserModalHeader}>Edit {user.email}</H3>
       </div>
       <div data-contain="form">
         <form onSubmit={handleRoleChange}>
-          <Label htmlFor={"change_role"}>Change role</Label>
+          <Label htmlFor={"change_role"} appearance={appearance?.elements?.ChangeRoleLabel}>
+            Change role
+          </Label>
           <Select
             id={"change_role"}
             options={getRoleOptions()}
             value={role}
             onChange={(e) => setRole(e.target.value)}
             disabled={changeRoleDisabled}
+            appearance={appearance?.elements?.ChangeRoleSelect}
           />
-          <Button loading={loading} disabled={user.role === role}>
+          <Button loading={loading} disabled={user.role === role} appearance={appearance?.elements?.SaveRoleButton}>
             Save
           </Button>
         </form>
       </div>
       {user.can_be_deleted && (
-        <Button loading={loading} onClick={handleRemoveUser}>
+        <Button loading={loading} onClick={handleRemoveUser} appearance={appearance?.elements?.RemoveUserButton}>
           Remove user
         </Button>
       )}
@@ -581,9 +701,16 @@ export type EditPendingInvitationProps = {
   user: UserOrInvitation;
   onClose: VoidFunction;
   removeInvitation: (email: string) => void;
+  appearance?: OrgAppearance;
 };
 
-export const EditPendingInvitation = ({ orgId, user, onClose, removeInvitation }: EditPendingInvitationProps) => {
+export const EditPendingInvitation = ({
+  orgId,
+  user,
+  onClose,
+  removeInvitation,
+  appearance,
+}: EditPendingInvitationProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -606,12 +733,16 @@ export const EditPendingInvitation = ({ orgId, user, onClose, removeInvitation }
   return (
     <div data-contain="modal">
       <div data-contain="header">
-        <H3>Edit {user.email}</H3>
+        <H3 appearance={appearance?.elements?.EditUserModalHeader}>Edit {user.email}</H3>
       </div>
-      <Button loading={loading} onClick={revokeInvitation}>
+      <Button loading={loading} onClick={revokeInvitation} appearance={appearance?.elements?.RevokeInvitationButton}>
         Revoke Invitation
       </Button>
-      {error && <Alert type={"error"}>{error}</Alert>}
+      {error && (
+        <Alert type={"error"} appearance={appearance?.elements?.EditUserAlert}>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 };
@@ -622,6 +753,7 @@ export type EditExpiredInvitationProps = {
   onClose: VoidFunction;
   addInvitation: (invitation: Invitation) => void;
   removeInvitation: (email: string) => void;
+  appearance?: OrgAppearance;
 };
 
 export const EditExpiredInvitation = ({
@@ -630,6 +762,7 @@ export const EditExpiredInvitation = ({
   onClose,
   addInvitation,
   removeInvitation,
+  appearance,
 }: EditExpiredInvitationProps) => {
   const { orgUserApi } = useClient();
   const [loading, setLoading] = useState(false);
@@ -676,15 +809,19 @@ export const EditExpiredInvitation = ({
   return (
     <div data-contain="modal">
       <div data-contain="header">
-        <H3>Edit {user.email}</H3>
+        <H3 appearance={appearance?.elements?.EditUserModalHeader}>Edit {user.email}</H3>
       </div>
-      <Button loading={loading} onClick={resendInvitation}>
+      <Button loading={loading} onClick={resendInvitation} appearance={appearance?.elements?.ResendInvitationButton}>
         Resend Invitation
       </Button>
-      <Button loading={loading} onClick={deleteInvitation}>
+      <Button loading={loading} onClick={deleteInvitation} appearance={appearance?.elements?.DeleteInvitationButton}>
         Delete Invitation
       </Button>
-      {error && <Alert type={"error"}>{error}</Alert>}
+      {error && (
+        <Alert type={"error"} appearance={appearance?.elements?.EditUserAlert}>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 };
