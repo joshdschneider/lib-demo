@@ -57,10 +57,12 @@ export type MfaAppearance = {
   };
 };
 
+export type MfaStatus = "Loading" | "Error" | "Enabled" | "Disabled";
+
 export const Mfa = ({ appearance }: MfaProps) => {
   const { config } = useConfig();
   const { mfaApi } = useClient();
-  const [mfaEnabled, setMfaEnabled] = useState<boolean | undefined>(undefined);
+  const [mfaStatus, setMfaStatus] = useState<MfaStatus>("Loading");
   const [showQr, setShowQr] = useState(true);
   const [showDisableModal, setShowDisableModal] = useState(false);
   const [showEnableModal, setShowEnableModal] = useState(false);
@@ -75,28 +77,27 @@ export const Mfa = ({ appearance }: MfaProps) => {
   useEffect(() => {
     async function fetchStatus() {
       try {
-        setLoading(true);
         const res = await mfaApi.mfaStatus();
         if (res.ok) {
           if (res.body.type === "Enabled") {
-            setMfaEnabled(true);
+            setMfaStatus(res.body.type);
             setBackupCodes(res.body.backupCodes);
           } else if (res.body.type === "Disabled") {
-            setMfaEnabled(false);
+            setMfaStatus(res.body.type);
             setNewSecret(res.body.newSecret);
             setNewQr(res.body.newQr);
           }
+        } else {
+          setMfaStatus("Error");
         }
       } catch (e) {
-        setError("Something went wrong");
+        setMfaStatus("Error");
         console.error(e);
-      } finally {
-        setLoading(false);
       }
     }
 
     fetchStatus();
-  }, [mfaEnabled]);
+  }, [mfaStatus]);
 
   async function enableMfa() {
     try {
@@ -106,7 +107,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
         setShowEnableModal(false);
         setCode("");
         setError(undefined);
-        setMfaEnabled(true);
+        setMfaStatus("Enabled");
       } else if (res.error) {
         setError("Something went wrong");
       }
@@ -125,7 +126,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
       if (res.ok) {
         setShowDisableModal(false);
         setError(undefined);
-        setMfaEnabled(false);
+        setMfaStatus("Disabled");
       } else if (res.error) {
         setError("Something went wrong");
       }
@@ -155,11 +156,29 @@ export const Mfa = ({ appearance }: MfaProps) => {
     }
   }
 
-  if (mfaEnabled === undefined) {
-    return null;
+  if (mfaStatus === "Loading") {
+    return (
+      <div data-contain="component">
+        <Container appearance={appearance?.elements?.Container}>
+          <Button appearance={appearance?.elements?.EnableMfaButton}>Loading...</Button>
+        </Container>
+      </div>
+    );
   }
 
-  if (mfaEnabled) {
+  if (mfaStatus === "Error") {
+    return (
+      <div data-contain="component">
+        <Container appearance={appearance?.elements?.Container}>
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
+            2FA failed to load
+          </Alert>
+        </Container>
+      </div>
+    );
+  }
+
+  if (mfaStatus === "Enabled") {
     return (
       <div data-contain="component">
         <Container appearance={appearance?.elements?.Container}>
