@@ -1,11 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { ProfilePicture } from "../@propelauth/react";
-import { Mfa } from "../@propelauth/react/components/Mfa";
+import { ProfilePicture, Mfa, UpdateProfile } from "../@propelauth/react";
 
 export const AccountPage = () => {
   return (
     <div>
       <ProfilePicture />
+      <UpdateProfile />
       <Mfa />
     </div>
   );

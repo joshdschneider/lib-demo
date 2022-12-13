@@ -1,5 +1,7 @@
 export * from "./CompleteAccount";
 export * from "./ProfilePicture";
+export * from "./UpdateProfile";
+export * from "./Mfa";
 export * from "./ForgotPassword";
 export * from "./Login";
 export * from "./Signup";
