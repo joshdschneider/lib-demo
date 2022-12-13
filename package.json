@@ -7,7 +7,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.13",
     "@popperjs/core": "^2.11.6",
-    "@propel-auth-fern/fe_v2-client": "^0.0.41",
+    "@propel-auth-fern/fe_v2-client": "^0.0.45",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

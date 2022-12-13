@@ -35,7 +35,7 @@ const DEFAULT_CONFIG = {
   has_password_login: true,
   only_extra_login_is_passwordless: false,
   require_username: true,
-  require_name: false,
+  require_name: true,
   profile_picture_url: "https://trendblog.net/wp-content/uploads/2022/02/funny-xbox.png",
   require_profile_picture: false,
   orgs_metaname: "Team",

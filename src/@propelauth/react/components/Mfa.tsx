@@ -60,7 +60,7 @@ export type MfaAppearance = {
 export const Mfa = ({ appearance }: MfaProps) => {
   const { config } = useConfig();
   const { mfaApi } = useClient();
-  const [mfaEnabled, setMfaEnabled] = useState(false);
+  const [mfaEnabled, setMfaEnabled] = useState<boolean | undefined>(undefined);
   const [showQr, setShowQr] = useState(true);
   const [showDisableModal, setShowDisableModal] = useState(false);
   const [showEnableModal, setShowEnableModal] = useState(false);
@@ -86,8 +86,6 @@ export const Mfa = ({ appearance }: MfaProps) => {
             setNewSecret(res.body.newSecret);
             setNewQr(res.body.newQr);
           }
-        } else {
-          setError("Something went wrong");
         }
       } catch (e) {
         setError("Something went wrong");
@@ -107,7 +105,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
       if (res.ok) {
         setShowEnableModal(false);
         setCode("");
-        setError("");
+        setError(undefined);
         setMfaEnabled(true);
       } else if (res.error) {
         setError("Something went wrong");
@@ -126,7 +124,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
       const res = await mfaApi.mfaDisable();
       if (res.ok) {
         setShowDisableModal(false);
-        setError("");
+        setError(undefined);
         setMfaEnabled(false);
       } else if (res.error) {
         setError("Something went wrong");
@@ -157,6 +155,10 @@ export const Mfa = ({ appearance }: MfaProps) => {
     }
   }
 
+  if (mfaEnabled === undefined) {
+    return null;
+  }
+
   if (mfaEnabled) {
     return (
       <div data-contain="component">
@@ -168,7 +170,12 @@ export const Mfa = ({ appearance }: MfaProps) => {
             Show Backup Codes
           </Button>
         </Container>
-        <Modal show={showDisableModal} setShow={setShowDisableModal} appearance={appearance?.elements?.DisableMfaModal}>
+        <Modal
+          show={showDisableModal}
+          setShow={setShowDisableModal}
+          appearance={appearance?.elements?.DisableMfaModal}
+          onClose={() => setError(undefined)}
+        >
           <Paragraph appearance={appearance?.elements?.DisableMfaModalText}>
             Are you sure you want to disable 2FA?
           </Paragraph>
@@ -219,7 +226,12 @@ export const Mfa = ({ appearance }: MfaProps) => {
         <Button onClick={() => setShowEnableModal(true)} appearance={appearance?.elements?.EnableMfaButton}>
           Enable 2FA
         </Button>
-        <Modal show={showEnableModal} setShow={setShowEnableModal} appearance={appearance?.elements?.EnableMfaButton}>
+        <Modal
+          show={showEnableModal}
+          setShow={setShowEnableModal}
+          appearance={appearance?.elements?.EnableMfaButton}
+          onClose={() => setError(undefined)}
+        >
           <H3 appearance={appearance?.elements?.EnableMfaModalHeader}>Enable 2FA</H3>
           <Paragraph appearance={appearance?.elements?.EnableMfaModalText}>
             Two-Factor Authentication makes your account more secure by requiring a code in addition to your normal

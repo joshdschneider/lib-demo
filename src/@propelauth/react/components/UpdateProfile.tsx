@@ -6,8 +6,6 @@ import {
   ButtonProps,
   Container,
   ContainerProps,
-  H3,
-  H3Props,
   Input,
   InputProps,
   Label,
@@ -43,15 +41,11 @@ export type UpdateProfileAppearance = {
     UsernameLabel?: ElementAppearance<LabelProps>;
     UsernameInput?: ElementAppearance<InputProps>;
     SubmitUsernameButton?: ElementAppearance<ButtonProps>;
-    PasswordButton?: ElementAppearance<ButtonProps>;
-    PasswordModal?: ElementAppearance<ModalProps>;
-    PasswordModalHeader?: ElementAppearance<H3Props>;
     OldPasswordLabel?: ElementAppearance<LabelProps>;
     OldPasswordInput?: ElementAppearance<InputProps>;
     NewPasswordLabel?: ElementAppearance<LabelProps>;
     NewPasswordInput?: ElementAppearance<InputProps>;
     SubmitPasswordButton?: ElementAppearance<ButtonProps>;
-    ClosePasswordModalButton?: ElementAppearance<ButtonProps>;
     SuccessMessage?: ElementAppearance<AlertProps>;
     ErrorMessage?: ElementAppearance<AlertProps>;
   };
@@ -185,20 +179,18 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
             type={"text"}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder={"Jane"}
             appearance={appearance?.elements?.FirstNameInput}
           />
         </div>
         <div>
           <Label htmlFor={"last_name"} appearance={appearance?.elements?.LastNameLabel}>
-            First name
+            Last name
           </Label>
           <Input
             id={"last_name"}
             type={"text"}
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            placeholder={"Doe"}
             appearance={appearance?.elements?.LastNameInput}
           />
         </div>
@@ -276,7 +268,6 @@ export type UpdatePasswordProps = {
 export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
   const { userApi } = useClient();
   const [hasPassword, setHasPassword] = useState(true); // get from user metadata
-  const [showModal, setShowModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -297,7 +288,6 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
         setOldPassword("");
         setNewPassword("");
         setHasPassword(true);
-        setShowModal(false);
       } else {
         setError("Something went wrong");
       }
@@ -311,49 +301,40 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
 
   return (
     <div data-contain="section">
-      <Button onClick={() => setShowModal(true)} appearance={appearance?.elements?.PasswordButton}>
-        {callToAction}
-      </Button>
-      <Modal show={showModal} setShow={setShowModal} appearance={appearance?.elements?.PasswordModal}>
-        <form onSubmit={handleSubmit}>
-          <H3 appearance={appearance?.elements?.PasswordModalHeader}>{callToAction}</H3>
-          {hasPassword && (
-            <div>
-              <Label htmlFor={"old_password"} appearance={appearance?.elements?.OldPasswordLabel}>
-                Old password
-              </Label>
-              <Input
-                type={"password"}
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-                appearance={appearance?.elements?.OldPasswordInput}
-              />
-            </div>
-          )}
+      <form onSubmit={handleSubmit}>
+        {hasPassword && (
           <div>
-            <Label htmlFor={"new_password"} appearance={appearance?.elements?.NewPasswordLabel}>
-              {passwordLabel}
+            <Label htmlFor={"old_password"} appearance={appearance?.elements?.OldPasswordLabel}>
+              Old password
             </Label>
             <Input
               type={"password"}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              appearance={appearance?.elements?.NewPasswordInput}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              appearance={appearance?.elements?.OldPasswordInput}
             />
           </div>
-          <Button loading={loading} appearance={appearance?.elements?.SubmitPasswordButton}>
-            {callToAction}
-          </Button>
-          <Button onClick={() => setShowModal(false)} appearance={appearance?.elements?.ClosePasswordModalButton}>
-            Cancel
-          </Button>
-          {error && (
-            <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
-              {error}
-            </Alert>
-          )}
-        </form>
-      </Modal>
+        )}
+        <div>
+          <Label htmlFor={"new_password"} appearance={appearance?.elements?.NewPasswordLabel}>
+            {passwordLabel}
+          </Label>
+          <Input
+            type={"password"}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            appearance={appearance?.elements?.NewPasswordInput}
+          />
+        </div>
+        <Button loading={loading} appearance={appearance?.elements?.SubmitPasswordButton}>
+          {callToAction}
+        </Button>
+        {error && (
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
+            {error}
+          </Alert>
+        )}
+      </form>
     </div>
   );
 };

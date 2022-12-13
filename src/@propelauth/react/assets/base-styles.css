@@ -415,6 +415,14 @@ div[data-contain="modal"] form .BaseSelect {
   margin: 15px 0 0 0;
 }
 
+div[data-contain="components"] div[data-contain="component"]:first-child .BaseContainer {
+  padding-bottom: 0;
+}
+
+div[data-contain="components"] div[data-contain="component"]:last-child .BaseContainer {
+  padding-top: 0;
+}
+
 div[data-contain="profile_picture"] {
   width: 100px;
   margin: auto;
@@ -440,6 +448,41 @@ div[data-contain="upload"] .BaseButton {
 
 div[data-contain="upload"] .BaseButton:last-child {
   margin-bottom: 0;
+}
+
+div[data-contain="section"] {
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0 5px 0;
+}
+
+div[data-contain="section"] .BaseH3 {
+  margin: 0 0px 15px 0;
+}
+
+div[data-contain="section"] .BaseLabel {
+  margin-bottom: 10px;
+  display: block;
+}
+
+div[data-contain="section"] .BaseInput {
+  display: block;
+  margin-bottom: 15px;
+}
+
+div[data-contain="components"] .BaseButton {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+div[data-contain="qr_code"] {
+  margin-bottom: 15px;
+}
+
+div[data-contain="qr_code"] .BaseImage {
+  width: 100%;
+  height: auto;
 }
 
 /* 
