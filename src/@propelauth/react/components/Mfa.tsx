@@ -53,7 +53,7 @@ export type MfaAppearance = {
     CloseEnableMfaModalButton?: ElementAppearance<ButtonProps>;
     CloseDisableMfaModalButton?: ElementAppearance<ButtonProps>;
     CloseBackupCodesButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -182,7 +182,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
             Cancel
           </Button>
           {error && (
-            <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+            <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
               {error}
             </Alert>
           )}
@@ -204,7 +204,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
             Close
           </Button>
           {error && (
-            <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+            <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
               {error}
             </Alert>
           )}
@@ -273,7 +273,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
             Enable 2FA
           </Button>
           {error && (
-            <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+            <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
               {error}
             </Alert>
           )}

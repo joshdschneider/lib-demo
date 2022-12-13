@@ -37,7 +37,7 @@ export type InviteUserAppearance = {
     RoleLabel?: ElementAppearance<LabelProps>;
     RoleSelect?: ElementAppearance<SelectProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -72,7 +72,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
       <div data-contain="component">
         <Container appearance={appearance?.elements?.Container}>
           <H3 appearance={appearance?.elements?.Header}>Invite User</H3>
-          <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
             {unauthorized}
           </Alert>
         </Container>
@@ -119,7 +119,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
               Invite User
             </Button>
             {error && (
-              <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+              <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
                 {error}
               </Alert>
             )}

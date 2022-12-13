@@ -37,7 +37,7 @@ export type VerifyAppearance = {
     CodeInput?: ElementAppearance<InputProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
     CodeTypeLink?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -107,7 +107,7 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
               Submit
             </Button>
             {error && (
-              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+              <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
                 {error}
               </Alert>
             )}

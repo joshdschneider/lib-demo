@@ -15,6 +15,7 @@ import {
   Modal,
   ModalProps,
   Paragraph,
+  ParagraphProps,
 } from "../elements";
 import { ElementAppearance, useClient, useConfig } from "../state";
 
@@ -28,6 +29,20 @@ export type UpdateProfileAppearance = {
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
+    EmailLabel?: ElementAppearance<LabelProps>;
+    EmailInput?: ElementAppearance<InputProps>;
+    SubmitEmailButton?: ElementAppearance<ButtonProps>;
+    EmailModal?: ElementAppearance<ModalProps>;
+    EmailModalText?: ElementAppearance<ParagraphProps>;
+    EmailModalCloseButton?: ElementAppearance<ButtonProps>;
+    FirstNameLabel?: ElementAppearance<LabelProps>;
+    FirstNameInput?: ElementAppearance<InputProps>;
+    LastNameLabel?: ElementAppearance<LabelProps>;
+    LastNameInput?: ElementAppearance<InputProps>;
+    SubmitNameButton?: ElementAppearance<ButtonProps>;
+    UsernameLabel?: ElementAppearance<LabelProps>;
+    UsernameInput?: ElementAppearance<InputProps>;
+    SubmitUsernameButton?: ElementAppearance<ButtonProps>;
     PasswordButton?: ElementAppearance<ButtonProps>;
     PasswordModal?: ElementAppearance<ModalProps>;
     PasswordModalHeader?: ElementAppearance<H3Props>;
@@ -37,7 +52,8 @@ export type UpdateProfileAppearance = {
     NewPasswordInput?: ElementAppearance<InputProps>;
     SubmitPasswordButton?: ElementAppearance<ButtonProps>;
     ClosePasswordModalButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    SuccessMessage?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -45,7 +61,7 @@ export const UpdateProfile = ({ appearance }: UpdateProfileProps) => {
   const { config } = useConfig();
   return (
     <div data-contain="component">
-      <Container>
+      <Container appearance={appearance?.elements?.Container}>
         <UpdateEmail appearance={appearance} />
         {config.require_name && <UpdateName appearance={appearance} />}
         {config.require_username && <UpdateUsername appearance={appearance} />}
@@ -88,17 +104,40 @@ export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
     <div data-contain="section">
       <form onSubmit={handleSubmit}>
         <div>
-          <Label htmlFor={"email"}>Email</Label>
-          <Input id={"email"} type={"email"} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Label htmlFor={"email"} appearance={appearance?.elements?.EmailLabel}>
+            Email
+          </Label>
+          <Input
+            id={"email"}
+            type={"email"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            appearance={appearance?.elements?.EmailInput}
+          />
         </div>
-        <Button loading={loading}>Update Email</Button>
-        {error && <Alert type={"error"}>{error}</Alert>}
+        <Button loading={loading} appearance={appearance?.elements?.SubmitEmailButton}>
+          Update Email
+        </Button>
+        {error && (
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
+            {error}
+          </Alert>
+        )}
       </form>
-      <Modal show={showConfirmationModal} setShow={setShowConfirmationModal}>
-        <Paragraph>
+      <Modal
+        show={showConfirmationModal}
+        setShow={setShowConfirmationModal}
+        appearance={appearance?.elements?.EmailModal}
+      >
+        <Paragraph appearance={appearance?.elements?.EmailModalText}>
           {`We sent a confirmation email to ${email}. Please check your inbox to verify your email.`}
         </Paragraph>
-        <Button onClick={() => setShowConfirmationModal(false)}>Ok</Button>
+        <Button
+          onClick={() => setShowConfirmationModal(false)}
+          appearance={appearance?.elements?.EmailModalCloseButton}
+        >
+          Ok
+        </Button>
       </Modal>
     </div>
   );
@@ -138,28 +177,44 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
     <div data-contain="section">
       <form onSubmit={handleSubmit}>
         <div>
-          <Label htmlFor={"first_name"}>First name</Label>
+          <Label htmlFor={"first_name"} appearance={appearance?.elements?.FirstNameLabel}>
+            First name
+          </Label>
           <Input
             id={"first_name"}
             type={"text"}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder={"Jane"}
+            appearance={appearance?.elements?.FirstNameInput}
           />
         </div>
         <div>
-          <Label htmlFor={"last_name"}>First name</Label>
+          <Label htmlFor={"last_name"} appearance={appearance?.elements?.LastNameLabel}>
+            First name
+          </Label>
           <Input
             id={"last_name"}
             type={"text"}
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder={"Doe"}
+            appearance={appearance?.elements?.LastNameInput}
           />
         </div>
-        <Button loading={loading}>Update Name</Button>
-        {success && <Alert type={"success"}>{success}</Alert>}
-        {error && <Alert type={"error"}>{error}</Alert>}
+        <Button loading={loading} appearance={appearance?.elements?.SubmitNameButton}>
+          Update Name
+        </Button>
+        {success && (
+          <Alert type={"success"} appearance={appearance?.elements?.SuccessMessage}>
+            {success}
+          </Alert>
+        )}
+        {error && (
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
+            {error}
+          </Alert>
+        )}
       </form>
     </div>
   );
@@ -293,7 +348,7 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
             Cancel
           </Button>
           {error && (
-            <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+            <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
               {error}
             </Alert>
           )}

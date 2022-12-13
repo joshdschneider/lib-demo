@@ -38,8 +38,8 @@ export type ForgotPasswordAppearance = {
     PasswordInput?: ElementAppearance<InputProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
     MagicLinkButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
     LoginLink?: ElementAppearance<ButtonProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -154,7 +154,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         )}
         <BottomLinks onRedirectToLogin={onRedirectToLogin} appearance={appearance} />
         {error && (
-          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+          <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
             {error}
           </Alert>
         )}

@@ -57,7 +57,7 @@ export type LoginAppearance = {
     SubmitButton?: ElementAppearance<ButtonProps>;
     SignupLink?: ElementAppearance<ButtonProps>;
     ForgotPasswordLink?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -149,7 +149,7 @@ export const Login = ({
                     Login
                   </Button>
                   {error && (
-                    <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+                    <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
                       {error}
                     </Alert>
                   )}

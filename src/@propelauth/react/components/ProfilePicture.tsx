@@ -30,7 +30,7 @@ export type ProfilePictureAppearance = {
     FileName?: ElementAppearance<ParagraphProps>;
     SelectImageButton?: ElementAppearance<ButtonProps>;
     SaveImageButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -113,7 +113,7 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
           </Button>
         </div>
         {error && (
-          <Alert type={"error"} appearance={appearance?.elements?.Alert}>
+          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
             {error}
           </Alert>
         )}

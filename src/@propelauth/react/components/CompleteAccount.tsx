@@ -35,7 +35,7 @@ export type CompleteAccountAppearance = {
     LastNameInput?: ElementAppearance<InputProps>;
     UsernameInput?: ElementAppearance<InputProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -127,7 +127,7 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
               Continue
             </Button>
             {error && (
-              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+              <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
                 {error}
               </Alert>
             )}

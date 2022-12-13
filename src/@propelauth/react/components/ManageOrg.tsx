@@ -51,7 +51,6 @@ export type OrgAppearance = {
     EditUserButton?: ElementAppearance<ButtonProps>;
     EditUserModal?: ElementAppearance<ModalProps>;
     EditUserModalHeader?: ElementAppearance<H3Props>;
-    EditUserAlert?: ElementAppearance<AlertProps>;
     ChangeRoleLabel?: ElementAppearance<LabelProps>;
     ChangeRoleSelect?: ElementAppearance<SelectProps>;
     SaveRoleButton?: ElementAppearance<ButtonProps>;
@@ -62,6 +61,7 @@ export type OrgAppearance = {
     PageText?: ElementAppearance<ParagraphProps>;
     PageBackButton?: ElementAppearance<ButtonProps>;
     PageNextButton?: ElementAppearance<ButtonProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -145,13 +145,6 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
         role: "Owner",
         possible_roles: ["Owner", "Admin", "Member"],
         can_be_deleted: false,
-      },
-      {
-        user_id: "353",
-        email: "kayla@propelauth.com",
-        role: "Admin",
-        possible_roles: ["Admin", "Member"],
-        can_be_deleted: true,
       },
       {
         user_id: "464",
@@ -691,7 +684,11 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
           Remove user
         </Button>
       )}
-      {error && <Alert type={"error"}>{error}</Alert>}
+      {error && (
+        <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 };
@@ -739,7 +736,7 @@ export const EditPendingInvitation = ({
         Revoke Invitation
       </Button>
       {error && (
-        <Alert type={"error"} appearance={appearance?.elements?.EditUserAlert}>
+        <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
           {error}
         </Alert>
       )}
@@ -818,7 +815,7 @@ export const EditExpiredInvitation = ({
         Delete Invitation
       </Button>
       {error && (
-        <Alert type={"error"} appearance={appearance?.elements?.EditUserAlert}>
+        <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
           {error}
         </Alert>
       )}

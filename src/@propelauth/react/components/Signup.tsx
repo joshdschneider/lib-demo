@@ -46,7 +46,7 @@ export type SignupAppearance = {
     SocialButton?: ElementAppearance<ButtonProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
     LoginLink?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -195,7 +195,7 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           Sign up
         </Button>
         {error && (
-          <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+          <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
             {error}
           </Alert>
         )}

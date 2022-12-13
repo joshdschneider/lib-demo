@@ -38,7 +38,7 @@ export type CreateOrgAppearance = {
     AutojoinByDomainCheckbox?: ElementAppearance<CheckboxProps>;
     RestrictToDomainCheckbox?: ElementAppearance<CheckboxProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
-    Alert?: ElementAppearance<AlertProps>;
+    ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
 
@@ -120,7 +120,7 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
               {`Create ${orgMetaname}`}
             </Button>
             {error && (
-              <Alert appearance={appearance?.elements?.Alert} type={"error"}>
+              <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
                 {error}
               </Alert>
             )}
