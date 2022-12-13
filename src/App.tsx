@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/Login";
 import { ForgotPasswordPage } from "./pages/ForgotPassword";
 import { Dashboard } from "./pages/Dashboard";
 import { OrgPage } from "./pages/Org";
+import { AccountPage } from "./pages/Account";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="login" element={<LoginPage />} />
             <Route path="forgot-password" element={<ForgotPasswordPage />} />
             <Route path="org" element={<OrgPage />} />
+            <Route path="account" element={<AccountPage />} />
             <Route path="dashboard" element={<Dashboard />} />
           </Route>
         </Routes>

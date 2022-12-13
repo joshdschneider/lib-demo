@@ -16,6 +16,7 @@ export type Config = {
   only_extra_login_is_passwordless: boolean;
   require_username: boolean;
   require_name: boolean;
+  profile_picture_url: string;
   require_profile_picture: boolean;
   orgs_metaname: string;
 };
@@ -35,6 +36,7 @@ const DEFAULT_CONFIG = {
   only_extra_login_is_passwordless: false,
   require_username: true,
   require_name: false,
+  profile_picture_url: "https://trendblog.net/wp-content/uploads/2022/02/funny-xbox.png",
   require_profile_picture: false,
   orgs_metaname: "Team",
 };

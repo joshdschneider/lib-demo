@@ -415,6 +415,33 @@ div[data-contain="modal"] form .BaseSelect {
   margin: 15px 0 0 0;
 }
 
+div[data-contain="profile_picture"] {
+  width: 100px;
+  margin: auto;
+  cursor: pointer;
+}
+
+div[data-contain="profile_picture"] .BaseImage {
+  width: 100%;
+  height: auto;
+}
+
+div[data-contain="upload"] .BaseParagraph {
+  display: block;
+  width: 100%;
+  margin: 5px 0 15px 0;
+}
+
+div[data-contain="upload"] .BaseButton {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+div[data-contain="upload"] .BaseButton:last-child {
+  margin-bottom: 0;
+}
+
 /* 
   --END--
   Default styles for components

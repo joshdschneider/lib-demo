@@ -4,7 +4,7 @@ import { ChangeEventHandler, CSSProperties, forwardRef } from "react";
 
 export type InputProps = {
   value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   id?: string;
   type?: string;
   required?: boolean;

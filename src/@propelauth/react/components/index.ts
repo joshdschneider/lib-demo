@@ -1,4 +1,5 @@
 export * from "./CompleteAccount";
+export * from "./ProfilePicture";
 export * from "./ForgotPassword";
 export * from "./Login";
 export * from "./Signup";
