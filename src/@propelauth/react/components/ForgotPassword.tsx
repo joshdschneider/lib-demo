@@ -61,7 +61,10 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         const message = `If that email address is in our database, we will send you an email to reset your password.`;
         setSuccessMessage(message);
       } else {
-        setError("Something went wrong");
+        response.error._visit({
+          badRequestForgotPassword: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");
@@ -80,7 +83,11 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         const message = `If that email address is in our database, we will send you an email to login to your account.`;
         setSuccessMessage(message);
       } else {
-        setError("Something went wrong");
+        response.error._visit({
+          notFoundLoginPasswordless: () => setError("Not found"),
+          badRequestLoginPasswordless: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");

@@ -85,9 +85,15 @@ export const Login = ({
       setLoading(true);
       setError(undefined);
       const options = { email, password };
-      // const response = await loginApi.login(options)
-      // if (response.ok) ..
-      setStep(LoginStateEnum.TwoFactorRequired);
+      const response = await loginApi.login(options);
+      if (response.ok) {
+        setStep(response.body);
+      } else {
+        response.error._visit({
+          badRequestLogin: () => setError("Incorrect credentials"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
       setError("Something went wrong");
       console.error(e);

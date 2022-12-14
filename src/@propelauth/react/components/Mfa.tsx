@@ -19,7 +19,7 @@ import {
   Paragraph,
   ParagraphProps,
 } from "../elements";
-import { ElementAppearance, useClient, useConfig } from "../state";
+import { ElementAppearance, useClient } from "../state";
 
 export type MfaProps = {
   appearance?: MfaAppearance;
@@ -60,7 +60,6 @@ export type MfaAppearance = {
 export type MfaStatus = "Loading" | "Error" | "Enabled" | "Disabled";
 
 export const Mfa = ({ appearance }: MfaProps) => {
-  const { config } = useConfig();
   const { mfaApi } = useClient();
   const [mfaStatus, setMfaStatus] = useState<MfaStatus>("Loading");
   const [showQr, setShowQr] = useState(true);
@@ -97,7 +96,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
     }
 
     fetchStatus();
-  }, [mfaStatus]);
+  }, [mfaStatus, mfaApi]);
 
   async function enableMfa() {
     try {
@@ -108,8 +107,14 @@ export const Mfa = ({ appearance }: MfaProps) => {
         setCode("");
         setError(undefined);
         setMfaStatus("Enabled");
-      } else if (res.error) {
-        setError("Something went wrong");
+      } else {
+        res.error._visit({
+          notFoundMfaEnable: () => setError("Not found"),
+          badRequestMfaEnable: () => setError("Something went wrong"),
+          forbiddenMfaEnable: () => setError("Forbidden"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");
@@ -127,8 +132,12 @@ export const Mfa = ({ appearance }: MfaProps) => {
         setShowDisableModal(false);
         setError(undefined);
         setMfaStatus("Disabled");
-      } else if (res.error) {
-        setError("Something went wrong");
+      } else {
+        res.error._visit({
+          notFoundMfaDisable: () => setError("Not found"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");

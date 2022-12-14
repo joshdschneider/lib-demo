@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
-import { Config, ElementAppearance } from "../state";
+import { Config, ElementAppearance, useClient } from "../state";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import {
   Alert,
@@ -46,6 +46,7 @@ export interface UpdateMetadataOptions {
 }
 
 export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccountProps) => {
+  const { userApi, loginApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -65,10 +66,23 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
       if (config.require_username) {
         options.username = username;
       }
-      // const response = await apiUpdateMetadata(options);
-      // if (response.ok) ..
-      setStep(LoginStateEnum.OrgCreationRequired);
+      const response = await userApi.updateMetadata(options);
+      if (response.ok) {
+        const status = await loginApi.loginState();
+        if (status.ok) {
+          setStep(status.body.loginState);
+        } else {
+          setError("Something went wrong");
+        }
+      } else {
+        response.error._visit({
+          notFoundUpdateMetadata: () => setError("User not found"),
+          badRequestUpdateMetadata: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);

@@ -43,10 +43,10 @@ export type CreateOrgAppearance = {
 };
 
 export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
-  const { orgApi } = useClient();
+  const { orgApi, loginApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [autojoinByDefault, setAutojoinByDefault] = useState(false);
+  const [autojoinByDomain, setAutojoinByDomain] = useState(false);
   const [restrictToDomain, setRestrictToDomain] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const orgMetaname = config.orgs_metaname || "Organization";
@@ -56,15 +56,25 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
       e.preventDefault();
       setLoading(true);
       setError(undefined);
-      const options = {
-        name,
-        autojoinByDefault,
-        restrictToDomain,
-      };
-      // const response = await orgApi.createOrg(options);
-      // if (response.ok) ..
-      setStep(LoginStateEnum.Finished);
+      const options = { name, autojoinByDomain, restrictToDomain };
+      const response = await orgApi.createOrg(options);
+      if (response.ok) {
+        const status = await loginApi.loginState();
+        if (status.ok) {
+          setStep(status.body.loginState);
+        } else {
+          setError("Something went wrong");
+        }
+      } else {
+        response.error._visit({
+          notFoundCreateOrg: () => setError("Not found"),
+          badRequestCreateOrg: () => setError("Something went wrong"),
+          unauthorizedOrgUsage: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -100,8 +110,8 @@ export const CreateOrg = ({ config, setStep, appearance }: CreateOrgProps) => {
               <Checkbox
                 id={"autojoin_by_domain"}
                 label={"Auto-join by domain"}
-                checked={autojoinByDefault}
-                onChange={(e) => setAutojoinByDefault(e.target.checked)}
+                checked={autojoinByDomain}
+                onChange={(e) => setAutojoinByDomain(e.target.checked)}
                 appearance={appearance?.elements?.AutojoinByDomainCheckbox}
                 disabled={true}
               />

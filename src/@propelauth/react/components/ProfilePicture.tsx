@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { ElementAppearance, useClient, useConfig } from "../state";
+import { ElementAppearance, useConfig } from "../state";
 import {
   Container,
   Modal,
@@ -36,7 +36,6 @@ export type ProfilePictureAppearance = {
 
 export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
   const { config } = useConfig();
-  const { userApi } = useClient();
   const [imageUrl, setImageUrl] = useState(config.profile_picture_url);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
@@ -49,7 +48,7 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
       setError(undefined);
       // const response = await userApi.updateProfileImage(files[0])
       // if (response.ok) ..
-      setImageUrl("https://nextluxury.com/wp-content/uploads/funny-profile-pictures-7.jpg");
+      setImageUrl("https://img.propelauth.com/0c22cebe-681f-4725-a8f5-b81963484eb9.png");
       onClose();
     } catch (e) {
       console.log(e);

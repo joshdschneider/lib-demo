@@ -69,11 +69,19 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
       e.preventDefault();
       setLoading(true);
       setError(undefined);
-      const options = { code };
-      // const response = await  mfaApi.mfaVerify(options);
-      // if (response.ok) ..
-      setStep(LoginStateEnum.UserMetadataRequired);
+      const response = await mfaApi.mfaVerify({ code });
+      if (response.ok) {
+        setStep(response.body);
+      } else {
+        response.error._visit({
+          badRequestMfaVerify: () => setError("Incorrect code"),
+          notFoundMfaVerify: () => setError("Not found"),
+          forbiddenMfaVerify: () => setError("Forbidden"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);

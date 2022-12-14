@@ -36,7 +36,7 @@ const DEFAULT_CONFIG = {
   only_extra_login_is_passwordless: false,
   require_username: true,
   require_name: true,
-  profile_picture_url: "https://trendblog.net/wp-content/uploads/2022/02/funny-xbox.png",
+  profile_picture_url: "https://img.propelauth.com/0c22cebe-681f-4725-a8f5-b81963484eb9.png",
   require_profile_picture: false,
   orgs_metaname: "Team",
 };

@@ -71,7 +71,7 @@ export type UpdateEmailProps = {
 
 export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
   const { userApi } = useClient();
-  const [email, setEmail] = useState(""); // get from user metadata
+  const [email, setEmail] = useState(""); // GET FROM METADATA
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -84,7 +84,12 @@ export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
       if (res.ok) {
         setShowConfirmationModal(true);
       } else {
-        setError("Something went wrong");
+        res.error._visit({
+          notFoundUpdateEmail: () => setError("Not found"),
+          badRequestUpdateEmail: () => setError("Something went wrong"),
+          tooManyRequests: () => setError("Too many requests"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");
@@ -143,8 +148,8 @@ export type UpdateNameProps = {
 
 export const UpdateName = ({ appearance }: UpdateNameProps) => {
   const { userApi } = useClient();
-  const [firstName, setFirstName] = useState(""); // get from user metadata
-  const [lastName, setLastName] = useState(""); // get from user metadata
+  const [firstName, setFirstName] = useState(""); // GET FROM METADATA
+  const [lastName, setLastName] = useState(""); // GET FROM METADATA
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
@@ -157,7 +162,10 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
       if (res.ok) {
         setSuccess("Name updated successfully");
       } else {
-        setError("Something went wrong");
+        res.error._visit({
+          notFoundUpdateName: () => setError("Not found"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");
@@ -231,7 +239,11 @@ export const UpdateUsername = ({ appearance }: UpdateUsernameProps) => {
       if (res.ok) {
         setSuccess("Username updated successfully");
       } else {
-        setError("Something went wrong");
+        res.error._visit({
+          notFoundUpdateUsername: () => setError("Not found"),
+          badRequestUpdateUsername: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");
@@ -289,7 +301,11 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
         setNewPassword("");
         setHasPassword(true);
       } else {
-        setError("Something went wrong");
+        res.error._visit({
+          notFoundUpdatePassword: () => setError("Not found"),
+          badRequestUpdatePassword: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
       }
     } catch (e) {
       setError("Something went wrong");

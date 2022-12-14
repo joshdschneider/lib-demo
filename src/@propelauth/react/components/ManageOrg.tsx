@@ -104,26 +104,26 @@ export const ManageOrg = ({ orgId, appearance }: ManageOrgProps) => {
 };
 
 export type User = {
-  user_id: string;
+  userId: string;
   email: string;
   role: string;
-  possible_roles: string[];
-  can_be_deleted: boolean;
+  possibleRoles: string[];
+  canBeDeleted: boolean;
 };
 
 export type Invitation = {
   email: string;
   role: string;
-  status: "pending" | "expired";
+  expiresAtSeconds: number;
 };
 
 export type UserOrInvitation = {
-  user_id?: string;
+  userId?: string;
   email: string;
   role: string;
   status: "active" | "pending" | "expired";
-  possible_roles?: string[];
-  can_be_deleted?: boolean;
+  possibleRoles?: string[];
+  canBeDeleted?: boolean;
 };
 
 export type UseOrgInfoProps = {
@@ -138,85 +138,23 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
   const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
-    setUsers([
-      {
-        user_id: "123",
-        email: "andrew@propelauth.com",
-        role: "Owner",
-        possible_roles: ["Owner", "Admin", "Member"],
-        can_be_deleted: false,
-      },
-      {
-        user_id: "464",
-        email: "josh@propelauth.com",
-        role: "Admin",
-        possible_roles: ["Admin", "Member"],
-        can_be_deleted: true,
-      },
-      {
-        user_id: "685",
-        email: "justin@propelauth.com",
-        role: "Admin",
-        possible_roles: ["Admin", "Member"],
-        can_be_deleted: true,
-      },
-      {
-        user_id: "565",
-        email: "foo@propelauth.com",
-        role: "Member",
-        possible_roles: ["Member"],
-        can_be_deleted: true,
-      },
-      {
-        user_id: "003",
-        email: "bar@propelauth.com",
-        role: "Member",
-        possible_roles: ["Member"],
-        can_be_deleted: true,
-      },
-      {
-        user_id: "775",
-        email: "another@propelauth.com",
-        role: "Member",
-        possible_roles: ["Member"],
-        can_be_deleted: true,
-      },
-    ]);
-    setInvitations([
-      {
-        email: "jane@propelauth.com",
-        role: "Admin",
-        status: "pending",
-      },
-      {
-        email: "john@propelauth.com",
-        role: "Admin",
-        status: "pending",
-      },
-      {
-        email: "joe@propelauth.com",
-        role: "Member",
-        status: "pending",
-      },
-      {
-        email: "jim@propelauth.com",
-        role: "Member",
-        status: "expired",
-      },
-      {
-        email: "jeff@propelauth.com",
-        role: "Member",
-        status: "expired",
-      },
-    ]);
-    setRoles(["Owner", "Admin", "Member"]);
-    setInviteePossibleRoles(["Owner", "Admin", "Member"]);
-  }, [orgId]);
+    async function init() {
+      const response = await orgApi.selectedOrgStatus({ id: orgId });
+      if (response.ok) {
+        setUsers(response.body.users);
+        setInvitations(response.body.pendingInvites);
+        setRoles(["Owner", "Admin", "Member"]);
+        setInviteePossibleRoles(response.body.inviteePossibleRoles);
+      }
+    }
+
+    init();
+  }, [orgId, orgApi]);
 
   function setUserRole(userId: string, role: string) {
     setUsers((users) => {
       const updatedUsers = users.map((user) => {
-        if (user.user_id === userId) {
+        if (user.userId === userId) {
           return { ...user, role };
         }
         return user;
@@ -226,7 +164,7 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
   }
 
   function removeUser(userId: string) {
-    setUsers((users) => users.filter((u) => u.user_id !== userId));
+    setUsers((users) => users.filter((u) => u.userId !== userId));
   }
 
   function addInvitation(invitation: Invitation) {
@@ -279,7 +217,7 @@ export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorP
 
   const editableRows = rows.map((row) => {
     return {
-      user_id: row.user_id,
+      user_id: row.userId,
       email: row.email,
       role: row.role,
       status: row.status.charAt(0).toUpperCase() + row.status.slice(1),
@@ -293,7 +231,7 @@ export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorP
 
   function getModalContents() {
     if (rowToEdit) {
-      if (rowToEdit.status === "active" && rowToEdit.user_id) {
+      if (rowToEdit.status === "active" && rowToEdit.userId) {
         return (
           <EditActiveUser
             orgId={orgId}
@@ -308,7 +246,7 @@ export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorP
         return (
           <EditPendingInvitation
             orgId={orgId}
-            user={rowToEdit as Invitation}
+            user={rowToEdit}
             onClose={closeEditRow}
             removeInvitation={methods.removeInvitation}
             appearance={appearance}
@@ -318,7 +256,7 @@ export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorP
         return (
           <EditExpiredInvitation
             orgId={orgId}
-            user={rowToEdit as Invitation}
+            user={rowToEdit}
             onClose={closeEditRow}
             addInvitation={methods.addInvitation}
             removeInvitation={methods.removeInvitation}
@@ -470,26 +408,30 @@ export const useOrgSearch = ({ users, invitations, query, filters }: UseOrgSearc
   useEffect(() => {
     const _users: UserOrInvitation[] = users.map((user) => {
       return {
-        user_id: user.user_id,
+        user_id: user.userId,
         email: user.email,
         role: user.role,
         status: "active",
-        possible_roles: user.possible_roles,
-        can_be_deleted: user.can_be_deleted,
+        possible_roles: user.possibleRoles,
+        can_be_deleted: user.canBeDeleted,
       };
     });
 
     const _invitations: UserOrInvitation[] = invitations.map((invitation) => {
+      function isExpired(invitation: Invitation) {
+        return false;
+      }
+
       return {
         email: invitation.email,
         role: invitation.role,
-        status: invitation.status,
+        status: isExpired(invitation) ? "expired" : "pending",
       };
     });
 
     const searchByNameOrId = (userOrInvitation: UserOrInvitation) => {
       const e = userOrInvitation.email.toLowerCase();
-      const id = userOrInvitation.user_id?.toLowerCase();
+      const id = userOrInvitation.userId?.toLowerCase();
       return e.includes(query) || (id && id.includes(query));
     };
 
@@ -608,14 +550,15 @@ export type EditActiveUserProps = {
 };
 
 export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, appearance }: EditActiveUserProps) => {
+  const { orgUserApi } = useClient();
   const [role, setRole] = useState(user.role);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const changeRoleDisabled = !user.possible_roles || user.possible_roles.length === 0;
+  const changeRoleDisabled = !user.possibleRoles || user.possibleRoles.length === 0;
 
   function getRoleOptions() {
-    if (user.possible_roles && user.possible_roles.length > 0) {
-      return user.possible_roles.map((role) => {
+    if (user.possibleRoles && user.possibleRoles.length > 0) {
+      return user.possibleRoles.map((role) => {
         return { label: role, value: role };
       });
     } else {
@@ -628,12 +571,20 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
       e.preventDefault();
       setLoading(true);
       setError(undefined);
-      const options = { role, orgId, userId: user.user_id };
-      //const response = await orgUserApi.changeRole(options);
-      // if (response.ok) ..
-      setUserRole(user.user_id, role);
-      onClose();
+      const options = { role, orgId, userId: user.userId };
+      const response = await orgUserApi.changeRole(options);
+      if (response.ok) {
+        setUserRole(user.userId, role);
+        onClose();
+      } else {
+        response.error._visit({
+          notFoundChangeRole: () => setError("User not found"),
+          forbiddenErrorChangeRole: () => setError("Forbidden"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -644,12 +595,21 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
     try {
       setLoading(true);
       setError(undefined);
-      const options = { orgId, userId: user.user_id };
-      //const response = await orgUserApi.removeUser(options);
-      // if (response.ok) ..
-      removeUser(user.user_id);
-      onClose();
+      const options = { orgId, userId: user.userId };
+      const response = await orgUserApi.removeUser(options);
+      if (response.ok) {
+        removeUser(user.userId);
+        onClose();
+      } else {
+        response.error._visit({
+          notFoundRemoveUser: () => setError("User not found"),
+          forbiddenRemoveUser: () => setError("Forbidden"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -679,7 +639,7 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
           </Button>
         </form>
       </div>
-      {user.can_be_deleted && (
+      {user.canBeDeleted && (
         <Button loading={loading} onClick={handleRemoveUser} appearance={appearance?.elements?.RemoveUserButton}>
           Remove user
         </Button>
@@ -708,6 +668,7 @@ export const EditPendingInvitation = ({
   removeInvitation,
   appearance,
 }: EditPendingInvitationProps) => {
+  const { orgUserApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -716,11 +677,20 @@ export const EditPendingInvitation = ({
       setLoading(true);
       setError(undefined);
       const options = { email: user.email, orgId };
-      //const response = await orgUserApi.revokeUserInvitation(options);
-      // if (response.ok) ..
-      removeInvitation(user.email);
-      onClose();
+      const response = await orgUserApi.revokeUserInvitation(options);
+      if (response.ok) {
+        removeInvitation(user.email);
+        onClose();
+      } else {
+        response.error._visit({
+          notFoundRevokeUserInvitation: () => setError("User not found"),
+          forbiddenRevokeUserInvitation: () => setError("Forbidden"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -770,11 +740,20 @@ export const EditExpiredInvitation = ({
       setLoading(true);
       setError(undefined);
       const options = { email: user.email, orgId };
-      //const response = await orgUserApi.revokeUserInvitation(options);
-      // if (response.ok) ..
-      removeInvitation(user.email);
-      onClose();
+      const response = await orgUserApi.revokeUserInvitation(options);
+      if (response.ok) {
+        removeInvitation(user.email);
+        onClose();
+      } else {
+        response.error._visit({
+          notFoundRevokeUserInvitation: () => setError("User not found"),
+          forbiddenRevokeUserInvitation: () => setError("Forbidden"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);
@@ -785,18 +764,37 @@ export const EditExpiredInvitation = ({
     try {
       setLoading(true);
       setError(undefined);
-      //const response = await orgUserApi.revokeUserInvitation(options);
-      // if (response.ok) ..
-      removeInvitation(user.email);
-      //const response = await orgUserApi.inviteUser(options);
-      // if (response.ok) ..
-      addInvitation({
-        email: user.email,
-        role: user.role,
-        status: "pending",
-      });
-      onClose();
+      const options = { email: user.email, orgId };
+      const response = await orgUserApi.revokeUserInvitation(options);
+      if (response.ok) {
+        removeInvitation(user.email);
+        const inviteOptions = { role: user.role, ...options };
+        const invite = await orgUserApi.inviteUser(inviteOptions);
+        if (invite.ok) {
+          addInvitation({
+            email: user.email,
+            role: user.role,
+            expiresAtSeconds: 0, // CHANGE THIS
+          });
+          onClose();
+        } else {
+          invite.error._visit({
+            notFoundInviteUser: () => setError("Not found"),
+            badRequestInviteUser: () => setError("Something went wrong"),
+            unauthorized: () => setError("Unauthorized"),
+            _other: () => setError("Something went wrong"),
+          });
+        }
+      } else {
+        response.error._visit({
+          notFoundRevokeUserInvitation: () => setError("Not found"),
+          forbiddenRevokeUserInvitation: () => setError("Something went wrong"),
+          unauthorized: () => setError("Unauthorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);

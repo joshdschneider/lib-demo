@@ -56,10 +56,19 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
       setLoading(true);
       setError(undefined);
       const options = { email, role, orgId };
-      // const response = await orgUserApi.inviteUser(options)
-      // if (response.ok) ..
-      onSuccess({ email, role, status: "pending" });
+      const response = await orgUserApi.inviteUser(options);
+      if (response.ok) {
+        onSuccess({ email, role, expiresAtSeconds: 0 }); // CHANGE THIS
+      } else {
+        response.error._visit({
+          notFoundInviteUser: () => setError("User not found"),
+          badRequestInviteUser: () => setError("Something went wrong"),
+          unauthorized: () => setError("Not authorized"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
+      setError("Something went wrong");
       console.error(e);
     } finally {
       setLoading(false);

@@ -76,12 +76,15 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
 };
 
 export type SignupOptions = {
-  email: string;
-  password: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  inviteToken?: string;
+  _body: {
+    email: string;
+    password: string;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    inviteToken?: string;
+  };
+  t?: string;
 };
 
 type SignupFormProps = {
@@ -106,23 +109,31 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
       e.preventDefault();
       setLoading(true);
       const options: SignupOptions = {
-        email: email,
-        password: password,
+        _body: {
+          email: email,
+          password: password,
+        },
       };
       if (config.require_name) {
-        options.firstName = firstName;
-        options.lastName = lastName;
+        options._body.firstName = firstName;
+        options._body.lastName = lastName;
       }
       if (config.require_username) {
-        options.username = username;
+        options._body.username = username;
       }
       const inviteToken = getTokenFromURL();
       if (inviteToken) {
-        options.inviteToken = inviteToken;
+        options.t = inviteToken;
       }
-      // const response = await userApi.signup(options)
-      // if (response.ok) ..
-      onSuccess();
+      const response = await userApi.signup(options);
+      if (response.ok) {
+        onSuccess();
+      } else {
+        response.error._visit({
+          badRequestSignup: () => setError("Something went wrong"),
+          _other: () => setError("Something went wrong"),
+        });
+      }
     } catch (e) {
       setError("Something went wrong");
       console.error(e);
