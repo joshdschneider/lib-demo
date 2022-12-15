@@ -1,5 +1,5 @@
 import { ChangeEvent, ReactNode, useState } from "react";
-import { ElementAppearance, useConfig } from "../state";
+import { ElementAppearance, useClient, useConfig } from "../state";
 import {
   Container,
   Modal,
@@ -14,6 +14,7 @@ import {
   ParagraphProps,
   AlertProps,
 } from "../elements";
+import { UNEXPECTED_ERROR } from "./shared/constants";
 
 export type ProfilePictureProps = {
   appearance?: ProfilePictureAppearance;
@@ -37,6 +38,7 @@ export type ProfilePictureAppearance = {
 
 export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
   const { config } = useConfig();
+  const { legacyApi } = useClient();
   const [imageUrl, setImageUrl] = useState(config.profile_picture_url);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
@@ -47,11 +49,23 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
     try {
       setLoading(true);
       setError(undefined);
-      // const response = await userApi.updateProfileImage(files[0])
-      // if (response.ok) ..
-      setImageUrl("https://img.propelauth.com/0c22cebe-681f-4725-a8f5-b81963484eb9.png");
-      onClose();
+      const formData = new FormData();
+      if (files && !!files.length) {
+        formData.append("file", files[0]);
+      } else {
+        setError("File not found.");
+        return;
+      }
+      const response = await legacyApi.uploadProfilePicture(formData);
+      if (response.success) {
+        // setImageUrl(response.imageUrl)
+        // onClose()
+        window.location.reload();
+      } else {
+        setError(UNEXPECTED_ERROR);
+      }
     } catch (e) {
+      setError(UNEXPECTED_ERROR);
       console.log(e);
     } finally {
       setLoading(false);
