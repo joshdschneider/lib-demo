@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, SyntheticEvent, useState } from "react";
 import { Config, ElementAppearance, useClient } from "../state";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import {
@@ -14,18 +14,24 @@ import {
   InputProps,
   ButtonProps,
   H3Props,
+  Label,
 } from "../elements";
+import { BAD_REQUEST_UPDATE_METADATA, NOT_FOUND_UPDATE_METADATA, UNEXPECTED_ERROR } from "./shared/constants";
 
-export type CompleteAccountProps = {
+export type UserMetadataProps = {
   config: Config;
   setStep: Dispatch<SetStateAction<LoginStateEnum>>;
-  appearance?: CompleteAccountAppearance;
+  appearance?: UserMetadataAppearance;
 };
 
-export type CompleteAccountAppearance = {
+export type UserMetadataAppearance = {
   options?: {
-    headerText?: string;
+    headerContent?: ReactNode;
     displayLogo?: boolean;
+    firstNameLabel?: ReactNode;
+    lastNameLabel?: ReactNode;
+    usernameLabel?: ReactNode;
+    SubmitButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -45,7 +51,7 @@ export interface UpdateMetadataOptions {
   lastName?: string;
 }
 
-export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccountProps) => {
+export const UserMetadata = ({ config, setStep, appearance }: UserMetadataProps) => {
   const { userApi, loginApi } = useClient();
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -53,7 +59,7 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
 
-  async function completeAccount(e: SyntheticEvent) {
+  async function updateMetadata(e: SyntheticEvent) {
     try {
       e.preventDefault();
       setLoading(true);
@@ -72,17 +78,17 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
         if (status.ok) {
           setStep(status.body.loginState);
         } else {
-          setError("Something went wrong");
+          setError(UNEXPECTED_ERROR);
         }
       } else {
         response.error._visit({
-          notFoundUpdateMetadata: () => setError("User not found"),
-          badRequestUpdateMetadata: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          notFoundUpdateMetadata: () => setError(NOT_FOUND_UPDATE_METADATA),
+          badRequestUpdateMetadata: () => setError(BAD_REQUEST_UPDATE_METADATA),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -99,26 +105,28 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
         )}
         <div data-contain="header">
           <H3 appearance={appearance?.elements?.Header}>
-            {appearance?.options?.headerText || "Complete your account"}
+            {appearance?.options?.headerContent || "Complete your account"}
           </H3>
         </div>
         <div data-contain="form">
-          <form onSubmit={completeAccount}>
+          <form onSubmit={updateMetadata}>
             {config.require_name && (
               <>
                 <div>
+                  <Label htmlFor="first_name">{appearance?.options?.firstNameLabel || "First name"}</Label>
                   <Input
+                    id={"first_name"}
                     type={"text"}
-                    placeholder={"First name"}
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     appearance={appearance?.elements?.FirstNameInput}
                   />
                 </div>
                 <div>
+                  <Label htmlFor="last_name">{appearance?.options?.lastNameLabel || "Last name"}</Label>
                   <Input
+                    id={"last_name"}
                     type={"text"}
-                    placeholder={"Last name"}
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     appearance={appearance?.elements?.LastNameInput}
@@ -128,9 +136,10 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
             )}
             {config.require_username && (
               <div>
+                <Label htmlFor="username">{appearance?.options?.usernameLabel || "Username"}</Label>
                 <Input
+                  id={"username"}
                   type={"text"}
-                  placeholder={"Username"}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   appearance={appearance?.elements?.UsernameInput}
@@ -138,7 +147,7 @@ export const CompleteAccount = ({ config, setStep, appearance }: CompleteAccount
               </div>
             )}
             <Button loading={loading} appearance={appearance?.elements?.SubmitButton}>
-              Continue
+              {appearance?.options?.SubmitButtonContent || "Continue"}
             </Button>
             {error && (
               <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>

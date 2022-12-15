@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Alert,
   AlertProps,
@@ -20,6 +20,14 @@ import {
   ParagraphProps,
 } from "../elements";
 import { ElementAppearance, useClient } from "../state";
+import {
+  BAD_REQUEST_MFA_ENABLE,
+  FORBIDDEN,
+  NOT_FOUND_MFA_DISABLE,
+  NOT_FOUND_MFA_ENABLE,
+  UNAUTHORIZED,
+  UNEXPECTED_ERROR,
+} from "./shared/constants";
 
 export type MfaProps = {
   appearance?: MfaAppearance;
@@ -27,7 +35,21 @@ export type MfaProps = {
 
 export type MfaAppearance = {
   options?: {
-    //..
+    disableMfaButtonContent?: ReactNode;
+    disableMfaModalHeaderContent?: ReactNode;
+    disableMfaModalButtonContent?: ReactNode;
+    closeDisableMfaModalButtonContent?: ReactNode;
+    backupCodesHeaderContent?: ReactNode;
+    showBackupCodesButtonContent?: ReactNode;
+    downloadBackupCodesButtonContent?: ReactNode;
+    closeBackupCodesButtonContent?: ReactNode;
+    enableMfaButtonContent?: ReactNode;
+    enableMfaModalHeaderContent?: ReactNode;
+    enableMfaModalButtonContent?: ReactNode;
+    toggleQrSecretInputContent?: ReactNode;
+    toggleQrCodeImageContent?: ReactNode;
+    enableMfaCodeLabel?: ReactNode;
+    closeEnableMfaModalButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -38,10 +60,11 @@ export type MfaAppearance = {
     EnableMfaModalButton?: ElementAppearance<ButtonProps>;
     QrCodeImage?: ElementAppearance<ImageProps>;
     QrSecretInput?: ElementAppearance<InputProps>;
-    CodeLabel?: ElementAppearance<LabelProps>;
-    CodeInput?: ElementAppearance<InputProps>;
+    EnableMfaCodeLabel?: ElementAppearance<LabelProps>;
+    EnableMfaCodeInput?: ElementAppearance<InputProps>;
     DisableMfaButton?: ElementAppearance<ButtonProps>;
     DisableMfaModal?: ElementAppearance<ModalProps>;
+    DisableMfaModalHeader?: ElementAppearance<H3Props>;
     DisableMfaModalText?: ElementAppearance<ParagraphProps>;
     DisableMfaModalButton?: ElementAppearance<ButtonProps>;
     ShowBackupCodesButton?: ElementAppearance<ButtonProps>;
@@ -109,15 +132,15 @@ export const Mfa = ({ appearance }: MfaProps) => {
         setMfaStatus("Enabled");
       } else {
         res.error._visit({
-          notFoundMfaEnable: () => setError("Not found"),
-          badRequestMfaEnable: () => setError("Something went wrong"),
-          forbiddenMfaEnable: () => setError("Forbidden"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundMfaEnable: () => setError(NOT_FOUND_MFA_ENABLE),
+          badRequestMfaEnable: () => setError(BAD_REQUEST_MFA_ENABLE),
+          forbiddenMfaEnable: () => setError(FORBIDDEN),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -134,13 +157,13 @@ export const Mfa = ({ appearance }: MfaProps) => {
         setMfaStatus("Disabled");
       } else {
         res.error._visit({
-          notFoundMfaDisable: () => setError("Not found"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundMfaDisable: () => setError(NOT_FOUND_MFA_DISABLE),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -165,26 +188,8 @@ export const Mfa = ({ appearance }: MfaProps) => {
     }
   }
 
-  if (mfaStatus === "Loading") {
-    return (
-      <div data-contain="component">
-        <Container appearance={appearance?.elements?.Container}>
-          <Button appearance={appearance?.elements?.EnableMfaButton}>Loading...</Button>
-        </Container>
-      </div>
-    );
-  }
-
-  if (mfaStatus === "Error") {
-    return (
-      <div data-contain="component">
-        <Container appearance={appearance?.elements?.Container}>
-          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
-            2FA failed to load
-          </Alert>
-        </Container>
-      </div>
-    );
+  if (mfaStatus === "Loading" || mfaStatus === "Error") {
+    return null; // Bad idea?
   }
 
   if (mfaStatus === "Enabled") {
@@ -192,10 +197,10 @@ export const Mfa = ({ appearance }: MfaProps) => {
       <div data-contain="component">
         <Container appearance={appearance?.elements?.Container}>
           <Button onClick={() => setShowDisableModal(true)} appearance={appearance?.elements?.DisableMfaButton}>
-            Disable 2FA
+            {appearance?.options?.disableMfaButtonContent || "Disable 2FA"}
           </Button>
           <Button onClick={() => setShowBackupModal(true)} appearance={appearance?.elements?.ShowBackupCodesButton}>
-            Show Backup Codes
+            {appearance?.options?.showBackupCodesButtonContent || "Show Backup Codes"}
           </Button>
         </Container>
         <Modal
@@ -204,17 +209,20 @@ export const Mfa = ({ appearance }: MfaProps) => {
           appearance={appearance?.elements?.DisableMfaModal}
           onClose={() => setError(undefined)}
         >
+          <H3 appearance={appearance?.elements?.DisableMfaModalHeader}>
+            {appearance?.options?.disableMfaModalHeaderContent || "Disable 2FA"}
+          </H3>
           <Paragraph appearance={appearance?.elements?.DisableMfaModalText}>
             Are you sure you want to disable 2FA?
           </Paragraph>
           <Button loading={loading} onClick={disableMfa} appearance={appearance?.elements?.DisableMfaModalButton}>
-            Disable 2FA
+            {appearance?.options?.disableMfaModalButtonContent || "Disable 2FA"}
           </Button>
           <Button
             onClick={() => setShowDisableModal(false)}
-            appearance={appearance?.elements?.CloseEnableMfaModalButton}
+            appearance={appearance?.elements?.CloseDisableMfaModalButton}
           >
-            Cancel
+            {appearance?.options?.closeDisableMfaModalButtonContent || "Cancel"}
           </Button>
           {error && (
             <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
@@ -223,7 +231,9 @@ export const Mfa = ({ appearance }: MfaProps) => {
           )}
         </Modal>
         <Modal show={showBackupModal} setShow={setShowBackupModal} appearance={appearance?.elements?.BackupCodesModal}>
-          <H3 appearance={appearance?.elements?.BackupCodesHeader}>Backup Codes</H3>
+          <H3 appearance={appearance?.elements?.BackupCodesHeader}>
+            {appearance?.options?.backupCodesHeaderContent || "Backup Codes"}
+          </H3>
           <Paragraph appearance={appearance?.elements?.BackupCodesText}>
             Backup codes are one-time codes you can use to login if you can't access your authenticator app.
           </Paragraph>
@@ -233,10 +243,10 @@ export const Mfa = ({ appearance }: MfaProps) => {
             })}
           </div>
           <Button onClick={downloadBackupCodes} appearance={appearance?.elements?.DownloadBackupCodesButton}>
-            Download Backup Codes
+            {appearance?.options?.downloadBackupCodesButtonContent || "Download Backup Codes"}
           </Button>
           <Button onClick={() => setShowBackupModal(false)} appearance={appearance?.elements?.CloseBackupCodesButton}>
-            Close
+            {appearance?.options?.closeBackupCodesButtonContent || "Close"}
           </Button>
           {error && (
             <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
@@ -252,15 +262,17 @@ export const Mfa = ({ appearance }: MfaProps) => {
     <div data-contain="component">
       <Container appearance={appearance?.elements?.Container}>
         <Button onClick={() => setShowEnableModal(true)} appearance={appearance?.elements?.EnableMfaButton}>
-          Enable 2FA
+          {appearance?.options?.enableMfaButtonContent || "Enable 2FA"}
         </Button>
         <Modal
           show={showEnableModal}
           setShow={setShowEnableModal}
-          appearance={appearance?.elements?.EnableMfaButton}
+          appearance={appearance?.elements?.EnableMfaModal}
           onClose={() => setError(undefined)}
         >
-          <H3 appearance={appearance?.elements?.EnableMfaModalHeader}>Enable 2FA</H3>
+          <H3 appearance={appearance?.elements?.EnableMfaModalHeader}>
+            {appearance?.options?.enableMfaModalHeaderContent || "Enable 2FA"}
+          </H3>
           <Paragraph appearance={appearance?.elements?.EnableMfaModalText}>
             Two-Factor Authentication makes your account more secure by requiring a code in addition to your normal
             login. You&#39;ll need an Authenticator app like Google Authenticator or Authy.
@@ -274,7 +286,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
                   appearance={appearance?.elements?.QrCodeImage}
                 />
                 <div onClick={() => setShowQr(false)}>
-                  <small>Not working? Enter a code instead</small>
+                  {appearance?.options?.toggleQrSecretInputContent || <small>Not working? Enter a code instead</small>}
                 </div>
               </>
             ) : (
@@ -287,30 +299,32 @@ export const Mfa = ({ appearance }: MfaProps) => {
                   appearance={appearance?.elements?.QrSecretInput}
                 />
                 <div onClick={() => setShowQr(true)}>
-                  <small>Prefer an image? Scan a QR code instead</small>
+                  {appearance?.options?.toggleQrCodeImageContent || (
+                    <small>Prefer an image? Scan a QR code instead</small>
+                  )}
                 </div>
               </>
             )}
           </div>
           <div>
-            <Label htmlFor={"code"} appearance={appearance?.elements?.CodeLabel}>
-              Enter the 6-digit code from the app
+            <Label htmlFor={"code"} appearance={appearance?.elements?.EnableMfaCodeLabel}>
+              {appearance?.options?.enableMfaCodeLabel || "Enter the 6-digit code from the app"}
             </Label>
             <Input
               id={"code"}
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              appearance={appearance?.elements?.CodeInput}
+              appearance={appearance?.elements?.EnableMfaCodeInput}
             />
           </div>
           <Button
             onClick={() => setShowEnableModal(false)}
-            appearance={appearance?.elements?.CloseDisableMfaModalButton}
+            appearance={appearance?.elements?.CloseEnableMfaModalButton}
           >
-            Cancel
+            {appearance?.options?.closeEnableMfaModalButtonContent || "Cancel"}
           </Button>
           <Button onClick={enableMfa} appearance={appearance?.elements?.EnableMfaModalButton}>
-            Enable 2FA
+            {appearance?.options?.enableMfaModalButtonContent || "Enable 2FA"}
           </Button>
           {error && (
             <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>

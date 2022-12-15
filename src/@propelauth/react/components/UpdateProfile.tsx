@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import {
   Alert,
   AlertProps,
@@ -16,6 +16,19 @@ import {
   ParagraphProps,
 } from "../elements";
 import { ElementAppearance, useClient, useConfig } from "../state";
+import {
+  BAD_REQUEST_UPDATE_EMAIL,
+  BAD_REQUEST_UPDATE_PASSWORD,
+  BAD_REQUEST_UPDATE_USERNAME,
+  NOT_FOUND_UPDATE_EMAIL,
+  NOT_FOUND_UPDATE_NAME,
+  NOT_FOUND_UPDATE_PASSWORD,
+  NOT_FOUND_UPDATE_USERNAME,
+  TOO_MANY_REQUESTS,
+  UNEXPECTED_ERROR,
+  UPDATE_NAME_SUCCESS,
+  UPDATE_USERNAME_SUCCESS,
+} from "./shared/constants";
 
 export type UpdateProfileProps = {
   appearance?: UpdateProfileAppearance;
@@ -23,7 +36,16 @@ export type UpdateProfileProps = {
 
 export type UpdateProfileAppearance = {
   options?: {
-    //..
+    emailLabel?: ReactNode;
+    updateEmailButtonContent?: ReactNode;
+    firstNameLabel?: ReactNode;
+    lastNameLabel?: ReactNode;
+    updateNameButtonContent?: ReactNode;
+    usernameLabel?: ReactNode;
+    updateUsernameButtonContent?: ReactNode;
+    oldPasswordLabel?: ReactNode;
+    newPasswordLabel?: ReactNode;
+    updatePasswordButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -85,14 +107,14 @@ export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
         setShowConfirmationModal(true);
       } else {
         res.error._visit({
-          notFoundUpdateEmail: () => setError("Not found"),
-          badRequestUpdateEmail: () => setError("Something went wrong"),
-          tooManyRequests: () => setError("Too many requests"),
-          _other: () => setError("Something went wrong"),
+          notFoundUpdateEmail: () => setError(NOT_FOUND_UPDATE_EMAIL),
+          badRequestUpdateEmail: () => setError(BAD_REQUEST_UPDATE_EMAIL),
+          tooManyRequests: () => setError(TOO_MANY_REQUESTS),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -104,7 +126,7 @@ export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
       <form onSubmit={handleSubmit}>
         <div>
           <Label htmlFor={"email"} appearance={appearance?.elements?.EmailLabel}>
-            Email
+            {appearance?.options?.emailLabel || "Email"}
           </Label>
           <Input
             id={"email"}
@@ -115,7 +137,7 @@ export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
           />
         </div>
         <Button loading={loading} appearance={appearance?.elements?.SubmitEmailButton}>
-          Update Email
+          {appearance?.options?.updateEmailButtonContent || "Update Email"}
         </Button>
         {error && (
           <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
@@ -160,15 +182,15 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
       setLoading(true);
       const res = await userApi.updateName({ firstName, lastName });
       if (res.ok) {
-        setSuccess("Name updated successfully");
+        setSuccess(UPDATE_NAME_SUCCESS);
       } else {
         res.error._visit({
-          notFoundUpdateName: () => setError("Not found"),
-          _other: () => setError("Something went wrong"),
+          notFoundUpdateName: () => setError(NOT_FOUND_UPDATE_NAME),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -180,7 +202,7 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
       <form onSubmit={handleSubmit}>
         <div>
           <Label htmlFor={"first_name"} appearance={appearance?.elements?.FirstNameLabel}>
-            First name
+            {appearance?.options?.firstNameLabel || "First name"}
           </Label>
           <Input
             id={"first_name"}
@@ -192,7 +214,7 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
         </div>
         <div>
           <Label htmlFor={"last_name"} appearance={appearance?.elements?.LastNameLabel}>
-            Last name
+            {appearance?.options?.lastNameLabel || "Last name"}
           </Label>
           <Input
             id={"last_name"}
@@ -203,7 +225,7 @@ export const UpdateName = ({ appearance }: UpdateNameProps) => {
           />
         </div>
         <Button loading={loading} appearance={appearance?.elements?.SubmitNameButton}>
-          Update Name
+          {appearance?.options?.updateNameButtonContent || "Update Name"}
         </Button>
         {success && (
           <Alert type={"success"} appearance={appearance?.elements?.SuccessMessage}>
@@ -237,16 +259,16 @@ export const UpdateUsername = ({ appearance }: UpdateUsernameProps) => {
       setLoading(true);
       const res = await userApi.updateUsername({ username });
       if (res.ok) {
-        setSuccess("Username updated successfully");
+        setSuccess(UPDATE_USERNAME_SUCCESS);
       } else {
         res.error._visit({
-          notFoundUpdateUsername: () => setError("Not found"),
-          badRequestUpdateUsername: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          notFoundUpdateUsername: () => setError(NOT_FOUND_UPDATE_USERNAME),
+          badRequestUpdateUsername: () => setError(BAD_REQUEST_UPDATE_USERNAME),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -257,10 +279,10 @@ export const UpdateUsername = ({ appearance }: UpdateUsernameProps) => {
     <div data-contain="section">
       <form onSubmit={handleSubmit}>
         <div>
-          <Label htmlFor={"username"}>Username</Label>
+          <Label htmlFor={"username"}>{appearance?.options?.usernameLabel || "Username"}</Label>
           <Input id={"username"} type={"text"} value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
-        <Button loading={loading}>Update Username</Button>
+        <Button loading={loading}>{appearance?.options?.updateUsernameButtonContent || "Update Username"}</Button>
         {success && <Alert type={"success"}>{success}</Alert>}
         {error && <Alert type={"error"}>{error}</Alert>}
       </form>
@@ -302,13 +324,13 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
         setHasPassword(true);
       } else {
         res.error._visit({
-          notFoundUpdatePassword: () => setError("Not found"),
-          badRequestUpdatePassword: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          notFoundUpdatePassword: () => setError(NOT_FOUND_UPDATE_PASSWORD),
+          badRequestUpdatePassword: () => setError(BAD_REQUEST_UPDATE_PASSWORD),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -321,7 +343,7 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
         {hasPassword && (
           <div>
             <Label htmlFor={"old_password"} appearance={appearance?.elements?.OldPasswordLabel}>
-              Old password
+              {appearance?.options?.oldPasswordLabel || "Old password"}
             </Label>
             <Input
               type={"password"}
@@ -333,7 +355,7 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
         )}
         <div>
           <Label htmlFor={"new_password"} appearance={appearance?.elements?.NewPasswordLabel}>
-            {passwordLabel}
+            {appearance?.options?.newPasswordLabel || passwordLabel}
           </Label>
           <Input
             type={"password"}
@@ -343,7 +365,7 @@ export const UpdatePassword = ({ appearance }: UpdatePasswordProps) => {
           />
         </div>
         <Button loading={loading} appearance={appearance?.elements?.SubmitPasswordButton}>
-          {callToAction}
+          {appearance?.options?.updatePasswordButtonContent || callToAction}
         </Button>
         {error && (
           <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>

@@ -73,3 +73,7 @@ export function mergeProps<T>({ appearance, element }: MergeProps<T>) {
   const Override = localProps.Element || globalProps.Element;
   return { classes, styles, Override };
 }
+
+export function threeDaysFromNow() {
+  return Math.round(Date.now() / 1000) + 24 * 60 * 60 * 3;
+}

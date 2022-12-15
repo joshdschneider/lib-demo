@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { ReactNode, SyntheticEvent, useState } from "react";
 import { Config, ElementAppearance, useConfig } from "../state";
 import { useClient } from "../state/useClient";
 import { getTokenFromURL } from "../utils";
@@ -18,7 +18,9 @@ import {
   ButtonProps,
   H3Props,
   DividerProps,
+  Label,
 } from "../elements";
+import { BAD_REQUEST_SIGNUP, UNEXPECTED_ERROR } from "./shared/constants";
 
 export type SignupProps = {
   onSuccess: VoidFunction;
@@ -29,9 +31,16 @@ export type SignupProps = {
 
 export type SignupAppearance = {
   options?: {
-    headerText?: string;
+    headerContent?: ReactNode;
     displayLogo?: boolean;
-    divider?: string | boolean;
+    divider?: ReactNode | boolean;
+    firstNameLabel?: ReactNode;
+    lastNameLabel?: ReactNode;
+    emailLabel?: ReactNode;
+    usernameLabel?: ReactNode;
+    passwordLabel?: ReactNode;
+    submitButtonContent?: ReactNode;
+    loginButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -45,7 +54,7 @@ export type SignupAppearance = {
     PasswordInput?: ElementAppearance<InputProps>;
     SocialButton?: ElementAppearance<ButtonProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
-    LoginLink?: ElementAppearance<ButtonProps>;
+    LoginButton?: ElementAppearance<ButtonProps>;
     ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
@@ -62,7 +71,7 @@ export const Signup = ({ onSuccess, onRedirectToLogin, presetEmail, appearance }
           </div>
         )}
         <div data-contain="header">
-          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Signup"}</H3>
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Signup"}</H3>
         </div>
         <SignInOptions config={config} buttonAppearance={appearance?.elements?.SocialButton} />
         {config.has_password_login && config.has_any_social_login && appearance?.options?.divider !== false && (
@@ -130,12 +139,12 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
         onSuccess();
       } else {
         response.error._visit({
-          badRequestSignup: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          badRequestSignup: () => setError(BAD_REQUEST_SIGNUP),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -148,32 +157,35 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
         {config.require_name && (
           <>
             <div>
+              <Label htmlFor="first_name">{appearance?.options?.firstNameLabel || "First name"}</Label>
               <Input
                 required
+                id="first_name"
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="First Name"
                 appearance={appearance?.elements?.FirstNameInput}
               />
             </div>
             <div>
+              <Label htmlFor="last_name">{appearance?.options?.lastNameLabel || "Last name"}</Label>
               <Input
                 required
                 type="text"
+                id="last_name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Last Name"
                 appearance={appearance?.elements?.LastNameInput}
               />
             </div>
           </>
         )}
         <div>
+          <Label htmlFor="email">{appearance?.options?.emailLabel || "Email"}</Label>
           <Input
             required
+            id="email"
             type="email"
-            placeholder="Email"
             value={email}
             readOnly={!!presetEmail}
             onChange={(e) => setEmail(e.target.value)}
@@ -182,10 +194,11 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
         </div>
         {config.require_username && (
           <div>
+            <Label htmlFor="username">{appearance?.options?.usernameLabel || "Username"}</Label>
             <Input
               required
               type="text"
-              placeholder="Username"
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               appearance={appearance?.elements?.UsernameInput}
@@ -193,17 +206,18 @@ const SignupForm = ({ config, presetEmail, onSuccess, appearance }: SignupFormPr
           </div>
         )}
         <div>
+          <Label htmlFor="password">{appearance?.options?.passwordLabel || "Password"}</Label>
           <Input
             required
+            id="password"
             type="password"
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             appearance={appearance?.elements?.PasswordInput}
           />
         </div>
         <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
-          Sign up
+          {appearance?.options?.submitButtonContent || "Sign Up"}
         </Button>
         {error && (
           <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
@@ -224,8 +238,8 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <div data-contain="link">
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
-          Log in
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginButton}>
+          {appearance?.options?.loginButtonContent || "Log In"}
         </Button>
       )}
     </div>

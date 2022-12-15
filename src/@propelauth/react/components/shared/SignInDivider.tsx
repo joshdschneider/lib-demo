@@ -1,9 +1,10 @@
+import { ReactNode } from "react";
 import { DividerProps, Divider } from "../../elements";
 import { ElementAppearance } from "../../state";
 
 export type SignInDividerProps = {
   appearance?: ElementAppearance<DividerProps>;
-  options?: string | boolean | undefined;
+  options?: ReactNode | boolean;
 };
 
 export const SignInDivider = ({ appearance, options }: SignInDividerProps) => {

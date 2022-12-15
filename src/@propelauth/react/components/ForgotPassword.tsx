@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { ReactNode, SyntheticEvent, useState } from "react";
 import { useConfig, ElementAppearance } from "../state";
 import {
   Alert,
@@ -15,8 +15,17 @@ import {
   ButtonProps,
   H3Props,
   ParagraphProps,
+  Label,
 } from "../elements";
 import { useClient } from "../state/useClient";
+import {
+  BAD_REQUEST_FORGOT_PASSWORD,
+  BAD_REQUEST_LOGIN_PASSWORDLESS,
+  FORGOT_PASSWORD_SUCCESS,
+  MAGIC_LINK_SUCCESS,
+  NOT_FOUND_LOGIN_PASSWORDLESS,
+  UNEXPECTED_ERROR,
+} from "./shared/constants";
 
 export type ForgotPasswordProps = {
   onRedirectToLogin?: VoidFunction;
@@ -25,8 +34,12 @@ export type ForgotPasswordProps = {
 
 export type ForgotPasswordAppearance = {
   options?: {
-    headerText?: string;
+    headerContent?: ReactNode;
     displayLogo?: boolean;
+    emailLabel?: ReactNode;
+    resetPasswordButtonContent?: ReactNode;
+    magicLinkButtonContent?: ReactNode;
+    backButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -38,7 +51,7 @@ export type ForgotPasswordAppearance = {
     PasswordInput?: ElementAppearance<InputProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
     MagicLinkButton?: ElementAppearance<ButtonProps>;
-    LoginLink?: ElementAppearance<ButtonProps>;
+    LoginButton?: ElementAppearance<ButtonProps>;
     ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
@@ -58,16 +71,15 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
       setPasswordResetLoading(true);
       const response = await loginApi.forgotPassword({ email });
       if (response.ok) {
-        const message = `If that email address is in our database, we will send you an email to reset your password.`;
-        setSuccessMessage(message);
+        setSuccessMessage(FORGOT_PASSWORD_SUCCESS);
       } else {
         response.error._visit({
-          badRequestForgotPassword: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          badRequestForgotPassword: () => setError(BAD_REQUEST_FORGOT_PASSWORD),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setPasswordResetLoading(false);
@@ -80,17 +92,16 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
       setMagicLinkLoading(true);
       const response = await loginApi.sendMagicLinkLogin({ email, createIfDoesntExist: false });
       if (response.ok) {
-        const message = `If that email address is in our database, we will send you an email to login to your account.`;
-        setSuccessMessage(message);
+        setSuccessMessage(MAGIC_LINK_SUCCESS);
       } else {
         response.error._visit({
-          notFoundLoginPasswordless: () => setError("Not found"),
-          badRequestLoginPasswordless: () => setError("Something went wrong"),
-          _other: () => setError("Something went wrong"),
+          notFoundLoginPasswordless: () => setError(NOT_FOUND_LOGIN_PASSWORDLESS),
+          badRequestLoginPasswordless: () => setError(BAD_REQUEST_LOGIN_PASSWORDLESS),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setMagicLinkLoading(false);
@@ -107,7 +118,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
             </div>
           )}
           <div data-contain="header">
-            <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
+            <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Forgot Password"}</H3>
           </div>
           <div data-contain="content">
             <Paragraph appearance={appearance?.elements?.SuccessText}>{successMessage}</Paragraph>
@@ -126,7 +137,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
           </div>
         )}
         <div data-contain="header">
-          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Forgot Password"}</H3>
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Forgot Password"}</H3>
         </div>
         <div data-contain="content">
           <ForgotPasswordDirections appearance={appearance} hasPasswordlessLogin={config.has_passwordless_login} />
@@ -134,17 +145,18 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
         <div data-contain="form">
           <form onSubmit={submitForgotPassword}>
             <div>
+              <Label htmlFor="email">{appearance?.options?.emailLabel || "Email"}</Label>
               <Input
                 required
+                id={"email"}
                 type={"email"}
-                placeholder={"email@example.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 appearance={appearance?.elements?.EmailInput}
               />
             </div>
             <Button loading={passwordResetLoading} appearance={appearance?.elements?.SubmitButton}>
-              Reset Password
+              {appearance?.options?.resetPasswordButtonContent || "Reset Password"}
             </Button>
           </form>
         </div>
@@ -155,7 +167,7 @@ export const ForgotPassword = ({ onRedirectToLogin, appearance }: ForgotPassword
               onClick={submitMagicLink}
               appearance={appearance?.elements?.MagicLinkButton}
             >
-              Send Magic Link
+              {appearance?.options?.magicLinkButtonContent || "Send Magic Link"}
             </Button>
           </div>
         )}
@@ -194,8 +206,8 @@ const BottomLinks = ({ onRedirectToLogin, appearance }: BottomLinksProps) => {
   return (
     <div data-contain="link">
       {onRedirectToLogin && (
-        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginLink}>
-          Back to login
+        <Button onClick={onRedirectToLogin} appearance={appearance?.elements?.LoginButton}>
+          {appearance?.options?.backButtonContent || "Back to login"}
         </Button>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, ReactNode, useState } from "react";
 import { ElementAppearance, useConfig } from "../state";
 import {
   Container,
@@ -21,7 +21,8 @@ export type ProfilePictureProps = {
 
 export type ProfilePictureAppearance = {
   options?: {
-    //..
+    selectImageButtonContent?: ReactNode;
+    saveImageButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -97,7 +98,7 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
           />
           {!files ? (
             <Button onClick={clickFileInput} appearance={appearance?.elements?.SelectImageButton}>
-              Select Image
+              {appearance?.options?.selectImageButtonContent || "Select Image"}
             </Button>
           ) : (
             <Paragraph appearance={appearance?.elements?.FileName}>{files[0].name}</Paragraph>
@@ -108,7 +109,7 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
             disabled={!files}
             appearance={appearance?.elements?.SaveImageButton}
           >
-            Save Image
+            {appearance?.options?.saveImageButtonContent || "Save Image"}
           </Button>
         </div>
         {error && (

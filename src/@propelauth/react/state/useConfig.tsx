@@ -19,6 +19,7 @@ export type Config = {
   profile_picture_url: string;
   require_profile_picture: boolean;
   orgs_metaname: string;
+  roles: string[];
 };
 
 const DEFAULT_CONFIG = {
@@ -39,6 +40,7 @@ const DEFAULT_CONFIG = {
   profile_picture_url: "https://img.propelauth.com/0c22cebe-681f-4725-a8f5-b81963484eb9.png",
   require_profile_picture: false,
   orgs_metaname: "Team",
+  roles: ["Owner", "Admin", "Member"],
 };
 
 export const useConfig = () => {

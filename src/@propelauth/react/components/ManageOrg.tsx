@@ -1,5 +1,5 @@
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
-import { ElementAppearance } from "../state";
+import { ChangeEvent, Dispatch, FormEvent, ReactNode, SetStateAction, useEffect, useState } from "react";
+import { ElementAppearance, useConfig } from "../state";
 import { useClient } from "../state/useClient";
 import { InviteUser, InviteUserAppearance } from "./InviteUser";
 import {
@@ -28,6 +28,17 @@ import {
   Table,
   TableProps,
 } from "../elements";
+import {
+  BAD_REQUEST_INVITE_USER,
+  FORBIDDEN,
+  NOT_FOUND_CHANGE_ROLE,
+  NOT_FOUND_INVITE_USER,
+  NOT_FOUND_REMOVE_USER,
+  NOT_FOUND_REVOKE_USER_INVITATION,
+  UNAUTHORIZED,
+  UNEXPECTED_ERROR,
+} from "./shared/constants";
+import { threeDaysFromNow } from "../utils";
 
 export type ManageOrgProps = {
   orgId: string;
@@ -38,6 +49,17 @@ export type ManageOrgProps = {
 export type OrgAppearance = {
   options?: {
     rowsPerPage?: number;
+    editUserButtonContent?: ReactNode;
+    filterButtonContent?: ReactNode;
+    inviteUserButtonContent?: ReactNode;
+    pageBackButtonContent?: ReactNode;
+    pageNextButtonContent?: ReactNode;
+    editUserModalHeaderContent?: ReactNode;
+    changeRoleLabel?: ReactNode;
+    saveRoleButtonContent?: ReactNode;
+    removeUserButtonContent?: ReactNode;
+    resendInvitationButtonContent?: ReactNode;
+    deleteInvitationButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -132,6 +154,7 @@ export type UseOrgInfoProps = {
 
 export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
   const { orgApi } = useClient();
+  const { config } = useConfig();
   const [users, setUsers] = useState<User[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [inviteePossibleRoles, setInviteePossibleRoles] = useState<string[]>([]);
@@ -143,13 +166,13 @@ export const useSelectedOrg = ({ orgId }: UseOrgInfoProps) => {
       if (response.ok) {
         setUsers(response.body.users);
         setInvitations(response.body.pendingInvites);
-        setRoles(["Owner", "Admin", "Member"]);
+        setRoles(config.roles);
         setInviteePossibleRoles(response.body.inviteePossibleRoles);
       }
     }
 
     init();
-  }, [orgId, orgApi]);
+  }, [orgId, orgApi, config.roles]);
 
   function setUserRole(userId: string, role: string) {
     setUsers((users) => {
@@ -223,7 +246,7 @@ export const useRowEditor = ({ rows, orgId, methods, appearance }: UseRowEditorP
       status: row.status.charAt(0).toUpperCase() + row.status.slice(1),
       edit: (
         <Button onClick={() => editRow(row)} appearance={appearance?.elements?.EditUserButton}>
-          Edit
+          {appearance?.options?.editUserButtonContent || "Edit"}
         </Button>
       ),
     };
@@ -336,11 +359,11 @@ export const OrgControls = ({
         onClick={() => setShowFilterPopover(!showFilterPopover)}
         appearance={appearance?.elements?.FilterButton}
       >
-        Filter
+        {appearance?.options?.filterButtonContent || "Filter"}
       </Button>
       {canInviteUsers && (
         <Button onClick={() => setShowInviteModal(true)} appearance={appearance?.elements?.InviteButton}>
-          Invite User
+          {appearance?.options?.inviteUserButtonContent || "Invite User"}
         </Button>
       )}
       <Popover
@@ -419,7 +442,8 @@ export const useOrgSearch = ({ users, invitations, query, filters }: UseOrgSearc
 
     const _invitations: UserOrInvitation[] = invitations.map((invitation) => {
       function isExpired(invitation: Invitation) {
-        return false;
+        const now = Math.round(Date.now() / 1000);
+        return now > invitation.expiresAtSeconds;
       }
 
       return {
@@ -489,12 +513,12 @@ export const Pagination = ({ controls, appearance }: PaginationControls) => {
       <div data-contain="pagination_buttons">
         {controls.hasBack && (
           <Button onClick={controls.onBack} appearance={appearance?.elements?.PageBackButton}>
-            Back
+            {appearance?.options?.pageBackButtonContent || "Back"}
           </Button>
         )}
         {controls.hasNext && (
           <Button onClick={controls.onNext} appearance={appearance?.elements?.PageNextButton}>
-            Next
+            {appearance?.options?.pageNextButtonContent || "Next"}
           </Button>
         )}
       </div>
@@ -578,13 +602,13 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
         onClose();
       } else {
         response.error._visit({
-          notFoundChangeRole: () => setError("User not found"),
-          forbiddenErrorChangeRole: () => setError("Forbidden"),
-          _other: () => setError("Something went wrong"),
+          notFoundChangeRole: () => setError(NOT_FOUND_CHANGE_ROLE),
+          forbiddenErrorChangeRole: () => setError(FORBIDDEN),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -602,14 +626,14 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
         onClose();
       } else {
         response.error._visit({
-          notFoundRemoveUser: () => setError("User not found"),
-          forbiddenRemoveUser: () => setError("Forbidden"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundRemoveUser: () => setError(NOT_FOUND_REMOVE_USER),
+          forbiddenRemoveUser: () => setError(FORBIDDEN),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -619,12 +643,14 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
   return (
     <div data-contain="modal">
       <div data-contain="header">
-        <H3 appearance={appearance?.elements?.EditUserModalHeader}>Edit {user.email}</H3>
+        <H3 appearance={appearance?.elements?.EditUserModalHeader}>
+          {appearance?.options?.editUserModalHeaderContent || `Edit ${user.email}`}
+        </H3>
       </div>
       <div data-contain="form">
         <form onSubmit={handleRoleChange}>
           <Label htmlFor={"change_role"} appearance={appearance?.elements?.ChangeRoleLabel}>
-            Change role
+            {appearance?.options?.changeRoleLabel || "Change role"}
           </Label>
           <Select
             id={"change_role"}
@@ -635,13 +661,13 @@ export const EditActiveUser = ({ orgId, user, onClose, setUserRole, removeUser, 
             appearance={appearance?.elements?.ChangeRoleSelect}
           />
           <Button loading={loading} disabled={user.role === role} appearance={appearance?.elements?.SaveRoleButton}>
-            Save
+            {appearance?.options?.saveRoleButtonContent || "Save"}
           </Button>
         </form>
       </div>
       {user.canBeDeleted && (
         <Button loading={loading} onClick={handleRemoveUser} appearance={appearance?.elements?.RemoveUserButton}>
-          Remove user
+          {appearance?.options?.removeUserButtonContent || "Remove user"}
         </Button>
       )}
       {error && (
@@ -683,14 +709,14 @@ export const EditPendingInvitation = ({
         onClose();
       } else {
         response.error._visit({
-          notFoundRevokeUserInvitation: () => setError("User not found"),
-          forbiddenRevokeUserInvitation: () => setError("Forbidden"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundRevokeUserInvitation: () => setError(NOT_FOUND_REVOKE_USER_INVITATION),
+          forbiddenRevokeUserInvitation: () => setError(FORBIDDEN),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -746,14 +772,14 @@ export const EditExpiredInvitation = ({
         onClose();
       } else {
         response.error._visit({
-          notFoundRevokeUserInvitation: () => setError("User not found"),
-          forbiddenRevokeUserInvitation: () => setError("Forbidden"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundRevokeUserInvitation: () => setError(NOT_FOUND_REVOKE_USER_INVITATION),
+          forbiddenRevokeUserInvitation: () => setError(FORBIDDEN),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -774,27 +800,27 @@ export const EditExpiredInvitation = ({
           addInvitation({
             email: user.email,
             role: user.role,
-            expiresAtSeconds: 0, // CHANGE THIS
+            expiresAtSeconds: threeDaysFromNow(),
           });
           onClose();
         } else {
           invite.error._visit({
-            notFoundInviteUser: () => setError("Not found"),
-            badRequestInviteUser: () => setError("Something went wrong"),
-            unauthorized: () => setError("Unauthorized"),
-            _other: () => setError("Something went wrong"),
+            notFoundInviteUser: () => setError(NOT_FOUND_INVITE_USER),
+            badRequestInviteUser: () => setError(BAD_REQUEST_INVITE_USER),
+            unauthorized: () => setError(UNAUTHORIZED),
+            _other: () => setError(UNEXPECTED_ERROR),
           });
         }
       } else {
         response.error._visit({
-          notFoundRevokeUserInvitation: () => setError("Not found"),
-          forbiddenRevokeUserInvitation: () => setError("Something went wrong"),
-          unauthorized: () => setError("Unauthorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundRevokeUserInvitation: () => setError(NOT_FOUND_REVOKE_USER_INVITATION),
+          forbiddenRevokeUserInvitation: () => setError(FORBIDDEN),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -804,13 +830,15 @@ export const EditExpiredInvitation = ({
   return (
     <div data-contain="modal">
       <div data-contain="header">
-        <H3 appearance={appearance?.elements?.EditUserModalHeader}>Edit {user.email}</H3>
+        <H3 appearance={appearance?.elements?.EditUserModalHeader}>
+          {appearance?.options?.editUserModalHeaderContent || `Edit ${user.email}`}
+        </H3>
       </div>
       <Button loading={loading} onClick={resendInvitation} appearance={appearance?.elements?.ResendInvitationButton}>
-        Resend Invitation
+        {appearance?.options?.resendInvitationButtonContent || "Resend Invitation"}
       </Button>
       <Button loading={loading} onClick={deleteInvitation} appearance={appearance?.elements?.DeleteInvitationButton}>
-        Delete Invitation
+        {appearance?.options?.deleteInvitationButtonContent || "Delete Invitation"}
       </Button>
       {error && (
         <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>

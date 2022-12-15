@@ -1,4 +1,3 @@
-export * from "./CompleteAccount";
 export * from "./CreateOrg";
 export * from "./ForgotPassword";
 export * from "./InviteUser";
@@ -9,4 +8,5 @@ export * from "./Mfa";
 export * from "./ProfilePicture";
 export * from "./Signup";
 export * from "./UpdateProfile";
+export * from "./UserMetadata";
 export * from "./Verify";

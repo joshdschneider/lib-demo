@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { ElementAppearance } from "../state";
 import { useClient } from "../state/useClient";
 import { Invitation, useSelectedOrg } from "./ManageOrg";
@@ -18,6 +18,7 @@ import {
   ButtonProps,
   AlertProps,
 } from "../elements";
+import { BAD_REQUEST_INVITE_USER, NOT_FOUND_INVITE_USER, UNAUTHORIZED, UNEXPECTED_ERROR } from "./shared/constants";
 
 export type InviteUserProps = {
   orgId: string;
@@ -27,7 +28,10 @@ export type InviteUserProps = {
 
 export type InviteUserAppearance = {
   options?: {
-    //..
+    headerContent?: ReactNode;
+    emailLabel?: ReactNode;
+    roleLabel?: ReactNode;
+    submitButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -61,14 +65,14 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
         onSuccess({ email, role, expiresAtSeconds: 0 }); // CHANGE THIS
       } else {
         response.error._visit({
-          notFoundInviteUser: () => setError("User not found"),
-          badRequestInviteUser: () => setError("Something went wrong"),
-          unauthorized: () => setError("Not authorized"),
-          _other: () => setError("Something went wrong"),
+          notFoundInviteUser: () => setError(NOT_FOUND_INVITE_USER),
+          badRequestInviteUser: () => setError(BAD_REQUEST_INVITE_USER),
+          unauthorized: () => setError(UNAUTHORIZED),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -76,30 +80,20 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
   }
 
   if (!inviteePossibleRoles || inviteePossibleRoles.length === 0) {
-    const unauthorized = `You are not authorized to perform this action`;
-    return (
-      <div data-contain="component">
-        <Container appearance={appearance?.elements?.Container}>
-          <H3 appearance={appearance?.elements?.Header}>Invite User</H3>
-          <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>
-            {unauthorized}
-          </Alert>
-        </Container>
-      </div>
-    );
+    return null; // Bad idea?
   }
 
   return (
     <div data-contain="component">
       <Container appearance={appearance?.elements?.Container}>
         <div data-contain="header">
-          <H3 appearance={appearance?.elements?.Header}>Invite User</H3>
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Invite User"}</H3>
         </div>
         <div data-contain="form">
           <form onSubmit={handleSubmit}>
             <div>
               <Label htmlFor={"email"} appearance={appearance?.elements?.EmailLabel}>
-                Email
+                {appearance?.options?.emailLabel || "Email"}
               </Label>
               <Input
                 type={"email"}
@@ -113,7 +107,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
             </div>
             <div>
               <Label htmlFor={"role"} appearance={appearance?.elements?.RoleLabel}>
-                Role
+                {appearance?.options?.roleLabel || "Role"}
               </Label>
               <Select
                 value={role}
@@ -125,7 +119,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
               />
             </div>
             <Button loading={loading} disabled={disabled} appearance={appearance?.elements?.SubmitButton}>
-              Invite User
+              {appearance?.options?.submitButtonContent || "Invite User"}
             </Button>
             {error && (
               <Alert type={"error"} appearance={appearance?.elements?.ErrorMessage}>

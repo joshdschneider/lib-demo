@@ -1,5 +1,5 @@
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
-import { Dispatch, MouseEvent, SetStateAction, SyntheticEvent, useState } from "react";
+import { Dispatch, MouseEvent, ReactNode, SetStateAction, SyntheticEvent, useState } from "react";
 import { useClient } from "../state/useClient";
 import { ElementAppearance, useConfig } from "../state";
 import {
@@ -18,6 +18,7 @@ import {
   H3Props,
   ParagraphProps,
 } from "../elements";
+import { BAD_REQUEST_MFA_VERIFY, FORBIDDEN, NOT_FOUND_MFA_VERIFY, UNEXPECTED_ERROR } from "./shared/constants";
 
 export type VerifyProps = {
   setStep: Dispatch<SetStateAction<LoginStateEnum>>;
@@ -26,8 +27,9 @@ export type VerifyProps = {
 
 export type VerifyAppearance = {
   options?: {
-    headerText?: string;
+    headerContent?: ReactNode;
     displayLogo?: boolean;
+    submitButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -74,14 +76,14 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
         setStep(response.body);
       } else {
         response.error._visit({
-          badRequestMfaVerify: () => setError("Incorrect code"),
-          notFoundMfaVerify: () => setError("Not found"),
-          forbiddenMfaVerify: () => setError("Forbidden"),
-          _other: () => setError("Something went wrong"),
+          badRequestMfaVerify: () => setError(BAD_REQUEST_MFA_VERIFY),
+          notFoundMfaVerify: () => setError(NOT_FOUND_MFA_VERIFY),
+          forbiddenMfaVerify: () => setError(FORBIDDEN),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -97,7 +99,7 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
           </div>
         )}
         <div data-contain="header">
-          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Verify"}</H3>
+          <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Verify"}</H3>
         </div>
         <div data-contain="form">
           <form onSubmit={verifyMfa}>
@@ -112,7 +114,7 @@ export const Verify = ({ setStep, appearance }: VerifyProps) => {
               />
             </div>
             <Button loading={loading} appearance={appearance?.elements?.SubmitButton}>
-              Submit
+              {appearance?.options?.submitButtonContent || "Submit"}
             </Button>
             {error && (
               <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>

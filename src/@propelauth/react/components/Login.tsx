@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { LoginStateEnum } from "@propel-auth-fern/fe_v2-client/resources";
 import { useClient } from "../state/useClient";
 import { useConfig, ElementAppearance } from "../state";
@@ -11,7 +11,6 @@ import {
   Input,
   Button,
   H3,
-  Paragraph,
   ContainerProps,
   ImageProps,
   H3Props,
@@ -19,15 +18,17 @@ import {
   InputProps,
   ButtonProps,
   AlertProps,
+  Label,
 } from "../elements";
 import {
   Verify,
   VerifyAppearance,
-  CompleteAccount,
-  CompleteAccountAppearance,
+  UserMetadata,
+  UserMetadataAppearance,
   CreateOrg,
   CreateOrgAppearance,
 } from "../components";
+import { BAD_REQUEST_LOGIN, UNEXPECTED_ERROR } from "./shared/constants";
 
 export type LoginProps = {
   onSuccess: VoidFunction;
@@ -36,15 +37,20 @@ export type LoginProps = {
   presetEmail?: string;
   appearance?: LoginAppearance;
   verifyAppearance?: VerifyAppearance;
-  completeAccountAppearance?: CompleteAccountAppearance;
+  userMetadataAppearance?: UserMetadataAppearance;
   createOrgAppearance?: CreateOrgAppearance;
 };
 
 export type LoginAppearance = {
   options?: {
-    headerText?: string;
+    headerContent?: ReactNode;
     displayLogo?: boolean;
-    divider?: string | boolean;
+    divider?: ReactNode | boolean;
+    emailLabel?: ReactNode;
+    passwordLabel?: ReactNode;
+    submitButtonContent?: ReactNode;
+    signupButtonContent?: ReactNode;
+    forgotPasswordButtonContent?: ReactNode;
   };
   elements?: {
     Container?: ElementAppearance<ContainerProps>;
@@ -55,8 +61,8 @@ export type LoginAppearance = {
     PasswordInput?: ElementAppearance<InputProps>;
     SocialButton?: ElementAppearance<ButtonProps>;
     SubmitButton?: ElementAppearance<ButtonProps>;
-    SignupLink?: ElementAppearance<ButtonProps>;
-    ForgotPasswordLink?: ElementAppearance<ButtonProps>;
+    SignupButton?: ElementAppearance<ButtonProps>;
+    ForgotPasswordButton?: ElementAppearance<ButtonProps>;
     ErrorMessage?: ElementAppearance<AlertProps>;
   };
 };
@@ -68,7 +74,7 @@ export const Login = ({
   presetEmail,
   appearance,
   verifyAppearance,
-  completeAccountAppearance,
+  userMetadataAppearance,
   createOrgAppearance,
 }: LoginProps) => {
   const { config } = useConfig();
@@ -90,12 +96,12 @@ export const Login = ({
         setStep(response.body);
       } else {
         response.error._visit({
-          badRequestLogin: () => setError("Incorrect credentials"),
-          _other: () => setError("Something went wrong"),
+          badRequestLogin: () => setError(BAD_REQUEST_LOGIN),
+          _other: () => setError(UNEXPECTED_ERROR),
         });
       }
     } catch (e) {
-      setError("Something went wrong");
+      setError(UNEXPECTED_ERROR);
       console.error(e);
     } finally {
       setLoading(false);
@@ -119,7 +125,7 @@ export const Login = ({
               </div>
             )}
             <div data-contain="header">
-              <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerText || "Welcome"}</H3>
+              <H3 appearance={appearance?.elements?.Header}>{appearance?.options?.headerContent || "Welcome"}</H3>
             </div>
             {(config.has_passwordless_login || config.has_any_social_login) && (
               <SignInOptions buttonAppearance={appearance?.elements?.SocialButton} config={config} />
@@ -131,10 +137,11 @@ export const Login = ({
               <div data-contain="form">
                 <form onSubmit={login}>
                   <div>
+                    <Label htmlFor="email">{appearance?.options?.emailLabel || "Email"}</Label>
                     <Input
                       required
+                      id="email"
                       type="email"
-                      placeholder="Email"
                       value={email}
                       readOnly={!!presetEmail}
                       onChange={(e) => setEmail(e.target.value)}
@@ -142,17 +149,18 @@ export const Login = ({
                     />
                   </div>
                   <div>
+                    <Label htmlFor="password">{appearance?.options?.passwordLabel || "Password"}</Label>
                     <Input
                       required
                       type="password"
-                      placeholder="Password"
+                      id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       appearance={appearance?.elements?.PasswordInput}
                     />
                   </div>
                   <Button appearance={appearance?.elements?.SubmitButton} loading={loading}>
-                    Login
+                    {appearance?.options?.submitButtonContent || "Login"}
                   </Button>
                   {error && (
                     <Alert appearance={appearance?.elements?.ErrorMessage} type={"error"}>
@@ -165,13 +173,13 @@ export const Login = ({
             {(onRedirectToSignup || onRedirectToForgotPassword) && (
               <div data-contain="links">
                 {onRedirectToSignup && (
-                  <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupLink}>
-                    Sign up
+                  <Button onClick={onRedirectToSignup} appearance={appearance?.elements?.SignupButton}>
+                    {appearance?.options?.signupButtonContent || "Sign Up"}
                   </Button>
                 )}
                 {onRedirectToForgotPassword && (
-                  <Button onClick={onRedirectToForgotPassword} appearance={appearance?.elements?.ForgotPasswordLink}>
-                    Forgot password
+                  <Button onClick={onRedirectToForgotPassword} appearance={appearance?.elements?.ForgotPasswordButton}>
+                    {appearance?.options?.forgotPasswordButtonContent || "Forgot Password"}
                   </Button>
                 )}
               </div>
@@ -184,26 +192,12 @@ export const Login = ({
       return <Verify setStep={setStep} appearance={verifyAppearance} />;
 
     case LoginStateEnum.UserMetadataRequired:
-      return <CompleteAccount setStep={setStep} config={config} appearance={completeAccountAppearance} />;
+      return <UserMetadata setStep={setStep} config={config} appearance={userMetadataAppearance} />;
 
     case LoginStateEnum.OrgCreationRequired:
       return <CreateOrg setStep={setStep} config={config} appearance={createOrgAppearance} />;
 
-    case LoginStateEnum.Finished:
-      return (
-        <Container appearance={appearance?.elements?.Container}>
-          <H3 appearance={appearance?.elements?.Header}>Login successful</H3>
-          <Paragraph>Redirecting...</Paragraph>
-        </Container>
-      );
-
     default:
-      return (
-        <Container>
-          <H3>Something went wrong</H3>
-          <Paragraph>Looks like something went wrong. Please return to login.</Paragraph>
-          <Button onClick={() => setStep(LoginStateEnum.LoginRequired)}>Return to login</Button>
-        </Container>
-      );
+      return null;
   }
 };
