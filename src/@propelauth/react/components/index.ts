@@ -1,3 +1,4 @@
+export * from "./ConfirmEmail";
 export * from "./CreateOrg";
 export * from "./ForgotPassword";
 export * from "./InviteUser";

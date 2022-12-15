@@ -25,6 +25,8 @@ import {
   VerifyAppearance,
   UserMetadata,
   UserMetadataAppearance,
+  ConfirmEmail,
+  ConfirmEmailAppearance,
   CreateOrg,
   CreateOrgAppearance,
 } from "../components";
@@ -36,6 +38,7 @@ export type LoginProps = {
   onRedirectToForgotPassword?: VoidFunction;
   presetEmail?: string;
   appearance?: LoginAppearance;
+  confirmEmailAppearance?: ConfirmEmailAppearance;
   verifyAppearance?: VerifyAppearance;
   userMetadataAppearance?: UserMetadataAppearance;
   createOrgAppearance?: CreateOrgAppearance;
@@ -73,6 +76,7 @@ export const Login = ({
   onRedirectToForgotPassword,
   presetEmail,
   appearance,
+  confirmEmailAppearance,
   verifyAppearance,
   userMetadataAppearance,
   createOrgAppearance,
@@ -187,6 +191,9 @@ export const Login = ({
           </Container>
         </div>
       );
+
+    case LoginStateEnum.ConfirmEmailRequired:
+      return <ConfirmEmail appearance={confirmEmailAppearance} />;
 
     case LoginStateEnum.TwoFactorRequired:
       return <Verify setStep={setStep} appearance={verifyAppearance} />;
