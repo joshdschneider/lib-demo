@@ -19,6 +19,7 @@ import {
   AlertProps,
 } from "../elements";
 import { BAD_REQUEST_INVITE_USER, NOT_FOUND_INVITE_USER, UNAUTHORIZED, UNEXPECTED_ERROR } from "./shared/constants";
+import { threeDaysFromNow } from "../utils";
 
 export type InviteUserProps = {
   orgId: string;
@@ -62,7 +63,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
       const options = { email, role, orgId };
       const response = await orgUserApi.inviteUser(options);
       if (response.ok) {
-        onSuccess({ email, role, expiresAtSeconds: 0 }); // CHANGE THIS
+        onSuccess({ email, role, expiresAtSeconds: threeDaysFromNow() });
       } else {
         response.error._visit({
           notFoundInviteUser: () => setError(NOT_FOUND_INVITE_USER),
