@@ -81,7 +81,7 @@ export const InviteUser = ({ orgId, onSuccess, appearance }: InviteUserProps) =>
   }
 
   if (!inviteePossibleRoles || inviteePossibleRoles.length === 0) {
-    return null; // Bad idea?
+    return null; // ?
   }
 
   return (

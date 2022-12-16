@@ -60,7 +60,7 @@ export const ProfilePicture = ({ appearance }: ProfilePictureProps) => {
       if (response.success) {
         // setImageUrl(response.imageUrl)
         // onClose()
-        window.location.reload();
+        window.location.reload(); // ?
       } else {
         setError(UNEXPECTED_ERROR);
       }

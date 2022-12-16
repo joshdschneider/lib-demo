@@ -93,7 +93,7 @@ export type UpdateEmailProps = {
 
 export const UpdateEmail = ({ appearance }: UpdateEmailProps) => {
   const { userApi } = useClient();
-  const [email, setEmail] = useState(""); // GET FROM METADATA
+  const [email, setEmail] = useState(""); // get from useAuthInfo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);

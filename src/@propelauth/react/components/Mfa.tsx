@@ -189,7 +189,7 @@ export const Mfa = ({ appearance }: MfaProps) => {
   }
 
   if (mfaStatus === "Loading" || mfaStatus === "Error") {
-    return null; // Bad idea?
+    return null; // ?
   }
 
   if (mfaStatus === "Enabled") {

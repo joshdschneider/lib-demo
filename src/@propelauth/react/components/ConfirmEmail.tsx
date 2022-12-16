@@ -23,6 +23,7 @@ export type ConfirmEmailAppearance = {
 export const ConfirmEmail = ({ appearance }: ConfirmEmailProps) => {
   const { config } = useConfig();
   const message = `You should receive an email with a link to confirm your email address within the next few minutes. If you do not receive an email, make sure to check your spam.`;
+  // Resend button?
 
   return (
     <div data-contain="component">

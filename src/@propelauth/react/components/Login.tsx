@@ -205,6 +205,6 @@ export const Login = ({
       return <CreateOrg setStep={setStep} config={config} appearance={createOrgAppearance} />;
 
     default:
-      return null;
+      return null; // ?
   }
 };
