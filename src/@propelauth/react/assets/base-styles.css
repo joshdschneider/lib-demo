@@ -252,6 +252,15 @@ div[data-contain="component"] .BaseInput {
   margin: 0px 0px 10px 0px;
 }
 
+div[data-contain="form"] {
+  text-align: left;
+}
+
+div[data-contain="form"] .BaseLabel {
+  display: block;
+  margin-bottom: 10px;
+}
+
 div[data-contain="form"] .BaseButton {
   margin-bottom: 10px;
   width: 100%;
