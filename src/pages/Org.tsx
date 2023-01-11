@@ -1,10 +1,9 @@
-import { ManageOrg } from "../@propelauth/react";
-import { CoolTable } from "../custom-components/CoolTable";
+import { ManageOrg } from "@propelauth/react-test";
 
 export const OrgPage = () => {
   return (
     <div>
-      <ManageOrg orgId={"1234567890"} />
+      <ManageOrg />
     </div>
   );
 };

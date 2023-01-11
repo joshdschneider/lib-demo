@@ -1,4 +1,4 @@
-import { ManageAccount } from "../@propelauth/react";
+import { ManageAccount } from "@propelauth/react-test";
 
 export const AccountPage = () => {
   return (

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Signup } from "../@propelauth/react";
+import { Signup } from "@propelauth/react-test";
 
 export const SignupPage = () => {
   const navigate = useNavigate();

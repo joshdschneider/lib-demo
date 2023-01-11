@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useLogoutFunction } from "@propelauth/react-test";
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
+  const logout = useLogoutFunction();
   return (
     <div>
       <h1>Dashboard</h1>
-      <button onClick={() => navigate("/")}>Logout</button>
+      <button onClick={() => logout(true)}>Logout</button>
     </div>
   );
 };

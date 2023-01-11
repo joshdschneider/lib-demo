@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Login } from "../@propelauth/react";
+import { Login } from "@propelauth/react-test";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
